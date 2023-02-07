@@ -8,6 +8,7 @@ import { api } from "../utils/api";
 
 import { ThemeProvider } from "@primer/react";
 import deepmerge from "deepmerge";
+import { BaseStyles } from "@primer/react";
 
 const theme = {
   colors: {
@@ -37,7 +38,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ThemeProvider theme={customTheme}>
-        <Component {...pageProps} />
+        <BaseStyles>
+          <Component {...pageProps} />
+        </BaseStyles>
       </ThemeProvider>
     </SessionProvider>
   );
