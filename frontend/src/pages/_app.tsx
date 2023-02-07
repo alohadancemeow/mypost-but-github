@@ -4,7 +4,31 @@ import { SessionProvider } from "next-auth/react";
 
 import { api } from "../utils/api";
 
-import "../styles/globals.css";
+// import "../styles/globals.css";
+
+import { ThemeProvider } from "@primer/react";
+import deepmerge from "deepmerge";
+
+const theme = {
+  colors: {
+    canvas: {
+      default: "#fff",
+      primary: "#22272E",
+      secondary: "#444C56",
+      bg: "#373E47",
+      border: "#444C56",
+      subtext: "#ADBAC7",
+      hightlight: "#006EED",
+    },
+  },
+};
+
+const customTheme = deepmerge(theme, {
+  fonts: {
+    // mono: "MonoLisa, monospace",
+    normal: "'Inter', sans-serif",
+  },
+});
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -12,7 +36,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <ThemeProvider theme={customTheme}>
+        <Component {...pageProps} />
+      </ThemeProvider>
     </SessionProvider>
   );
 };
