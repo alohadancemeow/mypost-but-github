@@ -10,7 +10,7 @@ const Home: NextPage = () => {
 
   return (
     <Layout>
-      {data ? <Feed /> : <Auth />}
+      {!data ? <Feed /> : <Auth />}
     </Layout>
   );
 };
