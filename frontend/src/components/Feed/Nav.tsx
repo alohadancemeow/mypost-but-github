@@ -9,7 +9,7 @@ const Nav = (props: Props) => {
     <Header
       sx={{
         height: "64px",
-        padding: "0 2rem",
+        padding: "0 3rem",
         // border: "1px solid red",
       }}
     >

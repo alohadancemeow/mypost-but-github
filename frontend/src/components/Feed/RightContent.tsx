@@ -38,7 +38,7 @@ const RightContent = (props: Props) => {
                 <CircleBadge
                   size={30}
                   sx={{
-                    color: "white",
+                    color: "#006EED",
                     bg: "transparent",
                     border: "1px solid white",
                   }}
