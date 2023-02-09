@@ -8,7 +8,7 @@ const RightContent = (props: Props) => {
   return (
     <Box
       p={3}
-      //  border="1px solid red"
+       border="1px solid red"
     >
       <Box
         display="flex"
