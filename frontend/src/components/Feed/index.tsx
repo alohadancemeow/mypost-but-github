@@ -13,16 +13,16 @@ type Props = {};
 const Feed = (props: Props) => {
   return (
     <Box
-      bg={"canvas.bg"}
-      height={"100vh"}
-      display={"flex"}
+      bg="canvas.bg"
+      height="fit-content"
+      display="flex"
       flexDirection="column"
       color="white"
     >
       <Nav />
       <Box
         display="grid"
-        gridTemplateColumns="1fr 2fr 1fr"
+        gridTemplateColumns="1fr 2.5fr 1fr"
         gridGap={3}
         margin="2rem"
         height="100%"

@@ -145,7 +145,7 @@ const Auth = (props: Props) => {
                 </Text>
               </div>
             </MyButton>
-            <MyButton rounded="16px" h="34px" color="#444C56" gab="15px 0">
+            <MyButton rounded="16px" h="34px" color="#444C56" gap="15px 0">
               <div
                 style={{
                   display: "flex",
@@ -170,18 +170,18 @@ const Auth = (props: Props) => {
 export default Auth;
 
 type ButtonType = {
-  color: string;
+  color?: string;
   w?: string;
   h?: string;
   rounded?: string;
-  gab?: string;
+  gap?: string;
 };
 
 // Styled component
-const MyButton = styled.button<ButtonType>`
+export const MyButton = styled.button<ButtonType>`
   width: ${({ w }) => w};
   height: ${({ h }) => h};
-  margin: ${({ gab }) => gab};
+  margin: ${({ gap: gab }) => gab};
   padding: 5px;
   font-weight: bold;
   text-decoration: none;
@@ -189,7 +189,7 @@ const MyButton = styled.button<ButtonType>`
   color: white;
   cursor: pointer;
   border-radius: ${({ rounded }) => rounded};
-  background-color: ${({ color }) => color};
+  background-color: ${({ color }) => (color ? color : "transparent")};
 
   &:hover {
     opacity: 0.7;
