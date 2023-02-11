@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";
 import { NumberIcon } from "@primer/octicons-react";
 
@@ -6,7 +7,7 @@ type Props = {};
 
 const RightContent = (props: Props) => {
   return (
-    <Box
+    <MyBox
       p={3}
       //  border="1px solid red"
     >
@@ -74,8 +75,15 @@ const RightContent = (props: Props) => {
             </Box>
           ))}
       </Box>
-    </Box>
+    </MyBox>
   );
 };
 
 export default RightContent;
+
+// responsive
+const MyBox = styled(Box)`
+  @media (max-width: 1012px) {
+    display: none;
+  }
+`;

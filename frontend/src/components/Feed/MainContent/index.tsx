@@ -5,6 +5,7 @@ import LoadMore from "./LoadMore";
 import PostItem from "./PostItem";
 import HeadUnderLine from "./HeadUnderLine";
 import PostBanner from "./PostBanner";
+import styled from "styled-components";
 
 type Props = {};
 
@@ -15,7 +16,7 @@ const MainContent = (props: Props) => {
         position: "-webkit-sticky",
       }}
     >
-      <Box
+      <MyBox
         p={4}
         bg="canvas.primary"
         // color="fg.onEmphasis"
@@ -28,9 +29,19 @@ const MainContent = (props: Props) => {
         {/* <PostItem />
       <PostItem /> */}
         <LoadMore />
-      </Box>
+      </MyBox>
     </div>
   );
 };
 
 export default MainContent;
+
+// responsive
+const MyBox = styled(Box)`
+  @media (max-width: 768px) {
+    border: none;
+  }
+  @media (max-width: 544px) {
+    padding: 10px;
+  }
+`;

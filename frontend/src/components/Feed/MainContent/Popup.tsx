@@ -1,4 +1,6 @@
 import React from "react";
+import styled from "styled-components";
+
 import { Box, Heading, Popover, Text } from "@primer/react";
 import { BsFacebook, BsTwitter } from "react-icons/bs";
 import { MyButton } from "../../Auth";
@@ -12,7 +14,7 @@ type Props = {
 
 const Popup = ({ selected, setSelected }: Props) => {
   return (
-    <Popover
+    <MyPopover
       relative
       open={selected.share}
       caret="bottom"
@@ -76,8 +78,15 @@ const Popup = ({ selected, setSelected }: Props) => {
           </MyButton>
         </Box>
       </Popover.Content>
-    </Popover>
+    </MyPopover>
   );
 };
 
 export default Popup;
+
+// responsive
+const MyPopover = styled(Popover)`
+  @media (max-width: 820px) {
+    left: 44%;
+  }
+`;

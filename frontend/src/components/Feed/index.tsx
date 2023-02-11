@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 
 import { Box } from "@primer/react";
 
@@ -20,7 +21,7 @@ const Feed = (props: Props) => {
       color="white"
     >
       <Nav />
-      <Box
+      <MyBox
         display="grid"
         gridTemplateColumns="1fr 2.5fr 1fr"
         gridGap={3}
@@ -30,7 +31,7 @@ const Feed = (props: Props) => {
         <LeftContent />
         <MainContent />
         <RightContent />
-      </Box>
+      </MyBox>
 
       <Footer />
     </Box>
@@ -38,3 +39,16 @@ const Feed = (props: Props) => {
 };
 
 export default Feed;
+
+// responsive
+const MyBox = styled(Box)`
+  @media (max-width: 1012px) {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+  }
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: 0;
+  }
+`;

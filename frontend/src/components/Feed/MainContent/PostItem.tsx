@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { Avatar, Box, IssueLabelToken, Text } from "@primer/react";
+import { Avatar, Box, Text } from "@primer/react";
+
 import ReactionButton from "./ReactionButton";
 import Popup from "./Popup";
 import CommentItem from "./CommentItem";
 import CommentInput from "./CommentInput";
+import Tag from "./Tag";
 
 type Props = {};
 
@@ -73,37 +75,11 @@ const PostItem = (props: Props) => {
             Publish your digital garden, docs or any markdown based site easily,
             quickly and elegantly
           </Text>
-
-          {/* Tags */}
           <Box marginTop={30}>
-            <IssueLabelToken
-              text="Programming"
-              size="large"
-              fillColor="#444C56"
-              style={{
-                padding: "13px 20px",
-                marginRight: "8px",
-              }}
-            />
-            <IssueLabelToken
-              text="Education"
-              size="large"
-              fillColor="#444C56"
-              style={{
-                padding: "13px 20px",
-                marginRight: "8px",
-              }}
-            />
-            <IssueLabelToken
-              text="UX/UI Design"
-              size="large"
-              fillColor="#444C56"
-              style={{
-                padding: "13px 20px",
-              }}
-            />
+            <Tag text="Programming" />
+            <Tag text="Education" />
+            <Tag text="UX/UI Design" />
           </Box>
-
           <ReactionButton selected={selected} setSelected={setSelected} />
           <Popup selected={selected} setSelected={setSelected} />
         </Box>

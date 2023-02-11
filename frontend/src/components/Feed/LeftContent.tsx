@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 
 import {
   Avatar,
@@ -14,7 +15,7 @@ type Props = {};
 
 const LeftContent = (props: Props) => {
   return (
-    <div
+    <MyBox
       style={{
         position: "-webkit-sticky",
       }}
@@ -98,8 +99,15 @@ const LeftContent = (props: Props) => {
           Show more
         </Text>
       </Box>
-    </div>
+    </MyBox>
   );
 };
 
 export default LeftContent;
+
+// fix responsive
+const MyBox = styled.div`
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;

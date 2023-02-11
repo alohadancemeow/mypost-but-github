@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import {
   CommentDiscussionIcon,
   HeartFillIcon,
@@ -45,7 +46,7 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
                 fontWeight: "600",
               }}
             >
-              Liked · 123
+              Liked <MyText>· 123</MyText>
             </Text>
           </>
         ) : (
@@ -58,7 +59,7 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
                 fontWeight: "600",
               }}
             >
-              Like · 123
+              Like <MyText>· 123</MyText>
             </Text>
           </>
         )}
@@ -98,7 +99,7 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
             fontWeight: "600",
           }}
         >
-          Comment · 123
+          Comment <MyText>· 123</MyText>
         </Text>
       </Box>
       <Box
@@ -133,7 +134,7 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
             fontWeight: "600",
           }}
         >
-          Share · 123
+          Share <MyText>· 123</MyText>
         </Text>
       </Box>
     </Box>
@@ -141,3 +142,10 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
 };
 
 export default ReactionButton;
+
+// responsive
+const MyText = styled(Text)`
+  @media (max-width: 544px) {
+    display: none;
+  }
+`;

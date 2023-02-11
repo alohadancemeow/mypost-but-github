@@ -1,4 +1,6 @@
 import React from "react";
+import styled from "styled-components";
+
 import { BookIcon } from "@primer/octicons-react";
 import { Box, Text } from "@primer/react";
 import { MyButton } from "../../Auth";
@@ -7,7 +9,7 @@ type Props = {};
 
 const PostBanner = (props: Props) => {
   return (
-    <Box
+    <MyBox
       display="flex"
       justifyContent="center"
       alignItems="center"
@@ -21,9 +23,9 @@ const PostBanner = (props: Props) => {
       }}
     >
       <BookIcon size={32} />
-      <Text fontSize={24} margin="16px 0 5px">
+      <MyTitle fontSize={24} margin="16px 0 5px">
         Post your idea
-      </Text>
+      </MyTitle>
       <Text fontSize={14} fontWeight={400} color="#57606A">
         Hope with further education, people can expand their horizons.
       </Text>
@@ -37,8 +39,22 @@ const PostBanner = (props: Props) => {
       >
         Create a post
       </MyButton>
-    </Box>
+    </MyBox>
   );
 };
 
 export default PostBanner;
+
+// responsive
+const MyBox = styled(Box)`
+  @media (max-width: 820px) {
+    padding: 15px;
+    margin-top: 15px;
+  }
+`;
+
+const MyTitle = styled(Text)`
+  @media (max-width: 544px) {
+    font-size: 20px;
+  }
+`;

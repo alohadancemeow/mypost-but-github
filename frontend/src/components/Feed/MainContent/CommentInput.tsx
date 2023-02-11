@@ -18,16 +18,17 @@ const CommentInput = (props: Props) => {
       <TextInput
         contrast
         aria-label="username"
-        name="username"
+        // name="username"
+        // autoComplete="username"
         placeholder="Type here..."
-        autoComplete="username"
+        type="text"
         sx={{
           bg: "transparent",
           border: "1px solid #444C56",
           width: "100%",
           height: "40px",
           borderRadius: "3px",
-          marginInlineStart: '15px'
+          marginInlineStart: "15px",
         }}
       />
     </Box>
