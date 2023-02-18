@@ -2,10 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import { RocketIcon, SignOutIcon } from "@primer/octicons-react";
 import { Avatar, Box, Header, StyledOcticon, Text } from "@primer/react";
+import { signOut } from "next-auth/react";
+import { Session } from "next-auth";
 
-type Props = {};
+type Props = {
+  session: Session;
+};
 
-const Nav = (props: Props) => {
+const Nav = ({ session }: Props) => {
   return (
     <MyHeader
       sx={{
@@ -28,11 +32,11 @@ const Nav = (props: Props) => {
       <Header.Item sx={{ mr: "0px" }}>
         <Header.Item>
           <MyText fontSize={16} fontWeight={400}>
-            Signed in as username
+            Signed in as {session.user.name}
           </MyText>
         </Header.Item>
-        <Avatar src="https://github.com/octocat.png" size={20} alt="@octocat" />
-        <Box sx={{ cursor: "pointer" }} onClick={() => console.log("logout")}>
+        <Avatar src={`${session.user.image}`} size={20} alt="@octocat" />
+        <Box sx={{ cursor: "pointer" }} onClick={() => signOut()}>
           <StyledOcticon
             icon={SignOutIcon}
             size={16}

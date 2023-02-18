@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { signIn } from "next-auth/react";
 
 import {
   Box,
@@ -129,7 +130,12 @@ const Auth = (props: Props) => {
           </Box>
 
           <Box display="flex" flexDirection="column" width="242px">
-            <MyButton rounded="16px" h="34px" color="#f35656">
+            <MyButton
+              rounded="16px"
+              h="34px"
+              color="#f35656"
+              onClick={() => signIn("google")}
+            >
               <div
                 style={{
                   display: "flex",
