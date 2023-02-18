@@ -16,7 +16,6 @@ import {
   RocketIcon,
   MarkGithubIcon,
 } from "@primer/octicons-react";
-import { BsFacebook } from "react-icons/bs";
 import { AiFillGoogleCircle } from "react-icons/ai";
 
 type Props = {};
@@ -152,7 +151,13 @@ const Auth = (props: Props) => {
                 </Text>
               </div>
             </MyButton>
-            <MyButton rounded="16px" h="34px" color="#444C56" gap="15px 0">
+            <MyButton
+              rounded="16px"
+              h="34px"
+              color="#444C56"
+              gap="15px 0"
+              onClick={() => signIn("github")}
+            >
               <div
                 style={{
                   display: "flex",
