@@ -8,11 +8,7 @@ const Home: NextPage = () => {
   const { data } = useSession();
   // console.log(data);
 
-  return (
-    <Layout>
-      {!data ? <Feed /> : <Auth />}
-    </Layout>
-  );
+  return <Layout>{data ? <Feed /> : <Auth />}</Layout>;
 };
 
 export default Home;

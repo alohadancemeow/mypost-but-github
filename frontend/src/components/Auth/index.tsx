@@ -16,6 +16,7 @@ import {
   MarkGithubIcon,
 } from "@primer/octicons-react";
 import { BsFacebook } from "react-icons/bs";
+import { AiFillGoogleCircle } from "react-icons/ai";
 
 type Props = {};
 
@@ -128,7 +129,7 @@ const Auth = (props: Props) => {
           </Box>
 
           <Box display="flex" flexDirection="column" width="242px">
-            <MyButton rounded="16px" h="34px" color="#2E89F1">
+            <MyButton rounded="16px" h="34px" color="#f35656">
               <div
                 style={{
                   display: "flex",
@@ -137,11 +138,11 @@ const Auth = (props: Props) => {
                   marginInlineStart: "15px",
                 }}
               >
-                <BsFacebook size={18} />
+                <AiFillGoogleCircle size={18} />
                 <Text
                   sx={{ marginInlineStart: "10px", alignContent: "center" }}
                 >
-                  Continue with Facebook
+                  Continue with google
                 </Text>
               </div>
             </MyButton>
