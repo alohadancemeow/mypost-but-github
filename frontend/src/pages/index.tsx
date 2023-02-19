@@ -6,7 +6,7 @@ import Auth from "../components/Auth";
 
 const Home: NextPage = () => {
   const { data: session } = useSession();
-  console.log(session);
+  console.log("session", session);
 
   return <Layout>{session ? <Feed session={session} /> : <Auth />}</Layout>;
 };

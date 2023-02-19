@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { signIn } from "next-auth/react";
 
@@ -18,9 +18,54 @@ import {
 } from "@primer/octicons-react";
 import { AiFillGoogleCircle } from "react-icons/ai";
 
+import { api as trpc } from "../../utils/api";
+
 type Props = {};
 
 const Auth = (props: Props) => {
+  const [user, setUser] = useState<{ email: string; password: string }>({
+    email: "",
+    password: "",
+  });
+
+  const { mutateAsync, error, isLoading } = trpc.user.createUser.useMutation();
+
+  // handle signup
+  const onSignup = async () => {
+    if (!user) return;
+
+    try {
+      const data = await mutateAsync({
+        email: user.email,
+        password: user.password,
+      });
+
+      if (data) {
+        onSignin();
+      }
+    } catch (error: any) {
+      console.log("onSignup err", error?.message);
+    }
+  };
+
+  // handle signin
+  const onSignin = async () => {
+    if (!user) return;
+
+    const response = await signIn("credentials", {
+      redirect: false,
+      callbackUrl: `/`,
+      email: user.email,
+      password: user.password,
+    });
+
+    console.log("response", response);
+
+    if (response?.error) {
+      console.log(response?.error);
+    }
+  };
+
   return (
     <Box bg={"canvas.bg"} height={"100vh"} display={"flex"}>
       <Box
@@ -71,7 +116,7 @@ const Auth = (props: Props) => {
               name="email"
               autoComplete="email"
               placeholder="enter your email"
-              // onChange={(e) => console.log(e.target.value)}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
             />
           </FormControl>
           <FormControl sx={{ margin: "10px" }}>
@@ -90,7 +135,7 @@ const Auth = (props: Props) => {
               name="password"
               autoComplete="password"
               placeholder="enter your password"
-              // onChange={(e) => console.log(e.target.value)}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
             />
           </FormControl>
           <Box
@@ -99,10 +144,22 @@ const Auth = (props: Props) => {
             width="242px"
             margin="15px 0"
           >
-            <MyButton w="110px" h="30px" rounded="4px" color="#06A833">
+            <MyButton
+              w="110px"
+              h="30px"
+              rounded="4px"
+              color="#06A833"
+              onClick={onSignin}
+            >
               Sign in
             </MyButton>
-            <MyButton w="110px" h="30px" rounded="4px" color="#444C56">
+            <MyButton
+              w="110px"
+              h="30px"
+              rounded="4px"
+              color="#444C56"
+              onClick={onSignup}
+            >
               Sign up
             </MyButton>
           </Box>
