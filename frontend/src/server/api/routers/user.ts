@@ -30,4 +30,14 @@ export const userRouter = createTRPCRouter({
         throw new TRPCError({ code: "BAD_REQUEST" });
       }
     }),
+
+  getUsers: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma } = ctx;
+
+    return await prisma.user.findMany({
+      include: {
+        posts: true,
+      },
+    });
+  }),
 });
