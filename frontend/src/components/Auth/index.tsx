@@ -19,6 +19,7 @@ import {
 import { AiFillGoogleCircle } from "react-icons/ai";
 
 import { api as trpc } from "../../utils/api";
+import { toast } from "react-hot-toast";
 
 type Props = {};
 
@@ -44,7 +45,8 @@ const Auth = (props: Props) => {
         onSignin();
       }
     } catch (error: any) {
-      console.log("onSignup err", error?.message);
+      console.log("onSignup err", error);
+      toast.error(error?.message);
     }
   };
 
@@ -59,10 +61,12 @@ const Auth = (props: Props) => {
       password: user.password,
     });
 
-    console.log("response", response);
-
     if (response?.error) {
-      console.log(response?.error);
+      toast.error(response.error);
+    }
+
+    if (response?.ok) {
+      toast.success("login successfully!");
     }
   };
 

@@ -35,7 +35,11 @@ const Nav = ({ session }: Props) => {
             Signed in as {session.user.name}
           </MyText>
         </Header.Item>
-        <Avatar src={`${session.user.image}`} size={20} alt="@octocat" />
+        <Avatar
+          src={`${session.user.image ?? "https://github.com/octocat.png"}`}
+          size={20}
+          alt="@octocat"
+        />
         <Box sx={{ cursor: "pointer" }} onClick={() => signOut()}>
           <StyledOcticon
             icon={SignOutIcon}

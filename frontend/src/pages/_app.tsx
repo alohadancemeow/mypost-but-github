@@ -9,6 +9,7 @@ import { api } from "../utils/api";
 import { ThemeProvider } from "@primer/react";
 import deepmerge from "deepmerge";
 import { BaseStyles } from "@primer/react";
+import { Toaster } from "react-hot-toast";
 
 const theme = {
   colors: {
@@ -40,6 +41,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <ThemeProvider theme={customTheme}>
         <BaseStyles>
           <Component {...pageProps} />
+          <Toaster />
         </BaseStyles>
       </ThemeProvider>
     </SessionProvider>

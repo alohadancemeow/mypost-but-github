@@ -27,7 +27,7 @@ export const userRouter = createTRPCRouter({
         return user;
       } catch (error: any) {
         console.log(error?.message);
-        throw new TRPCError(error?.message);
+        throw new TRPCError({ code: "BAD_REQUEST" });
       }
     }),
 });
