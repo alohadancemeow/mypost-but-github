@@ -9,6 +9,9 @@ import Tag from "./Tag";
 
 import { PostPopulated } from "../../../../types/myTypes";
 
+import { formatRelative } from "date-fns";
+import enUS from "date-fns/locale/en-US";
+
 type Props = {
   post: PostPopulated;
 };
@@ -19,11 +22,27 @@ export type ReactionButtonType = {
   share: boolean;
 };
 
+const formatRelativeLocale = {
+  lastWeek: "eeee 'at' p",
+  yesterday: "'Yesterday at' p",
+  today: "p",
+  other: "MM/dd/yy",
+};
+
 const PostItem = ({ post }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     like: false,
     comment: false,
     share: false,
+  });
+
+  // Format date
+  const formatedDate = formatRelative(post.createdAt, new Date(), {
+    locale: {
+      ...enUS,
+      formatRelative: (token) =>
+        formatRelativeLocale[token as keyof typeof formatRelativeLocale],
+    },
   });
 
   return (
@@ -49,7 +68,7 @@ const PostItem = ({ post }: Props) => {
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>posted</span>{" "}
             {post.title}{" "}
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>
-              {`· ${post.createdAt}`}
+              {`· ${formatedDate}`}
             </span>{" "}
           </Text>
         </Box>
