@@ -5,9 +5,22 @@ import { BookIcon } from "@primer/octicons-react";
 import { Box, Text } from "@primer/react";
 import { MyButton } from "../../Auth";
 
+import { api as trpc } from "../../../utils/api";
+
 type Props = {};
 
 const PostBanner = (props: Props) => {
+  const { mutateAsync } = trpc.post.createPost.useMutation();
+
+  const onCreatePost = async () => {
+    const data = await mutateAsync({
+      title: "post101",
+      body: "this is post 101",
+      tags: ["dev", "js", "next"],
+    });
+    console.log("onPostCreate", data);
+  };
+
   return (
     <MyBox
       display="flex"
@@ -35,7 +48,7 @@ const PostBanner = (props: Props) => {
         rounded="4px"
         gap="32px 0 0"
         color="#006EED"
-        onClick={() => console.log("create a post clicked")}
+        onClick={onCreatePost}
       >
         Create a post
       </MyButton>

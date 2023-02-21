@@ -50,13 +50,13 @@ export const authOptions: NextAuthOptions = {
      * @solution https://github.com/nextauthjs/next-auth/discussions/4144
      */
 
-    // async jwt({ token, user }) {
-    //   if (user) {
-    //     // token = user;
-    //     token.user = user;
-    //   }
-    //   return Promise.resolve(token);
-    // },
+    async jwt({ token, user }) {
+      if (user) {
+        // token = user;
+        token = { ...user };
+      }
+      return Promise.resolve(token);
+    },
 
     async session({ session, token, user }) {
       const sessionUser = { ...session.user, ...user, ...token };

@@ -6,6 +6,7 @@ import { api } from "../utils/api";
 
 // import "../styles/globals.css";
 
+import { SSRProvider } from "@primer/react";
 import { ThemeProvider } from "@primer/react";
 import deepmerge from "deepmerge";
 import { BaseStyles } from "@primer/react";
@@ -38,12 +39,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ThemeProvider theme={customTheme}>
-        <BaseStyles>
-          <Component {...pageProps} />
-          <Toaster />
-        </BaseStyles>
-      </ThemeProvider>
+      <SSRProvider>
+        <ThemeProvider theme={customTheme}>
+          <BaseStyles>
+            <Component {...pageProps} />
+            <Toaster />
+          </BaseStyles>
+        </ThemeProvider>
+      </SSRProvider>
     </SessionProvider>
   );
 };
