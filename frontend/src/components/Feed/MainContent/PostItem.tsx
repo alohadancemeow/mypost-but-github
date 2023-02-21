@@ -7,7 +7,11 @@ import CommentItem from "./CommentItem";
 import CommentInput from "./CommentInput";
 import Tag from "./Tag";
 
-type Props = {};
+import { PostPopulated } from "../../../../types/myTypes";
+
+type Props = {
+  post: PostPopulated;
+};
 
 export type ReactionButtonType = {
   like: boolean;
@@ -15,10 +19,10 @@ export type ReactionButtonType = {
   share: boolean;
 };
 
-const PostItem = (props: Props) => {
+const PostItem = ({ post }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     like: false,
-    comment: true,
+    comment: false,
     share: false,
   });
 
@@ -41,11 +45,11 @@ const PostItem = (props: Props) => {
         <Avatar src="https://github.com/octocat.png" size={24} alt="@octocat" />
         <Box display="flex" marginLeft="15px">
           <Text fontSize="16px">
-            username{" "}
+            {post.user?.name}{" "}
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>posted</span>{" "}
-            post-101{" "}
+            {post.title}{" "}
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>
-              · 2.32 PM
+              {`· ${post.createdAt}`}
             </span>{" "}
           </Text>
         </Box>
@@ -69,16 +73,15 @@ const PostItem = (props: Props) => {
           }}
         >
           <Text fontSize={14} fontWeight={600} marginBottom={2}>
-            Postname
+            {post.title}
           </Text>
           <Text fontSize={14} fontWeight={400} color="#ADBAC7">
-            Publish your digital garden, docs or any markdown based site easily,
-            quickly and elegantly
+            {post.body}
           </Text>
           <Box marginTop={30}>
-            <Tag text="Programming" />
-            <Tag text="Education" />
-            <Tag text="UX/UI Design" />
+            {post.tags.map((tag) => (
+              <Tag key={tag.id} text={tag.body ?? ""} />
+            ))}
           </Box>
           <ReactionButton selected={selected} setSelected={setSelected} />
           <Popup selected={selected} setSelected={setSelected} />

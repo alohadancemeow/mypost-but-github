@@ -10,11 +10,33 @@ import { api as trpc } from "../../../utils/api";
 type Props = {};
 
 const PostBanner = (props: Props) => {
-  const { mutateAsync } = trpc.post.createPost.useMutation();
+  const utils = trpc.useContext();
 
+  const { mutateAsync } = trpc.post.createPost.useMutation({
+    onMutate: () => {
+      // cancel query
+      utils.post.getPosts.cancel();
+      utils.user.getUsers.cancel();
+
+      // get updated data
+      const userUpdate = utils.user.getUsers.getData();
+      const postUpdate = utils.post.getPosts.getData();
+
+      // set updated date
+      if (userUpdate) utils.user.getUsers.setData(undefined, userUpdate);
+      if (postUpdate) utils.post.getPosts.setData(undefined, postUpdate);
+    },
+    onSettled: () => {
+      // invalidate old data
+      utils.post.getPosts.invalidate();
+      utils.user.getUsers.invalidate();
+    },
+  });
+
+  // handle onCreatePost
   const onCreatePost = async () => {
     const data = await mutateAsync({
-      title: "post101",
+      title: "post103",
       body: "this is post 101",
       tags: ["dev", "js", "next"],
     });

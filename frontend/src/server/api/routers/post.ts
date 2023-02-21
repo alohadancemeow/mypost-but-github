@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { postPopulated } from "../../../../types/myTypes";
 
 export const postRouter = createTRPCRouter({
   createPost: protectedProcedure
@@ -16,26 +17,40 @@ export const postRouter = createTRPCRouter({
       const { prisma, session } = ctx;
       const { title, body, tags } = input;
       const { id: userId } = session.user;
-      console.log("tags", tags);
 
       // create post
       // @issue: createMany is not supported on SQLite unfortunately
       try {
-        const newPost = await prisma.post.create({
+        await prisma.post.create({
           data: {
             title,
             body,
             userId,
             tags: {
-
-            }
+              createMany: {
+                data:
+                  tags!!.map((tag) => ({
+                    body: tag,
+                  })) ?? "Just sharing",
+              },
+            },
           },
         });
 
-        return newPost;
+        return true;
       } catch (error: any) {
         console.log("create post err", error?.message);
         throw new TRPCError(error?.message);
       }
     }),
+
+  getPosts: protectedProcedure.query(async ({ ctx }) => {
+    const { prisma } = ctx;
+    return await prisma.post.findMany({
+      include: postPopulated,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }),
 });

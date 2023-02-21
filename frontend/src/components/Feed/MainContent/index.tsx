@@ -7,9 +7,14 @@ import HeadUnderLine from "./HeadUnderLine";
 import PostBanner from "./PostBanner";
 import styled from "styled-components";
 
+import { api as trpc } from "../../../utils/api";
+
 type Props = {};
 
 const MainContent = (props: Props) => {
+  const { data: postData } = trpc.post.getPosts.useQuery();
+  console.log("postData", postData);
+
   return (
     <div
       style={{
@@ -25,9 +30,9 @@ const MainContent = (props: Props) => {
       >
         <PostBanner />
         <HeadUnderLine />
-        <PostItem />
-        {/* <PostItem />
-      <PostItem /> */}
+
+        {postData &&
+          postData.map((post) => <PostItem key={post.id} post={post} />)}
         <LoadMore />
       </MyBox>
     </div>
