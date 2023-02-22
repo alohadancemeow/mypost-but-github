@@ -5,44 +5,11 @@ import { BookIcon } from "@primer/octicons-react";
 import { Box, Text } from "@primer/react";
 import { MyButton } from "../../Auth";
 
-import { api as trpc } from "../../../utils/api";
+type Props = {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-type Props = {};
-
-const PostBanner = (props: Props) => {
-  const utils = trpc.useContext();
-
-  const { mutateAsync } = trpc.post.createPost.useMutation({
-    onMutate: () => {
-      // cancel query
-      utils.post.getPosts.cancel();
-      utils.user.getUsers.cancel();
-
-      // get updated data
-      const userUpdate = utils.user.getUsers.getData();
-      const postUpdate = utils.post.getPosts.getData();
-
-      // set updated date
-      if (userUpdate) utils.user.getUsers.setData(undefined, userUpdate);
-      if (postUpdate) utils.post.getPosts.setData(undefined, postUpdate);
-    },
-    onSettled: () => {
-      // invalidate old data
-      utils.post.getPosts.invalidate();
-      utils.user.getUsers.invalidate();
-    },
-  });
-
-  // handle onCreatePost
-  const onCreatePost = async () => {
-    const data = await mutateAsync({
-      title: "post103",
-      body: "this is post 101",
-      tags: ["dev", "js", "next"],
-    });
-    console.log("onPostCreate", data);
-  };
-
+const PostBanner = ({ setIsOpen }: Props) => {
   return (
     <MyBox
       display="flex"
@@ -70,7 +37,7 @@ const PostBanner = (props: Props) => {
         rounded="4px"
         gap="32px 0 0"
         color="#006EED"
-        onClick={onCreatePost}
+        onClick={() => setIsOpen(true)}
       >
         Create a post
       </MyButton>

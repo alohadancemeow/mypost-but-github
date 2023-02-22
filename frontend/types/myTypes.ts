@@ -15,3 +15,17 @@ export const postPopulated = Prisma.validator<Prisma.PostInclude>()({
 export type PostPopulated = Prisma.PostGetPayload<{
   include: typeof postPopulated;
 }>;
+
+// post input
+export const tokens = [
+  { text: "Programming", id: 0 },
+  { text: "Education", id: 1 },
+  { text: "Just Sharing", id: 2 },
+  { text: "Review", id: 3 },
+];
+
+export type PostInput = {
+  title: string;
+  body: string;
+  tags: typeof tokens;
+};

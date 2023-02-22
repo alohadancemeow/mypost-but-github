@@ -12,7 +12,7 @@ const HeadUnderLine = (props: Props) => {
       sx={{
         position: "sticky",
         top: "0",
-        zIndex: "999",
+        zIndex: "1",
         bg: "canvas.primary",
       }}
     >
