@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Avatar, Box, Text } from "@primer/react";
 
 import ReactionButton from "./ReactionButton";
@@ -12,7 +12,11 @@ import { PostPopulated } from "../../../../types/myTypes";
 import { formatRelative } from "date-fns";
 import enUS from "date-fns/locale/en-US";
 
+import { api as trpc } from "../../../utils/api";
+import { Session } from "next-auth";
+
 type Props = {
+  session: Session;
   post: PostPopulated;
 };
 
@@ -29,12 +33,13 @@ const formatRelativeLocale = {
   other: "MM/dd/yy",
 };
 
-const PostItem = ({ post }: Props) => {
+const PostItem = ({ session, post }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     like: false,
     comment: false,
     share: false,
   });
+  // console.log("postItem", post);
 
   // Format date
   const formatedDate = formatRelative(post.createdAt, new Date(), {
@@ -44,6 +49,51 @@ const PostItem = ({ post }: Props) => {
         formatRelativeLocale[token as keyof typeof formatRelativeLocale],
     },
   });
+
+  const utils = trpc.useContext();
+
+  // call like - unlike mutation,
+  // and update cache
+  const { mutateAsync: likeMutation } = trpc.post.like.useMutation({
+    onMutate: () => {
+      utils.post.getPosts.cancel();
+      const postUpdate = utils.post.getPosts.getData();
+      if (postUpdate) utils.post.getPosts.setData(undefined, postUpdate);
+    },
+    onSettled: () => {
+      utils.post.getPosts.invalidate();
+    },
+  });
+  const { mutateAsync: unlikeMutation } = trpc.post.unlike.useMutation({
+    onMutate: () => {
+      utils.post.getPosts.cancel();
+      const postUpdate = utils.post.getPosts.getData();
+      if (postUpdate) utils.post.getPosts.setData(undefined, postUpdate);
+    },
+    onSettled: () => {
+      utils.post.getPosts.invalidate();
+    },
+  });
+
+  // Handle like - unlike
+  const handleLike = async () => {
+    if (!selected.like) {
+      const liked = await likeMutation({ postId: post.id });
+      console.log("like ation", liked);
+    } else {
+      unlikeMutation({ postId: post.id });
+    }
+  };
+
+  // if you've liked, set like -> true
+  useEffect(() => {
+    const liked = post.likes.some((p) => p.userId === session.user.id);
+    if (liked)
+      setSelected({
+        ...selected,
+        like: true,
+      });
+  }, []);
 
   return (
     <Box
@@ -102,7 +152,12 @@ const PostItem = ({ post }: Props) => {
               <Tag key={tag.id} text={tag.body ?? ""} />
             ))}
           </Box>
-          <ReactionButton selected={selected} setSelected={setSelected} />
+          <ReactionButton
+            selected={selected}
+            setSelected={setSelected}
+            handleLike={handleLike}
+            likeCount={post.likes.length}
+          />
           <Popup selected={selected} setSelected={setSelected} />
         </Box>
       </Box>

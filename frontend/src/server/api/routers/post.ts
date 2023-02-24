@@ -53,4 +53,51 @@ export const postRouter = createTRPCRouter({
       },
     });
   }),
+
+  like: protectedProcedure
+    .input(z.object({ postId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { postId } = input;
+      const { id: userId } = session.user;
+
+      try {
+        await prisma.like.create({
+          data: {
+            post: {
+              connect: {
+                id: postId,
+              },
+            },
+            user: {
+              connect: {
+                id: userId,
+              },
+            },
+          },
+        });
+
+        return true;
+      } catch (error: any) {
+        console.log(error?.message);
+        throw new TRPCError(error?.message);
+      }
+    }),
+
+  unlike: protectedProcedure
+    .input(z.object({ postId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { postId } = input;
+      const { id: userId } = session.user;
+
+      return await prisma.like.delete({
+        where: {
+          postId_userId: {
+            postId,
+            userId,
+          },
+        },
+      });
+    }),
 });

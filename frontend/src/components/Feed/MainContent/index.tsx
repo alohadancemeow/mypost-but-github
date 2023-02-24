@@ -12,10 +12,13 @@ import PostDialog from "./PostDialog";
 import { api as trpc } from "../../../utils/api";
 
 import { PostInput } from "../../../../types/myTypes";
+import { Session } from "next-auth";
 
-type Props = {};
+type Props = {
+  session: Session;
+};
 
-const MainContent = (props: Props) => {
+const MainContent = ({ session }: Props) => {
   const { data: postData } = trpc.post.getPosts.useQuery();
   // console.log("postData", postData);
 
@@ -79,7 +82,9 @@ const MainContent = (props: Props) => {
         <HeadUnderLine />
 
         {postData &&
-          postData.map((post) => <PostItem key={post.id} post={post} />)}
+          postData.map((post) => (
+            <PostItem key={post.id} post={post} session={session} />
+          ))}
         <LoadMore />
       </MyBox>
     </div>

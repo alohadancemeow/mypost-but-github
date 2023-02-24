@@ -12,9 +12,16 @@ import { ReactionButtonType } from "./PostItem";
 type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
+  handleLike: () => Promise<void>;
+  likeCount: number;
 };
 
-const ReactionButton = ({ selected, setSelected }: Props) => {
+const ReactionButton = ({
+  selected,
+  setSelected,
+  handleLike,
+  likeCount,
+}: Props) => {
   return (
     <Box margin="22px 4px 0" display="flex">
       <Box
@@ -30,7 +37,10 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
             opacity: 0.7,
           },
         }}
-        onClick={() => setSelected({ ...selected, like: !selected.like })}
+        onClick={() => {
+          setSelected({ ...selected, like: !selected.like });
+          handleLike();
+        }}
       >
         {selected && selected.like ? (
           <>
@@ -46,7 +56,7 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
                 fontWeight: "600",
               }}
             >
-              Liked <MyText>· 123</MyText>
+              Liked <MyText>{likeCount === 0 ? "" : `· ${likeCount}`}</MyText>
             </Text>
           </>
         ) : (
@@ -59,7 +69,7 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
                 fontWeight: "600",
               }}
             >
-              Like <MyText>· 123</MyText>
+              Like <MyText> {likeCount === 0 ? "" : `· ${likeCount}`}</MyText>
             </Text>
           </>
         )}

@@ -32,7 +32,7 @@ const Feed = ({ session }: Props) => {
         height="100%"
       >
         <LeftContent />
-        <MainContent />
+        <MainContent session={session} />
         <RightContent />
       </MyBox>
 
