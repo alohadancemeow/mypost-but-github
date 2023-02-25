@@ -15,7 +15,7 @@ const RightContent = (props: Props) => {
   });
 
   const posts = postData?.posts.flatMap((post) => post) ?? [];
-  console.log("posts", posts);
+  // console.log("posts", posts);
 
   return (
     <MyBox

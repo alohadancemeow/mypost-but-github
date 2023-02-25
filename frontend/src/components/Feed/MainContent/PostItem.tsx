@@ -31,6 +31,8 @@ const PostItem = ({ session, post }: Props) => {
     share: false,
   });
 
+  const [commentBody, setCommentBody] = useState<string>("");
+
   // call a custom hook
   const formatedDate = useFormatDate({ date: post.createdAt });
 
@@ -48,6 +50,7 @@ const PostItem = ({ session, post }: Props) => {
       utils.post.getPosts.invalidate();
     },
   });
+
   const { mutateAsync: unlikeMutation } = trpc.post.unlike.useMutation({
     onMutate: () => {
       utils.post.getPosts.cancel();
@@ -58,6 +61,41 @@ const PostItem = ({ session, post }: Props) => {
       utils.post.getPosts.invalidate();
     },
   });
+
+  // Get comments - Create comment
+  const { data: commentData } = trpc.comment.getComments.useQuery({
+    postId: post.id,
+  });
+
+  const { mutateAsync: createComment } = trpc.comment.createComment.useMutation(
+    {
+      onMutate: () => {
+        utils.post.getPosts.cancel();
+        utils.comment.getComments.cancel();
+
+        const postUpdate = utils.post.getPosts.getData();
+        const commentUpdate = utils.comment.getComments.getData();
+
+        if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+        if (commentUpdate)
+          utils.comment.getComments.setData({ postId: post.id }, commentUpdate);
+      },
+      onSettled: () => {
+        utils.post.getPosts.invalidate();
+        utils.comment.getComments.invalidate();
+      },
+    }
+  );
+
+  // Handle onCreateComment
+  const onCreateComment = async () => {
+    await createComment({
+      postId: post.id,
+      body: commentBody,
+    });
+
+    setCommentBody("");
+  };
 
   // Handle like - unlike
   const handleLike = async () => {
@@ -140,17 +178,25 @@ const PostItem = ({ session, post }: Props) => {
             selected={selected}
             setSelected={setSelected}
             handleLike={handleLike}
-            likeCount={post.likes.length}
+            post={post}
           />
           <Popup selected={selected} setSelected={setSelected} />
         </Box>
       </Box>
       {selected && selected.comment && (
         <>
-          <CommentItem />
-          <CommentItem />
-          <CommentItem />
-          <CommentInput />
+          <>
+            {commentData &&
+              commentData.map((comment) => (
+                <CommentItem key={comment.id} comment={comment} />
+              ))}
+          </>
+          <CommentInput
+            session={session}
+            commentBody={commentBody}
+            setCommentBody={setCommentBody}
+            onCreateComment={onCreateComment}
+          />
         </>
       )}
     </Box>

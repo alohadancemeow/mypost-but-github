@@ -29,3 +29,17 @@ export type PostInput = {
   body: string;
   tags: typeof tokens;
 };
+
+// comments
+export const commentPopulated = Prisma.validator<Prisma.CommentInclude>()({
+  user: {
+    select: {
+      name: true,
+      image: true,
+    },
+  },
+});
+
+export type CommentPopulated = Prisma.CommentGetPayload<{
+  include: typeof commentPopulated;
+}>;

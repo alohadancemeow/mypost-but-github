@@ -7,21 +7,18 @@ import {
   ShareAndroidIcon,
 } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text } from "@primer/react";
+
 import { ReactionButtonType } from "./PostItem";
+import { PostPopulated } from "../../../../types/myTypes";
 
 type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
   handleLike: () => Promise<void>;
-  likeCount: number;
+  post: PostPopulated;
 };
 
-const ReactionButton = ({
-  selected,
-  setSelected,
-  handleLike,
-  likeCount,
-}: Props) => {
+const ReactionButton = ({ selected, setSelected, handleLike, post }: Props) => {
   return (
     <Box margin="22px 4px 0" display="flex">
       <Box
@@ -56,7 +53,10 @@ const ReactionButton = ({
                 fontWeight: "600",
               }}
             >
-              Liked <MyText>{likeCount === 0 ? "" : `· ${likeCount}`}</MyText>
+              Liked{" "}
+              <MyText>
+                {post.likes.length === 0 ? "" : `· ${post.likes.length}`}
+              </MyText>
             </Text>
           </>
         ) : (
@@ -69,7 +69,11 @@ const ReactionButton = ({
                 fontWeight: "600",
               }}
             >
-              Like <MyText> {likeCount === 0 ? "" : `· ${likeCount}`}</MyText>
+              Like{" "}
+              <MyText>
+                {" "}
+                {post.likes.length === 0 ? "" : `· ${post.likes.length}`}
+              </MyText>
             </Text>
           </>
         )}
@@ -109,7 +113,10 @@ const ReactionButton = ({
             fontWeight: "600",
           }}
         >
-          Comment <MyText>· 123</MyText>
+          Comment{" "}
+          <MyText>
+            {post.comments.length === 0 ? "" : `· ${post.comments.length}`}
+          </MyText>
         </Text>
       </Box>
       <Box
