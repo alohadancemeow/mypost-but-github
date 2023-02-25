@@ -9,11 +9,9 @@ import Tag from "./Tag";
 
 import { PostPopulated } from "../../../../types/myTypes";
 
-import { formatRelative } from "date-fns";
-import enUS from "date-fns/locale/en-US";
-
 import { api as trpc } from "../../../utils/api";
 import { Session } from "next-auth";
+import useFormatDate from "../../../hooks/useFormatDate";
 
 type Props = {
   session: Session;
@@ -26,29 +24,15 @@ export type ReactionButtonType = {
   share: boolean;
 };
 
-const formatRelativeLocale = {
-  lastWeek: "eeee 'at' p",
-  yesterday: "'Yesterday at' p",
-  today: "p",
-  other: "MM/dd/yy",
-};
-
 const PostItem = ({ session, post }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     like: false,
     comment: false,
     share: false,
   });
-  // console.log("postItem", post);
 
-  // Format date
-  const formatedDate = formatRelative(post.createdAt, new Date(), {
-    locale: {
-      ...enUS,
-      formatRelative: (token) =>
-        formatRelativeLocale[token as keyof typeof formatRelativeLocale],
-    },
-  });
+  // call a custom hook
+  const formatedDate = useFormatDate({ date: post.createdAt });
 
   const utils = trpc.useContext();
 
@@ -58,7 +42,7 @@ const PostItem = ({ session, post }: Props) => {
     onMutate: () => {
       utils.post.getPosts.cancel();
       const postUpdate = utils.post.getPosts.getData();
-      if (postUpdate) utils.post.getPosts.setData(undefined, postUpdate);
+      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
     },
     onSettled: () => {
       utils.post.getPosts.invalidate();
@@ -68,7 +52,7 @@ const PostItem = ({ session, post }: Props) => {
     onMutate: () => {
       utils.post.getPosts.cancel();
       const postUpdate = utils.post.getPosts.getData();
-      if (postUpdate) utils.post.getPosts.setData(undefined, postUpdate);
+      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
     },
     onSettled: () => {
       utils.post.getPosts.invalidate();

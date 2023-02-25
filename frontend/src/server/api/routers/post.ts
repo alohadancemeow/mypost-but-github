@@ -49,17 +49,25 @@ export const postRouter = createTRPCRouter({
       z.object({
         cursor: z.string().nullish(),
         limit: z.number().min(1).max(100).default(5),
+        orderBy: z.string().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
       const { prisma } = ctx;
-      const { cursor, limit } = input;
+      const { cursor, limit, orderBy } = input;
 
       const posts = await prisma.post.findMany({
         include: postPopulated,
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy:
+          orderBy === "likes"
+            ? {
+                likes: {
+                  _count: "desc",
+                },
+              }
+            : {
+                createdAt: "desc",
+              },
         take: limit + 1,
         cursor: cursor ? { id: cursor } : undefined,
       });

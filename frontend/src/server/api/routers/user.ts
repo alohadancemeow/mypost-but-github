@@ -38,6 +38,11 @@ export const userRouter = createTRPCRouter({
       include: {
         posts: true,
       },
+      orderBy: {
+        posts: {
+          _count: "desc",
+        },
+      },
     });
   }),
 });
