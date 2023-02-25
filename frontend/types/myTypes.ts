@@ -5,6 +5,7 @@ export const postPopulated = Prisma.validator<Prisma.PostInclude>()({
   user: {
     select: {
       name: true,
+      image: true,
     },
   },
   comments: true,
