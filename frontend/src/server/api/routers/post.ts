@@ -44,15 +44,35 @@ export const postRouter = createTRPCRouter({
       }
     }),
 
-  getPosts: protectedProcedure.query(async ({ ctx }) => {
-    const { prisma } = ctx;
-    return await prisma.post.findMany({
-      include: postPopulated,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-  }),
+  getPosts: protectedProcedure
+    .input(
+      z.object({
+        cursor: z.string().nullish(),
+        limit: z.number().min(1).max(100).default(5),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { prisma } = ctx;
+      const { cursor, limit } = input;
+
+      const posts = await prisma.post.findMany({
+        include: postPopulated,
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (posts.length > limit) {
+        const nextItem = posts.pop() as (typeof posts)[number];
+        nextCursor = nextItem.id;
+      }
+
+      return { posts, nextCursor };
+    }),
 
   like: protectedProcedure
     .input(z.object({ postId: z.string() }))

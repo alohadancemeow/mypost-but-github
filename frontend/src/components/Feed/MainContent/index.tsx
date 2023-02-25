@@ -19,12 +19,21 @@ type Props = {
 };
 
 const MainContent = ({ session }: Props) => {
-  const { data: postData } = trpc.post.getPosts.useQuery();
-  // console.log("postData", postData);
+  const utils = trpc.useContext();
+  const {
+    data: postData,
+    hasNextPage,
+    fetchNextPage,
+    isFetching,
+  } = trpc.post.getPosts.useInfiniteQuery(
+    { limit: 5 },
+    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+  );
+
+  const posts = postData?.pages.flatMap((page) => page.posts) ?? [];
+  // console.log("posts", posts);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const utils = trpc.useContext();
 
   const { mutateAsync } = trpc.post.createPost.useMutation({
     onMutate: () => {
@@ -38,7 +47,7 @@ const MainContent = ({ session }: Props) => {
 
       // set updated date
       if (userUpdate) utils.user.getUsers.setData(undefined, userUpdate);
-      if (postUpdate) utils.post.getPosts.setData(undefined, postUpdate);
+      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
     },
     onSettled: () => {
       // invalidate old data
@@ -81,11 +90,15 @@ const MainContent = ({ session }: Props) => {
         />
         <HeadUnderLine />
 
-        {postData &&
-          postData.map((post) => (
+        {posts &&
+          posts.map((post) => (
             <PostItem key={post.id} post={post} session={session} />
           ))}
-        <LoadMore />
+        <LoadMore
+          hasNextPage={hasNextPage}
+          isFetching={isFetching}
+          fetchNextPage={fetchNextPage}
+        />
       </MyBox>
     </div>
   );
