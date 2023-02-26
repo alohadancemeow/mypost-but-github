@@ -28,7 +28,9 @@ const LoadMore = ({ hasNextPage, isFetching, loadNextPost }: Props) => {
           opacity: 0.7,
         },
       }}
-      onClick={handleLoadMore}
+      onClick={() => {
+        handleLoadMore();
+      }}
     >
       {hasNextPage && (
         <StyledOcticon icon={RocketIcon} size={18} sx={{ mr: "8px" }} />

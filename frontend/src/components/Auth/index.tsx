@@ -148,7 +148,9 @@ const Auth = () => {
               h="30px"
               rounded="4px"
               color="#06A833"
-              onClick={onSignin}
+              onClick={() => {
+                onSignin();
+              }}
             >
               Sign in
             </MyButton>
@@ -157,7 +159,9 @@ const Auth = () => {
               h="30px"
               rounded="4px"
               color="#444C56"
-              onClick={onSignup}
+              onClick={() => {
+                onSignup();
+              }}
             >
               Sign up
             </MyButton>
@@ -212,7 +216,9 @@ const Auth = () => {
               h="34px"
               color="#444C56"
               gap="15px 0"
-              onClick={() => signIn("github")}
+              onClick={() => {
+                signIn("github");
+              }}
             >
               <div
                 style={{

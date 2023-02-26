@@ -36,10 +36,10 @@ const MainContent = ({ session }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { mutate } = trpc.post.createPost.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       // cancel query
-      utils.post.getPosts.cancel();
-      utils.user.getUsers.cancel();
+      await utils.post.getPosts.cancel();
+      await utils.user.getUsers.cancel();
 
       // get updated data
       const userUpdate = utils.user.getUsers.getData();
@@ -51,10 +51,10 @@ const MainContent = ({ session }: Props) => {
 
       setIsOpen(false);
     },
-    onSettled: () => {
+    onSettled: async () => {
       // invalidate old data
-      utils.post.getPosts.invalidate();
-      utils.user.getUsers.invalidate();
+      await utils.post.getPosts.invalidate();
+      await utils.user.getUsers.invalidate();
     },
   });
 

@@ -27,6 +27,7 @@
   "rules": {
     "@typescript-eslint/consistent-type-imports": "warn",
     "react/no-unescaped-entities": "off",
-    "@next/next/no-page-custom-font": "off"
+    "@next/next/no-page-custom-font": "off",
+    "@typescript-eslint/restrict-template-expressions": "error"
   }
 }

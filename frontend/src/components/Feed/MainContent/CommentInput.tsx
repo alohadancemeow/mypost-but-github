@@ -15,11 +15,9 @@ const CommentInput = ({
   setCommentBody,
   commentBody,
 }: Props) => {
-  const handleOnCreateComment = async (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+  const handleOnCreateComment = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      await onCreateComment();
+      onCreateComment();
     }
   };
 
@@ -47,7 +45,9 @@ const CommentInput = ({
         type="text"
         value={commentBody}
         onChange={(e) => setCommentBody(e.target.value)}
-        onKeyUp={(e) => handleOnCreateComment(e)}
+        onKeyUp={(e) => {
+          handleOnCreateComment(e);
+        }}
         sx={{
           bg: "transparent",
           border: "1px solid #444C56",

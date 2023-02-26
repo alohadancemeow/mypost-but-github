@@ -56,11 +56,11 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
   };
 
   // Handle onSubmit -> create post
-  const onSubmit = async () => {
+  const onSubmit = () => {
     if (!postInput.title || !postInput.body || postInput.tags.length === 0) {
       return null;
     }
-    return await onCreatePost(postInput);
+    return onCreatePost(postInput);
   };
 
   return (
@@ -180,7 +180,9 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
                     opacity: 0.7,
                   },
                 }}
-                onClick={onSubmit}
+                onClick={() => {
+                  onSubmit();
+                }}
               >
                 <StyledOcticon icon={RocketIcon} size={18} sx={{ mr: "8px" }} />
                 <Text
