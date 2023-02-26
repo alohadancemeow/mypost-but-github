@@ -5,6 +5,7 @@ import { getSession, SessionProvider } from "next-auth/react";
 import { api } from "../utils/api";
 
 // import "../styles/globals.css";
+import '../styles/myStyle.css'
 
 import { SSRProvider } from "@primer/react";
 import { ThemeProvider } from "@primer/react";
