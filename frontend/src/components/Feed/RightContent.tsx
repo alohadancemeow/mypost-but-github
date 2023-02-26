@@ -61,6 +61,7 @@ const RightContent = (props: Props) => {
               flexDirection="column"
               marginLeft="15px"
               border="1px solid #444C56"
+              bg='#30363E'
               borderRadius="4px"
               width="100%"
               padding="10px 15px"
