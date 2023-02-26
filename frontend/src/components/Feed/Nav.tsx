@@ -10,7 +10,9 @@ type Props = {
 };
 
 const Nav = ({ session }: Props) => {
-  const handleSignout = async () => await signOut();
+  const handleSignout = async () => {
+    await signOut();
+  };
   return (
     <MyHeader
       sx={{

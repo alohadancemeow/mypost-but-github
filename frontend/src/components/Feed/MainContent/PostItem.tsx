@@ -40,7 +40,7 @@ const PostItem = ({ session, post }: Props) => {
 
   // call like - unlike mutation,
   // and update cache
-  const { mutateAsync: likeMutation } = trpc.post.like.useMutation({
+  const { mutate: likeMutation } = trpc.post.like.useMutation({
     onSuccess: () => {
       utils.post.getPosts.cancel();
       const postUpdate = utils.post.getPosts.getData();
@@ -51,7 +51,7 @@ const PostItem = ({ session, post }: Props) => {
     },
   });
 
-  const { mutateAsync: unlikeMutation } = trpc.post.unlike.useMutation({
+  const { mutate: unlikeMutation } = trpc.post.unlike.useMutation({
     onSuccess: () => {
       utils.post.getPosts.cancel();
       const postUpdate = utils.post.getPosts.getData();
@@ -67,28 +67,26 @@ const PostItem = ({ session, post }: Props) => {
     postId: post.id,
   });
 
-  const { mutateAsync: createComment } = trpc.comment.createComment.useMutation(
-    {
-      onSuccess: () => {
-        utils.post.getPosts.cancel();
-        utils.comment.getComments.cancel();
+  const { mutate: createComment } = trpc.comment.createComment.useMutation({
+    onSuccess: () => {
+      utils.post.getPosts.cancel();
+      utils.comment.getComments.cancel();
 
-        const postUpdate = utils.post.getPosts.getData();
-        const commentUpdate = utils.comment.getComments.getData();
+      const postUpdate = utils.post.getPosts.getData();
+      const commentUpdate = utils.comment.getComments.getData();
 
-        if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
-        if (commentUpdate)
-          utils.comment.getComments.setData({ postId: post.id }, commentUpdate);
-      },
-      onSettled: () => {
-        utils.post.getPosts.invalidate();
-        utils.comment.getComments.invalidate();
-      },
-    }
-  );
+      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+      if (commentUpdate)
+        utils.comment.getComments.setData({ postId: post.id }, commentUpdate);
+    },
+    onSettled: () => {
+      utils.post.getPosts.invalidate();
+      utils.comment.getComments.invalidate();
+    },
+  });
 
   // share increment
-  const { mutateAsync: shareMutation } = trpc.post.share.useMutation({
+  const { mutate: shareMutation } = trpc.post.share.useMutation({
     onSuccess: () => {
       utils.post.getPosts.cancel();
       const postUpdate = utils.post.getPosts.getData();
@@ -99,13 +97,13 @@ const PostItem = ({ session, post }: Props) => {
     },
   });
 
-  const onShare = async () => {
-    await shareMutation({ postId: post.id });
+  const onShare = () => {
+    shareMutation({ postId: post.id });
   };
 
   // Handle onCreateComment
-  const onCreateComment = async () => {
-    await createComment({
+  const onCreateComment = () => {
+    createComment({
       postId: post.id,
       body: commentBody,
     });
@@ -114,12 +112,11 @@ const PostItem = ({ session, post }: Props) => {
   };
 
   // Handle like - unlike
-  const handleLike = async () => {
+  const handleLike = () => {
     if (!selected.like) {
-      const liked = await likeMutation({ postId: post.id });
-      // console.log("like ation", liked);
+      likeMutation({ postId: post.id });
     } else {
-      await unlikeMutation({ postId: post.id });
+      unlikeMutation({ postId: post.id });
     }
   };
 

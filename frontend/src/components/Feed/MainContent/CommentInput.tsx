@@ -6,7 +6,7 @@ type Props = {
   session: Session;
   commentBody: string;
   setCommentBody: React.Dispatch<React.SetStateAction<string>>;
-  onCreateComment: () => Promise<void>;
+  onCreateComment: () => void;
 };
 
 const CommentInput = ({
@@ -15,6 +15,14 @@ const CommentInput = ({
   setCommentBody,
   commentBody,
 }: Props) => {
+  const handleOnCreateComment = async (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      await onCreateComment();
+    }
+  };
+
   return (
     <Box
       // marginTop={3}
@@ -39,13 +47,7 @@ const CommentInput = ({
         type="text"
         value={commentBody}
         onChange={(e) => setCommentBody(e.target.value)}
-        onKeyUp={(e) => {
-          (async () => {
-            if (e.key === "Enter") {
-              return await onCreateComment();
-            }
-          })();
-        }}
+        onKeyUp={(e) => handleOnCreateComment(e)}
         sx={{
           bg: "transparent",
           border: "1px solid #444C56",

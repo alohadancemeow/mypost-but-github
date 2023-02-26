@@ -35,7 +35,7 @@ const MainContent = ({ session }: Props) => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { mutateAsync } = trpc.post.createPost.useMutation({
+  const { mutate } = trpc.post.createPost.useMutation({
     onSuccess: () => {
       // cancel query
       utils.post.getPosts.cancel();
@@ -48,6 +48,8 @@ const MainContent = ({ session }: Props) => {
       // set updated date
       if (userUpdate) utils.user.getUsers.setData(undefined, userUpdate);
       if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+
+      setIsOpen(false);
     },
     onSettled: () => {
       // invalidate old data
@@ -57,16 +59,14 @@ const MainContent = ({ session }: Props) => {
   });
 
   // handle onCreatePost
-  const onCreatePost = async (post: PostInput) => {
+  const onCreatePost = (post: PostInput) => {
     // console.log("onCreatepost", post);
 
-    const data = await mutateAsync({
+    mutate({
       title: post.title,
       body: post.body,
       tags: post.tags.map((p) => p.text),
     });
-
-    if (data) setIsOpen(false);
   };
 
   // handle load more

@@ -20,7 +20,11 @@ const Auth = () => {
     password: "",
   });
 
-  const { mutateAsync } = trpc.user.createUser.useMutation();
+  const { mutateAsync } = trpc.user.createUser.useMutation({
+    onError(error) {
+      toast.error(error.message);
+    },
+  });
 
   // handle signup
   const onSignup = async () => {
@@ -37,7 +41,7 @@ const Auth = () => {
       }
     } catch (error: any) {
       // console.log("onSignup err", error);
-      toast.error(error?.message!);
+      // toast.error(error?.message!);
     }
   };
 
@@ -144,11 +148,7 @@ const Auth = () => {
               h="30px"
               rounded="4px"
               color="#06A833"
-              onClick={() => {
-                (async () => {
-                  await onSignin();
-                })();
-              }}
+              onClick={onSignin}
             >
               Sign in
             </MyButton>
@@ -157,11 +157,7 @@ const Auth = () => {
               h="30px"
               rounded="4px"
               color="#444C56"
-              onClick={() => {
-                (async () => {
-                  await onSignup();
-                })();
-              }}
+              onClick={onSignup}
             >
               Sign up
             </MyButton>
@@ -193,11 +189,7 @@ const Auth = () => {
               rounded="16px"
               h="34px"
               color="#f35656"
-              onClick={() => {
-                (async () => {
-                  await signIn("google");
-                })();
-              }}
+              onClick={() => signIn("google")}
             >
               <div
                 style={{
@@ -220,11 +212,7 @@ const Auth = () => {
               h="34px"
               color="#444C56"
               gap="15px 0"
-              onClick={() => {
-                (async () => {
-                  return await signIn("github");
-                })();
-              }}
+              onClick={() => signIn("github")}
             >
               <div
                 style={{

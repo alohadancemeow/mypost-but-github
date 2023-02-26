@@ -22,7 +22,7 @@ import { PostInput, tokens } from "../../../../types/myTypes";
 type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onCreatePost: (post: PostInput) => Promise<void>;
+  onCreatePost: (post: PostInput) => void;
 };
 
 const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
@@ -57,8 +57,9 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
 
   // Handle onSubmit -> create post
   const onSubmit = async () => {
-    if (!postInput.title || !postInput.body || postInput.tags.length === 0)
-      return;
+    if (!postInput.title || !postInput.body || postInput.tags.length === 0) {
+      return null;
+    }
     return await onCreatePost(postInput);
   };
 

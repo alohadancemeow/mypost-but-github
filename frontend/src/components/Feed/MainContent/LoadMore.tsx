@@ -9,6 +9,11 @@ type Props = {
 };
 
 const LoadMore = ({ hasNextPage, isFetching, loadNextPost }: Props) => {
+  const handleLoadMore = async () => {
+    if (hasNextPage && !isFetching) {
+      await loadNextPost();
+    }
+  };
   return (
     <Box
       display="flex"
@@ -23,11 +28,7 @@ const LoadMore = ({ hasNextPage, isFetching, loadNextPost }: Props) => {
           opacity: 0.7,
         },
       }}
-      onClick={() => {
-        if (hasNextPage && !isFetching) {
-          loadNextPost();
-        }
-      }}
+      onClick={handleLoadMore}
     >
       {hasNextPage && (
         <StyledOcticon icon={RocketIcon} size={18} sx={{ mr: "8px" }} />

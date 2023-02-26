@@ -14,8 +14,8 @@ import { PostPopulated } from "../../../../types/myTypes";
 type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
-  handleLike: () => Promise<void>;
-  onShare: () => Promise<void>;
+  handleLike: () => void;
+  onShare: () => void;
   post: PostPopulated;
 };
 
@@ -26,14 +26,14 @@ const ReactionButton = ({
   post,
   onShare,
 }: Props) => {
-  const onLikeCliked = async () => {
+  const onLikeCliked = () => {
     setSelected({ ...selected, like: !selected.like });
-    await handleLike();
+    handleLike();
   };
 
-  const onShareCliked = async () => {
+  const onShareCliked = () => {
     setSelected({ ...selected, share: !selected.share });
-    await onShare();
+    onShare();
   };
 
   return (
@@ -166,7 +166,7 @@ const ReactionButton = ({
           }}
         >
           Share {""}
-          {post.shares !== 0 && <MyText>{`· ${post.shares}`}</MyText>}
+          {post && post.shares !== 0 && <MyText>{`· ${post.shares}`}</MyText>}
         </Text>
       </Box>
     </Box>
