@@ -5,10 +5,10 @@ import { Box, StyledOcticon, Text } from "@primer/react";
 type Props = {
   hasNextPage?: boolean;
   isFetching?: boolean;
-  fetchNextPage: () => void;
+  loadNextPost: () => Promise<void>;
 };
 
-const LoadMore = ({ hasNextPage, isFetching, fetchNextPage }: Props) => {
+const LoadMore = ({ hasNextPage, isFetching, loadNextPost }: Props) => {
   return (
     <Box
       display="flex"
@@ -25,7 +25,7 @@ const LoadMore = ({ hasNextPage, isFetching, fetchNextPage }: Props) => {
       }}
       onClick={() => {
         if (hasNextPage && !isFetching) {
-          fetchNextPage();
+          loadNextPost();
         }
       }}
     >

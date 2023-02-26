@@ -42,7 +42,7 @@ const CommentInput = ({
         onKeyUp={(e) => {
           (async () => {
             if (e.key === "Enter") {
-              await onCreateComment();
+              return await onCreateComment();
             }
           })();
         }}

@@ -10,6 +10,7 @@ type Props = {
 };
 
 const Nav = ({ session }: Props) => {
+  const handleSignout = async () => await signOut();
   return (
     <MyHeader
       sx={{
@@ -40,14 +41,7 @@ const Nav = ({ session }: Props) => {
           size={20}
           alt="@octocat"
         />
-        <Box
-          sx={{ cursor: "pointer" }}
-          onClick={() => {
-            (async () => {
-              await signOut();
-            })();
-          }}
-        >
+        <Box sx={{ cursor: "pointer" }} onClick={handleSignout}>
           <StyledOcticon
             icon={SignOutIcon}
             size={16}

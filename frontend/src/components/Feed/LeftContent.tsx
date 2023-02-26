@@ -81,12 +81,12 @@ const LeftContent = () => {
                 onClick={() => console.log("usercard clicked", user.id)}
               >
                 <Avatar
-                  src={`${user.image}` ?? "https://github.com/octocat.png"}
+                  src={`${user.image ?? "https://github.com/octocat.png"}`}
                   size={24}
                   alt="@octocat"
                 />
                 <Box display="flex" flexDirection="column" marginLeft="15px">
-                  <Text fontSize="16px">{`${user.name}`} </Text>
+                  <Text fontSize="16px">{user.name} </Text>
                   <Text fontSize="12px" color="#006EED">
                     {`${user.posts.length} posts`}
                   </Text>

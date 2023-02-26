@@ -59,7 +59,7 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
   const onSubmit = async () => {
     if (!postInput.title || !postInput.body || postInput.tags.length === 0)
       return;
-    await onCreatePost(postInput);
+    return await onCreatePost(postInput);
   };
 
   return (

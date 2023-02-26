@@ -36,7 +36,7 @@ const MainContent = ({ session }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { mutateAsync } = trpc.post.createPost.useMutation({
-    onMutate: () => {
+    onSuccess: () => {
       // cancel query
       utils.post.getPosts.cancel();
       utils.user.getUsers.cancel();
@@ -69,6 +69,11 @@ const MainContent = ({ session }: Props) => {
     if (data) setIsOpen(false);
   };
 
+  // handle load more
+  const loadNextPost = async () => {
+    await fetchNextPage();
+  };
+
   return (
     <div
       style={{
@@ -98,7 +103,7 @@ const MainContent = ({ session }: Props) => {
         <LoadMore
           hasNextPage={hasNextPage}
           isFetching={isFetching}
-          fetchNextPage={fetchNextPage}
+          loadNextPost={loadNextPost}
         />
       </MyBox>
     </div>

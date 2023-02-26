@@ -26,6 +26,16 @@ const ReactionButton = ({
   post,
   onShare,
 }: Props) => {
+  const onLikeCliked = async () => {
+    setSelected({ ...selected, like: !selected.like });
+    await handleLike();
+  };
+
+  const onShareCliked = async () => {
+    setSelected({ ...selected, share: !selected.share });
+    await onShare();
+  };
+
   return (
     <Box margin="22px 4px 0" display="flex">
       <Box
@@ -41,12 +51,7 @@ const ReactionButton = ({
             opacity: 0.7,
           },
         }}
-        onClick={() => {
-          (async () => {
-            setSelected({ ...selected, like: !selected.like });
-            await handleLike();
-          })();
-        }}
+        onClick={onLikeCliked}
       >
         {selected && selected.like ? (
           <>
@@ -142,12 +147,7 @@ const ReactionButton = ({
             opacity: 0.7,
           },
         }}
-        onClick={() => {
-          (async () => {
-            setSelected({ ...selected, share: !selected.share });
-            await onShare();
-          })();
-        }}
+        onClick={onShareCliked}
       >
         {selected && selected.share ? (
           <StyledOcticon
@@ -165,8 +165,8 @@ const ReactionButton = ({
             fontWeight: "600",
           }}
         >
-          Share{" "}
-          <MyText>{post && post.shares === 0 ? "" : `· ${post.shares}`}</MyText>
+          Share {""}
+          {post.shares !== 0 && <MyText>{`· ${post.shares}`}</MyText>}
         </Text>
       </Box>
     </Box>

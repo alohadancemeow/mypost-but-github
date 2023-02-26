@@ -36,8 +36,8 @@ const Auth = () => {
         await onSignin();
       }
     } catch (error: any) {
-      console.log("onSignup err", error);
-      toast.error(error?.message);
+      // console.log("onSignup err", error);
+      toast.error(error?.message!);
     }
   };
 
@@ -144,7 +144,11 @@ const Auth = () => {
               h="30px"
               rounded="4px"
               color="#06A833"
-              onClick={onSignin}
+              onClick={() => {
+                (async () => {
+                  await onSignin();
+                })();
+              }}
             >
               Sign in
             </MyButton>
@@ -153,7 +157,11 @@ const Auth = () => {
               h="30px"
               rounded="4px"
               color="#444C56"
-              onClick={onSignup}
+              onClick={() => {
+                (async () => {
+                  await onSignup();
+                })();
+              }}
             >
               Sign up
             </MyButton>
@@ -185,7 +193,11 @@ const Auth = () => {
               rounded="16px"
               h="34px"
               color="#f35656"
-              onClick={() => signIn("google")}
+              onClick={() => {
+                (async () => {
+                  await signIn("google");
+                })();
+              }}
             >
               <div
                 style={{
@@ -208,7 +220,11 @@ const Auth = () => {
               h="34px"
               color="#444C56"
               gap="15px 0"
-              onClick={() => signIn("github")}
+              onClick={() => {
+                (async () => {
+                  return await signIn("github");
+                })();
+              }}
             >
               <div
                 style={{

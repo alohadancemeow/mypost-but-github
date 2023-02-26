@@ -41,7 +41,7 @@ const PostItem = ({ session, post }: Props) => {
   // call like - unlike mutation,
   // and update cache
   const { mutateAsync: likeMutation } = trpc.post.like.useMutation({
-    onMutate: () => {
+    onSuccess: () => {
       utils.post.getPosts.cancel();
       const postUpdate = utils.post.getPosts.getData();
       if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
@@ -52,7 +52,7 @@ const PostItem = ({ session, post }: Props) => {
   });
 
   const { mutateAsync: unlikeMutation } = trpc.post.unlike.useMutation({
-    onMutate: () => {
+    onSuccess: () => {
       utils.post.getPosts.cancel();
       const postUpdate = utils.post.getPosts.getData();
       if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
@@ -69,7 +69,7 @@ const PostItem = ({ session, post }: Props) => {
 
   const { mutateAsync: createComment } = trpc.comment.createComment.useMutation(
     {
-      onMutate: () => {
+      onSuccess: () => {
         utils.post.getPosts.cancel();
         utils.comment.getComments.cancel();
 
@@ -89,7 +89,7 @@ const PostItem = ({ session, post }: Props) => {
 
   // share increment
   const { mutateAsync: shareMutation } = trpc.post.share.useMutation({
-    onMutate: () => {
+    onSuccess: () => {
       utils.post.getPosts.cancel();
       const postUpdate = utils.post.getPosts.getData();
       if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
