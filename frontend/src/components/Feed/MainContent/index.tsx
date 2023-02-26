@@ -81,7 +81,7 @@ const MainContent = ({ session }: Props) => {
         // color="fg.onEmphasis"
         // border="1px solid red"
         borderLeft="1px solid #636568"
-        borderRadius="10px"
+        borderRadius="8px"
       >
         <PostBanner setIsOpen={setIsOpen} />
         <PostDialog

@@ -149,11 +149,13 @@ const PostItem = ({ session, post }: Props) => {
         alignItems={"center"}
         justifyContent="flex-start"
       >
-        <Avatar
-          src={`${post.user?.image}` ?? "https://github.com/octocat.png"}
-          size={24}
-          alt="@octocat"
-        />
+        <Box>
+          <Avatar
+            src={`${post.user?.image}` ?? "https://github.com/octocat.png"}
+            size={24}
+            alt="@octocat"
+          />
+        </Box>
         <Box display="flex" marginLeft="15px">
           <Text fontSize="16px">
             {post.user?.name}{" "}
