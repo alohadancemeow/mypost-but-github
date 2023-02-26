@@ -15,10 +15,17 @@ type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
   handleLike: () => Promise<void>;
+  onShare: () => Promise<void>;
   post: PostPopulated;
 };
 
-const ReactionButton = ({ selected, setSelected, handleLike, post }: Props) => {
+const ReactionButton = ({
+  selected,
+  setSelected,
+  handleLike,
+  post,
+  onShare,
+}: Props) => {
   return (
     <Box margin="22px 4px 0" display="flex">
       <Box
@@ -133,7 +140,10 @@ const ReactionButton = ({ selected, setSelected, handleLike, post }: Props) => {
             opacity: 0.7,
           },
         }}
-        onClick={() => setSelected({ ...selected, share: !selected.share })}
+        onClick={() => {
+          setSelected({ ...selected, share: !selected.share });
+          onShare();
+        }}
       >
         {selected && selected.share ? (
           <StyledOcticon
@@ -151,7 +161,8 @@ const ReactionButton = ({ selected, setSelected, handleLike, post }: Props) => {
             fontWeight: "600",
           }}
         >
-          Share <MyText>· 123</MyText>
+          Share{" "}
+          <MyText>{post.shares === 0 ? "" : `· ${post.shares}`}</MyText>
         </Text>
       </Box>
     </Box>

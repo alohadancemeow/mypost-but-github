@@ -72,6 +72,7 @@ model Post {
     comments Comment[]
     likes    Like[]
     tags     Tag[]
+    shares   Int?      @default(0)
 }
 
 model Comment {

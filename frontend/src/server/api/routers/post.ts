@@ -34,6 +34,7 @@ export const postRouter = createTRPCRouter({
                   })) ?? "Just sharing",
               },
             },
+            shares: 0,
           },
         });
 
@@ -127,5 +128,29 @@ export const postRouter = createTRPCRouter({
           },
         },
       });
+    }),
+
+  share: publicProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { prisma, session } = ctx;
+      const { postId } = input;
+
+      await prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          shares: {
+            increment: 1,
+          },
+        },
+      });
+
+      return true;
     }),
 });

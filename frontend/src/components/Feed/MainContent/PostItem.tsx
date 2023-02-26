@@ -87,6 +87,22 @@ const PostItem = ({ session, post }: Props) => {
     }
   );
 
+  // share increment
+  const { mutateAsync: shareMutation } = trpc.post.share.useMutation({
+    onMutate: () => {
+      utils.post.getPosts.cancel();
+      const postUpdate = utils.post.getPosts.getData();
+      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+    },
+    onSettled: () => {
+      utils.post.getPosts.invalidate();
+    },
+  });
+
+  const onShare = async () => {
+    await shareMutation({ postId: post.id });
+  };
+
   // Handle onCreateComment
   const onCreateComment = async () => {
     await createComment({
@@ -101,7 +117,7 @@ const PostItem = ({ session, post }: Props) => {
   const handleLike = async () => {
     if (!selected.like) {
       const liked = await likeMutation({ postId: post.id });
-      console.log("like ation", liked);
+      // console.log("like ation", liked);
     } else {
       unlikeMutation({ postId: post.id });
     }
@@ -182,6 +198,7 @@ const PostItem = ({ session, post }: Props) => {
             selected={selected}
             setSelected={setSelected}
             handleLike={handleLike}
+            onShare={onShare}
             post={post}
           />
           <Popup selected={selected} setSelected={setSelected} />
