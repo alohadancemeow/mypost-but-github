@@ -29,7 +29,7 @@ export const postRouter = createTRPCRouter({
             tags: {
               createMany: {
                 data:
-                  tags!!.map((tag) => ({
+                  tags!.map((tag) => ({
                     body: tag,
                   })) ?? "Just sharing",
               },
@@ -40,8 +40,8 @@ export const postRouter = createTRPCRouter({
 
         return true;
       } catch (error: any) {
-        console.log("create post err", error?.message);
-        throw new TRPCError(error?.message);
+        // console.log("create post err", error?.message);
+        throw new TRPCError({code: 'BAD_REQUEST'});
       }
     }),
 
@@ -108,8 +108,8 @@ export const postRouter = createTRPCRouter({
 
         return true;
       } catch (error: any) {
-        console.log(error?.message);
-        throw new TRPCError(error?.message);
+        // console.log(error?.message);
+        throw new TRPCError({code: 'BAD_REQUEST'});
       }
     }),
 

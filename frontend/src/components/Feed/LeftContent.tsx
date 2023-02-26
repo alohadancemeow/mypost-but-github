@@ -13,9 +13,7 @@ import { PeopleIcon } from "@primer/octicons-react";
 
 import { api as trpc } from "../../utils/api";
 
-type Props = {};
-
-const LeftContent = (props: Props) => {
+const LeftContent = () => {
   const [username, setUsername] = useState<string>("");
 
   const { data: userData, error, isLoading } = trpc.user.getUsers.useQuery();
@@ -83,7 +81,7 @@ const LeftContent = (props: Props) => {
                 onClick={() => console.log("usercard clicked", user.id)}
               >
                 <Avatar
-                  src={`${user.image ?? "https://github.com/octocat.png"}`}
+                  src={`${user.image}` ?? "https://github.com/octocat.png"}
                   size={24}
                   alt="@octocat"
                 />

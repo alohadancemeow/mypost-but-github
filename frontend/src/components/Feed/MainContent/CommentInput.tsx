@@ -40,9 +40,11 @@ const CommentInput = ({
         value={commentBody}
         onChange={(e) => setCommentBody(e.target.value)}
         onKeyUp={(e) => {
-          if (e.key === "Enter") {
-            onCreateComment();
-          }
+          (async () => {
+            if (e.key === "Enter") {
+              await onCreateComment();
+            }
+          })();
         }}
         sx={{
           bg: "transparent",

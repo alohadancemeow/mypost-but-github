@@ -105,7 +105,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // compare password
-        const checkedPassword = await compare(password, user.password!!);
+        const checkedPassword = await compare(password, user.password!);
 
         if (!checkedPassword || user.email !== email) {
           throw new Error("email or password invalid");

@@ -40,7 +40,14 @@ const Nav = ({ session }: Props) => {
           size={20}
           alt="@octocat"
         />
-        <Box sx={{ cursor: "pointer" }} onClick={() => signOut()}>
+        <Box
+          sx={{ cursor: "pointer" }}
+          onClick={() => {
+            (async () => {
+              await signOut();
+            })();
+          }}
+        >
           <StyledOcticon
             icon={SignOutIcon}
             size={16}

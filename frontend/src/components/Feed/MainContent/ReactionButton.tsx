@@ -42,8 +42,10 @@ const ReactionButton = ({
           },
         }}
         onClick={() => {
-          setSelected({ ...selected, like: !selected.like });
-          handleLike();
+          (async () => {
+            setSelected({ ...selected, like: !selected.like });
+            await handleLike();
+          })();
         }}
       >
         {selected && selected.like ? (
@@ -141,8 +143,10 @@ const ReactionButton = ({
           },
         }}
         onClick={() => {
-          setSelected({ ...selected, share: !selected.share });
-          onShare();
+          (async () => {
+            setSelected({ ...selected, share: !selected.share });
+            await onShare();
+          })();
         }}
       >
         {selected && selected.share ? (
@@ -162,7 +166,7 @@ const ReactionButton = ({
           }}
         >
           Share{" "}
-          <MyText>{post.shares === 0 ? "" : `· ${post.shares}`}</MyText>
+          <MyText>{post && post.shares === 0 ? "" : `· ${post.shares}`}</MyText>
         </Text>
       </Box>
     </Box>

@@ -28,8 +28,8 @@ export const commentRouter = createTRPCRouter({
 
         return true;
       } catch (error: any) {
-        console.log(error?.message);
-        throw new TRPCError(error?.message);
+        // console.log(error?.message);
+        throw new TRPCError({code: 'BAD_REQUEST'});
       }
     }),
 

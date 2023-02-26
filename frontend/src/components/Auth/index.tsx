@@ -1,15 +1,8 @@
 import React, { useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { signIn } from "next-auth/react";
 
-import {
-  Box,
-  Text,
-  FormControl,
-  TextInput,
-  Button,
-  IconButton,
-} from "@primer/react";
+import { Box, Text, FormControl, TextInput } from "@primer/react";
 import {
   MailIcon,
   LockIcon,
@@ -21,15 +14,13 @@ import { AiFillGoogleCircle } from "react-icons/ai";
 import { api as trpc } from "../../utils/api";
 import { toast } from "react-hot-toast";
 
-type Props = {};
-
-const Auth = (props: Props) => {
+const Auth = () => {
   const [user, setUser] = useState<{ email: string; password: string }>({
     email: "",
     password: "",
   });
 
-  const { mutateAsync, error, isLoading } = trpc.user.createUser.useMutation();
+  const { mutateAsync } = trpc.user.createUser.useMutation();
 
   // handle signup
   const onSignup = async () => {
@@ -42,7 +33,7 @@ const Auth = (props: Props) => {
       });
 
       if (data) {
-        onSignin();
+        await onSignin();
       }
     } catch (error: any) {
       console.log("onSignup err", error);

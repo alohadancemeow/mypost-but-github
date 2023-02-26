@@ -4,11 +4,9 @@ import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";
 import { NumberIcon } from "@primer/octicons-react";
 
 import { api as trpc } from "../../utils/api";
-import useFormatDate from "../../hooks/useFormatDate";
+import { useFormatDate } from "../../hooks/useFormatDate";
 
-type Props = {};
-
-const RightContent = (props: Props) => {
+const RightContent = () => {
   const { data: postData } = trpc.post.getPosts.useQuery({
     limit: 5,
     orderBy: "likes",
@@ -16,6 +14,8 @@ const RightContent = (props: Props) => {
 
   const posts = postData?.posts.flatMap((post) => post) ?? [];
   // console.log("posts", posts);
+
+  const { dateFormate } = useFormatDate();
 
   return (
     <MyBox
@@ -61,7 +61,7 @@ const RightContent = (props: Props) => {
               flexDirection="column"
               marginLeft="15px"
               border="1px solid #444C56"
-              bg='#30363E'
+              bg="#30363E"
               borderRadius="4px"
               width="100%"
               padding="10px 15px"
@@ -75,7 +75,7 @@ const RightContent = (props: Props) => {
               <Text fontSize="16px" marginBottom="8px">
                 {post.title}{" "}
                 <span style={{ fontSize: "12px", color: "#ADBAC7" }}>
-                  · {useFormatDate({ date: post.createdAt })}
+                  · {dateFormate(post.createdAt)}
                 </span>{" "}
               </Text>
               <MyDesc fontSize="12px" color="#ADBAC7">

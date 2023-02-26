@@ -1,13 +1,14 @@
 import React from "react";
 import { Avatar, Box, Text } from "@primer/react";
 import { CommentPopulated } from "../../../../types/myTypes";
-import useFormatDate from "../../../hooks/useFormatDate";
+import { useFormatDate } from "../../../hooks/useFormatDate";
 
 type Props = {
   comment: CommentPopulated;
 };
 
 const CommentItem = ({ comment }: Props) => {
+  const { dateFormate } = useFormatDate();
   return (
     <>
       <div
@@ -45,7 +46,7 @@ const CommentItem = ({ comment }: Props) => {
           <Text fontSize="16px" marginBottom="8px">
             {comment.user?.name}{" "}
             <span style={{ fontSize: "12px", color: "#ADBAC7" }}>
-              · {useFormatDate({ date: comment.createdAt })}
+              · {dateFormate(comment.createdAt)}
             </span>{" "}
           </Text>
           <Text fontSize="12px" color="#ADBAC7">

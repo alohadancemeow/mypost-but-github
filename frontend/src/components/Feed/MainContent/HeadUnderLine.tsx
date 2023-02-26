@@ -2,9 +2,7 @@ import React from "react";
 import { HomeIcon } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text, UnderlineNav } from "@primer/react";
 
-type Props = {};
-
-const HeadUnderLine = (props: Props) => {
+const HeadUnderLine = () => {
   return (
     <Box
       marginTop="30px"

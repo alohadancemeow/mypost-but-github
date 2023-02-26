@@ -1,10 +1,6 @@
 import { formatRelative } from "date-fns";
 import enUS from "date-fns/locale/en-US";
 
-type Props = {
-  date: Date;
-};
-
 const formatRelativeLocale = {
   lastWeek: "eeee 'at' p",
   yesterday: "'Yesterday at' p",
@@ -12,17 +8,19 @@ const formatRelativeLocale = {
   other: "MM/dd/yy",
 };
 
-const useFormatDate = ({ date }: Props) => {
+export const useFormatDate = () => {
   // Format date
-  const formatedDate = formatRelative(date, new Date(), {
-    locale: {
-      ...enUS,
-      formatRelative: (token) =>
-        formatRelativeLocale[token as keyof typeof formatRelativeLocale],
-    },
-  });
+  const dateFormate = (date: Date) => {
+    const formatedDate = formatRelative(date, new Date(), {
+      locale: {
+        ...enUS,
+        formatRelative: (token) =>
+          formatRelativeLocale[token as keyof typeof formatRelativeLocale],
+      },
+    });
 
-  return formatedDate;
+    return formatedDate;
+  };
+
+  return { dateFormate };
 };
-
-export default useFormatDate;

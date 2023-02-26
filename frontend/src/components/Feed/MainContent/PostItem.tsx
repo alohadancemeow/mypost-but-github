@@ -11,7 +11,7 @@ import { PostPopulated } from "../../../../types/myTypes";
 
 import { api as trpc } from "../../../utils/api";
 import { Session } from "next-auth";
-import useFormatDate from "../../../hooks/useFormatDate";
+import { useFormatDate } from "../../../hooks/useFormatDate";
 
 type Props = {
   session: Session;
@@ -34,7 +34,7 @@ const PostItem = ({ session, post }: Props) => {
   const [commentBody, setCommentBody] = useState<string>("");
 
   // call a custom hook
-  const formatedDate = useFormatDate({ date: post.createdAt });
+  const { dateFormate } = useFormatDate();
 
   const utils = trpc.useContext();
 
@@ -119,7 +119,7 @@ const PostItem = ({ session, post }: Props) => {
       const liked = await likeMutation({ postId: post.id });
       // console.log("like ation", liked);
     } else {
-      unlikeMutation({ postId: post.id });
+      await unlikeMutation({ postId: post.id });
     }
   };
 
@@ -151,7 +151,10 @@ const PostItem = ({ session, post }: Props) => {
       >
         <Box>
           <Avatar
-            src={`${post.user?.image}` ?? "https://github.com/octocat.png"}
+            src={`${
+              (post.user && post.user?.image) ??
+              "https://github.com/octocat.png"
+            }`}
             size={24}
             alt="@octocat"
           />
@@ -162,7 +165,7 @@ const PostItem = ({ session, post }: Props) => {
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>posted</span>{" "}
             {post.title}{" "}
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>
-              {`· ${formatedDate}`}
+              {`· ${dateFormate(post.createdAt)}`}
             </span>{" "}
           </Text>
         </Box>
