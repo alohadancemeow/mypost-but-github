@@ -2,9 +2,13 @@ import React from "react";
 import { RocketIcon } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text } from "@primer/react";
 
-type Props = {};
+type Props = {
+  hasNextPage?: boolean;
+  isFetching?: boolean;
+  fetchNextPage: () => void;
+};
 
-const LoadMore = (props: Props) => {
+const LoadMore = ({ hasNextPage, isFetching, fetchNextPage }: Props) => {
   return (
     <Box
       display="flex"
@@ -19,9 +23,15 @@ const LoadMore = (props: Props) => {
           opacity: 0.7,
         },
       }}
-      onClick={() => console.log("load more..")}
+      onClick={() => {
+        if (hasNextPage && !isFetching) {
+          fetchNextPage();
+        }
+      }}
     >
-      <StyledOcticon icon={RocketIcon} size={18} sx={{ mr: "8px" }} />
+      {hasNextPage && (
+        <StyledOcticon icon={RocketIcon} size={18} sx={{ mr: "8px" }} />
+      )}
       <Text
         sx={{
           fontSize: "14px",
@@ -30,7 +40,7 @@ const LoadMore = (props: Props) => {
           color: "#006EED",
         }}
       >
-        More
+        {hasNextPage && !isFetching ? "More" : "No more post"}
       </Text>
     </Box>
   );

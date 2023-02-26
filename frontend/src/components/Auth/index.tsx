@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled, { css } from "styled-components";
+import { signIn } from "next-auth/react";
 
 import {
   Box,
@@ -15,11 +16,60 @@ import {
   RocketIcon,
   MarkGithubIcon,
 } from "@primer/octicons-react";
-import { BsFacebook } from "react-icons/bs";
+import { AiFillGoogleCircle } from "react-icons/ai";
+
+import { api as trpc } from "../../utils/api";
+import { toast } from "react-hot-toast";
 
 type Props = {};
 
 const Auth = (props: Props) => {
+  const [user, setUser] = useState<{ email: string; password: string }>({
+    email: "",
+    password: "",
+  });
+
+  const { mutateAsync, error, isLoading } = trpc.user.createUser.useMutation();
+
+  // handle signup
+  const onSignup = async () => {
+    if (!user) return;
+
+    try {
+      const data = await mutateAsync({
+        email: user.email,
+        password: user.password,
+      });
+
+      if (data) {
+        onSignin();
+      }
+    } catch (error: any) {
+      console.log("onSignup err", error);
+      toast.error(error?.message);
+    }
+  };
+
+  // handle signin
+  const onSignin = async () => {
+    if (!user) return;
+
+    const response = await signIn("credentials", {
+      redirect: false,
+      callbackUrl: `/`,
+      email: user.email,
+      password: user.password,
+    });
+
+    if (response?.error) {
+      toast.error(response.error);
+    }
+
+    if (response?.ok) {
+      toast.success("login successfully!");
+    }
+  };
+
   return (
     <Box bg={"canvas.bg"} height={"100vh"} display={"flex"}>
       <Box
@@ -70,7 +120,7 @@ const Auth = (props: Props) => {
               name="email"
               autoComplete="email"
               placeholder="enter your email"
-              // onChange={(e) => console.log(e.target.value)}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
             />
           </FormControl>
           <FormControl sx={{ margin: "10px" }}>
@@ -89,7 +139,7 @@ const Auth = (props: Props) => {
               name="password"
               autoComplete="password"
               placeholder="enter your password"
-              // onChange={(e) => console.log(e.target.value)}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
             />
           </FormControl>
           <Box
@@ -98,10 +148,22 @@ const Auth = (props: Props) => {
             width="242px"
             margin="15px 0"
           >
-            <MyButton w="110px" h="30px" rounded="4px" color="#06A833">
+            <MyButton
+              w="110px"
+              h="30px"
+              rounded="4px"
+              color="#06A833"
+              onClick={onSignin}
+            >
               Sign in
             </MyButton>
-            <MyButton w="110px" h="30px" rounded="4px" color="#444C56">
+            <MyButton
+              w="110px"
+              h="30px"
+              rounded="4px"
+              color="#444C56"
+              onClick={onSignup}
+            >
               Sign up
             </MyButton>
           </Box>
@@ -128,7 +190,12 @@ const Auth = (props: Props) => {
           </Box>
 
           <Box display="flex" flexDirection="column" width="242px">
-            <MyButton rounded="16px" h="34px" color="#2E89F1">
+            <MyButton
+              rounded="16px"
+              h="34px"
+              color="#f35656"
+              onClick={() => signIn("google")}
+            >
               <div
                 style={{
                   display: "flex",
@@ -137,15 +204,21 @@ const Auth = (props: Props) => {
                   marginInlineStart: "15px",
                 }}
               >
-                <BsFacebook size={18} />
+                <AiFillGoogleCircle size={18} />
                 <Text
                   sx={{ marginInlineStart: "10px", alignContent: "center" }}
                 >
-                  Continue with Facebook
+                  Continue with google
                 </Text>
               </div>
             </MyButton>
-            <MyButton rounded="16px" h="34px" color="#444C56" gap="15px 0">
+            <MyButton
+              rounded="16px"
+              h="34px"
+              color="#444C56"
+              gap="15px 0"
+              onClick={() => signIn("github")}
+            >
               <div
                 style={{
                   display: "flex",

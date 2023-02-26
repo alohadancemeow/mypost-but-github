@@ -1,9 +1,20 @@
 import { Avatar, Box, TextInput } from "@primer/react";
+import { Session } from "next-auth";
 import React from "react";
 
-type Props = {};
+type Props = {
+  session: Session;
+  commentBody: string;
+  setCommentBody: React.Dispatch<React.SetStateAction<string>>;
+  onCreateComment: () => Promise<void>;
+};
 
-const CommentInput = (props: Props) => {
+const CommentInput = ({
+  session,
+  onCreateComment,
+  setCommentBody,
+  commentBody,
+}: Props) => {
   return (
     <Box
       // marginTop={3}
@@ -13,7 +24,11 @@ const CommentInput = (props: Props) => {
       margin="20px 25px"
     >
       <Box>
-        <Avatar src="https://github.com/octocat.png" size={24} alt="@octocat" />
+        <Avatar
+          src={`${session.user.image ?? "https://github.com/octocat.png"}`}
+          size={24}
+          alt="@octocat"
+        />
       </Box>
       <TextInput
         contrast
@@ -22,6 +37,13 @@ const CommentInput = (props: Props) => {
         // autoComplete="username"
         placeholder="Type here..."
         type="text"
+        value={commentBody}
+        onChange={(e) => setCommentBody(e.target.value)}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            onCreateComment();
+          }
+        }}
         sx={{
           bg: "transparent",
           border: "1px solid #444C56",

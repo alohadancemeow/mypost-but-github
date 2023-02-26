@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Avatar, Box, Text } from "@primer/react";
 
 import ReactionButton from "./ReactionButton";
@@ -7,7 +7,16 @@ import CommentItem from "./CommentItem";
 import CommentInput from "./CommentInput";
 import Tag from "./Tag";
 
-type Props = {};
+import { PostPopulated } from "../../../../types/myTypes";
+
+import { api as trpc } from "../../../utils/api";
+import { Session } from "next-auth";
+import useFormatDate from "../../../hooks/useFormatDate";
+
+type Props = {
+  session: Session;
+  post: PostPopulated;
+};
 
 export type ReactionButtonType = {
   like: boolean;
@@ -15,12 +24,114 @@ export type ReactionButtonType = {
   share: boolean;
 };
 
-const PostItem = (props: Props) => {
+const PostItem = ({ session, post }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     like: false,
-    comment: true,
+    comment: false,
     share: false,
   });
+
+  const [commentBody, setCommentBody] = useState<string>("");
+
+  // call a custom hook
+  const formatedDate = useFormatDate({ date: post.createdAt });
+
+  const utils = trpc.useContext();
+
+  // call like - unlike mutation,
+  // and update cache
+  const { mutateAsync: likeMutation } = trpc.post.like.useMutation({
+    onMutate: () => {
+      utils.post.getPosts.cancel();
+      const postUpdate = utils.post.getPosts.getData();
+      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+    },
+    onSettled: () => {
+      utils.post.getPosts.invalidate();
+    },
+  });
+
+  const { mutateAsync: unlikeMutation } = trpc.post.unlike.useMutation({
+    onMutate: () => {
+      utils.post.getPosts.cancel();
+      const postUpdate = utils.post.getPosts.getData();
+      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+    },
+    onSettled: () => {
+      utils.post.getPosts.invalidate();
+    },
+  });
+
+  // Get comments - Create comment
+  const { data: commentData } = trpc.comment.getComments.useQuery({
+    postId: post.id,
+  });
+
+  const { mutateAsync: createComment } = trpc.comment.createComment.useMutation(
+    {
+      onMutate: () => {
+        utils.post.getPosts.cancel();
+        utils.comment.getComments.cancel();
+
+        const postUpdate = utils.post.getPosts.getData();
+        const commentUpdate = utils.comment.getComments.getData();
+
+        if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+        if (commentUpdate)
+          utils.comment.getComments.setData({ postId: post.id }, commentUpdate);
+      },
+      onSettled: () => {
+        utils.post.getPosts.invalidate();
+        utils.comment.getComments.invalidate();
+      },
+    }
+  );
+
+  // share increment
+  const { mutateAsync: shareMutation } = trpc.post.share.useMutation({
+    onMutate: () => {
+      utils.post.getPosts.cancel();
+      const postUpdate = utils.post.getPosts.getData();
+      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+    },
+    onSettled: () => {
+      utils.post.getPosts.invalidate();
+    },
+  });
+
+  const onShare = async () => {
+    await shareMutation({ postId: post.id });
+  };
+
+  // Handle onCreateComment
+  const onCreateComment = async () => {
+    await createComment({
+      postId: post.id,
+      body: commentBody,
+    });
+
+    setCommentBody("");
+  };
+
+  // Handle like - unlike
+  const handleLike = async () => {
+    if (!selected.like) {
+      const liked = await likeMutation({ postId: post.id });
+      // console.log("like ation", liked);
+    } else {
+      unlikeMutation({ postId: post.id });
+    }
+  };
+
+  // if you've liked, set like -> true
+  useEffect(() => {
+    const liked = post.likes.some((p) => p.userId === session.user.id);
+    if (liked)
+      setSelected({
+        ...selected,
+        like: true,
+      });
+  }, []);
 
   return (
     <Box
@@ -38,14 +149,20 @@ const PostItem = (props: Props) => {
         alignItems={"center"}
         justifyContent="flex-start"
       >
-        <Avatar src="https://github.com/octocat.png" size={24} alt="@octocat" />
+        <Box>
+          <Avatar
+            src={`${post.user?.image}` ?? "https://github.com/octocat.png"}
+            size={24}
+            alt="@octocat"
+          />
+        </Box>
         <Box display="flex" marginLeft="15px">
           <Text fontSize="16px">
-            username{" "}
+            {post.user?.name}{" "}
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>posted</span>{" "}
-            post-101{" "}
+            {post.title}{" "}
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>
-              · 2.32 PM
+              {`· ${formatedDate}`}
             </span>{" "}
           </Text>
         </Box>
@@ -69,27 +186,40 @@ const PostItem = (props: Props) => {
           }}
         >
           <Text fontSize={14} fontWeight={600} marginBottom={2}>
-            Postname
+            {post.title}
           </Text>
           <Text fontSize={14} fontWeight={400} color="#ADBAC7">
-            Publish your digital garden, docs or any markdown based site easily,
-            quickly and elegantly
+            {post.body}
           </Text>
           <Box marginTop={30}>
-            <Tag text="Programming" />
-            <Tag text="Education" />
-            <Tag text="UX/UI Design" />
+            {post.tags.map((tag) => (
+              <Tag key={tag.id} text={tag.body ?? ""} />
+            ))}
           </Box>
-          <ReactionButton selected={selected} setSelected={setSelected} />
+          <ReactionButton
+            selected={selected}
+            setSelected={setSelected}
+            handleLike={handleLike}
+            onShare={onShare}
+            post={post}
+          />
           <Popup selected={selected} setSelected={setSelected} />
         </Box>
       </Box>
       {selected && selected.comment && (
         <>
-          <CommentItem />
-          <CommentItem />
-          <CommentItem />
-          <CommentInput />
+          <>
+            {commentData &&
+              commentData.map((comment) => (
+                <CommentItem key={comment.id} comment={comment} />
+              ))}
+          </>
+          <CommentInput
+            session={session}
+            commentBody={commentBody}
+            setCommentBody={setCommentBody}
+            onCreateComment={onCreateComment}
+          />
         </>
       )}
     </Box>

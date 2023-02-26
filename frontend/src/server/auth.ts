@@ -4,10 +4,13 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env.mjs";
 import { prisma } from "./db";
+import { compare } from "bcrypt";
 
 /**
  * Module augmentation for `next-auth` types.
@@ -38,31 +41,81 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  **/
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
   callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-        // session.user.role = user.role; <-- put other properties on the session here
+    /**
+     * "No session is returned after Credentials login"
+     * @solution https://github.com/nextauthjs/next-auth/discussions/4144
+     */
+
+    async jwt({ token, user }) {
+      if (user) {
+        // token = user;
+        token = { ...user };
       }
-      return session;
+      return Promise.resolve(token);
+    },
+
+    async session({ session, token, user }) {
+      const sessionUser = { ...session.user, ...user, ...token };
+
+      return Promise.resolve({
+        ...session,
+        user: sessionUser,
+      });
     },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
     }),
-    /**
-     * ...add more providers here
-     *
-     * Most other providers require a bit more work than the Discord provider.
-     * For example, the GitHub provider requires you to add the
-     * `refresh_token_expires_in` field to the Account model. Refer to the
-     * NextAuth.js docs for the provider you want to use. Example:
-     * @see https://next-auth.js.org/providers/github
-     **/
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+    CredentialsProvider({
+      type: "credentials",
+      name: "Credentials",
+      credentials: {
+        // email: { label: "Email", type: "text" },
+        // password: { label: "Password", type: "text" },
+      },
+      async authorize(credentials, req) {
+        if (!credentials) return null;
+
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
+
+        // find user by email
+        const user = await prisma.user.findUnique({
+          where: {
+            email,
+          },
+        });
+
+        if (!user) {
+          console.log("User not found");
+          throw new Error("User not found");
+        }
+
+        // compare password
+        const checkedPassword = await compare(password, user.password!!);
+
+        if (!checkedPassword || user.email !== email) {
+          throw new Error("email or password invalid");
+        }
+
+        return user;
+      },
+    }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 /**

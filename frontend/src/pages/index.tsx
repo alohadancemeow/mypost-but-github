@@ -5,14 +5,10 @@ import Feed from "../components/Feed";
 import Auth from "../components/Auth";
 
 const Home: NextPage = () => {
-  const { data } = useSession();
-  // console.log(data);
+  const { data: session } = useSession();
+  // console.log("session", session);
 
-  return (
-    <Layout>
-      {!data ? <Feed /> : <Auth />}
-    </Layout>
-  );
+  return <Layout>{session ? <Feed session={session} /> : <Auth />}</Layout>;
 };
 
 export default Home;

@@ -1,14 +1,17 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
+import { getSession, SessionProvider } from "next-auth/react";
 
 import { api } from "../utils/api";
 
 // import "../styles/globals.css";
+import '../styles/myStyle.css'
 
+import { SSRProvider } from "@primer/react";
 import { ThemeProvider } from "@primer/react";
 import deepmerge from "deepmerge";
 import { BaseStyles } from "@primer/react";
+import { Toaster } from "react-hot-toast";
 
 const theme = {
   colors: {
@@ -37,13 +40,22 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <ThemeProvider theme={customTheme}>
-        <BaseStyles>
-          <Component {...pageProps} />
-        </BaseStyles>
-      </ThemeProvider>
+      <SSRProvider>
+        <ThemeProvider theme={customTheme}>
+          <BaseStyles>
+            <Component {...pageProps} />
+            <Toaster />
+          </BaseStyles>
+        </ThemeProvider>
+      </SSRProvider>
     </SessionProvider>
   );
+};
+
+MyApp.getInitialProps = async ({ ctx }) => {
+  return {
+    session: await getSession(ctx),
+  };
 };
 
 export default api.withTRPC(MyApp);

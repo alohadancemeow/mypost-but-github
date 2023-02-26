@@ -7,14 +7,25 @@ import {
   ShareAndroidIcon,
 } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text } from "@primer/react";
+
 import { ReactionButtonType } from "./PostItem";
+import { PostPopulated } from "../../../../types/myTypes";
 
 type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
+  handleLike: () => Promise<void>;
+  onShare: () => Promise<void>;
+  post: PostPopulated;
 };
 
-const ReactionButton = ({ selected, setSelected }: Props) => {
+const ReactionButton = ({
+  selected,
+  setSelected,
+  handleLike,
+  post,
+  onShare,
+}: Props) => {
   return (
     <Box margin="22px 4px 0" display="flex">
       <Box
@@ -30,7 +41,10 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
             opacity: 0.7,
           },
         }}
-        onClick={() => setSelected({ ...selected, like: !selected.like })}
+        onClick={() => {
+          setSelected({ ...selected, like: !selected.like });
+          handleLike();
+        }}
       >
         {selected && selected.like ? (
           <>
@@ -46,7 +60,10 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
                 fontWeight: "600",
               }}
             >
-              Liked <MyText>· 123</MyText>
+              Liked{" "}
+              <MyText>
+                {post.likes.length === 0 ? "" : `· ${post.likes.length}`}
+              </MyText>
             </Text>
           </>
         ) : (
@@ -59,7 +76,11 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
                 fontWeight: "600",
               }}
             >
-              Like <MyText>· 123</MyText>
+              Like{" "}
+              <MyText>
+                {" "}
+                {post.likes.length === 0 ? "" : `· ${post.likes.length}`}
+              </MyText>
             </Text>
           </>
         )}
@@ -99,7 +120,10 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
             fontWeight: "600",
           }}
         >
-          Comment <MyText>· 123</MyText>
+          Comment{" "}
+          <MyText>
+            {post.comments.length === 0 ? "" : `· ${post.comments.length}`}
+          </MyText>
         </Text>
       </Box>
       <Box
@@ -116,7 +140,10 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
             opacity: 0.7,
           },
         }}
-        onClick={() => setSelected({ ...selected, share: !selected.share })}
+        onClick={() => {
+          setSelected({ ...selected, share: !selected.share });
+          onShare();
+        }}
       >
         {selected && selected.share ? (
           <StyledOcticon
@@ -134,7 +161,8 @@ const ReactionButton = ({ selected, setSelected }: Props) => {
             fontWeight: "600",
           }}
         >
-          Share <MyText>· 123</MyText>
+          Share{" "}
+          <MyText>{post.shares === 0 ? "" : `· ${post.shares}`}</MyText>
         </Text>
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import {
@@ -11,9 +11,19 @@ import {
 } from "@primer/react";
 import { PeopleIcon } from "@primer/octicons-react";
 
+import { api as trpc } from "../../utils/api";
+
 type Props = {};
 
 const LeftContent = (props: Props) => {
+  const [username, setUsername] = useState<string>("");
+
+  const { data: userData, error, isLoading } = trpc.user.getUsers.useQuery();
+
+  // filtering users by username
+  const filteredUser =
+    userData?.filter((user) => user.name?.includes(username)) ?? userData;
+
   return (
     <MyBox
       style={{
@@ -43,6 +53,7 @@ const LeftContent = (props: Props) => {
           contrast
           aria-label="username"
           name="username"
+          type="text"
           placeholder="Find a creator..."
           autoComplete="username"
           sx={{
@@ -52,13 +63,13 @@ const LeftContent = (props: Props) => {
             height: "40px",
             borderRadius: "3px",
           }}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <Box marginBottom={4} marginTop={4}>
-          {Array(8)
-            .fill(null)
-            .map((_, index) => (
+          {filteredUser &&
+            filteredUser.map((user) => (
               <Box
-                key={index}
+                key={user.id}
                 marginTop={3}
                 display="flex"
                 alignItems={"center"}
@@ -69,17 +80,17 @@ const LeftContent = (props: Props) => {
                     opacity: 0.7,
                   },
                 }}
-                onClick={() => console.log("usercard clicked", index)}
+                onClick={() => console.log("usercard clicked", user.id)}
               >
                 <Avatar
-                  src="https://github.com/octocat.png"
+                  src={`${user.image ?? "https://github.com/octocat.png"}`}
                   size={24}
                   alt="@octocat"
                 />
                 <Box display="flex" flexDirection="column" marginLeft="15px">
-                  <Text fontSize="16px">{`username-0${index + 1}`} </Text>
+                  <Text fontSize="16px">{`${user.name}`} </Text>
                   <Text fontSize="12px" color="#006EED">
-                    4 posts
+                    {`${user.posts.length} posts`}
                   </Text>
                 </Box>
               </Box>

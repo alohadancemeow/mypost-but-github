@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Session } from "next-auth";
 
 import { Box } from "@primer/react";
 
@@ -9,9 +10,11 @@ import RightContent from "./RightContent";
 import Nav from "./Nav";
 import Footer from "./Footer";
 
-type Props = {};
+type Props = {
+  session: Session;
+};
 
-const Feed = (props: Props) => {
+const Feed = ({ session }: Props) => {
   return (
     <Box
       bg="canvas.bg"
@@ -20,7 +23,7 @@ const Feed = (props: Props) => {
       flexDirection="column"
       color="white"
     >
-      <Nav />
+      <Nav session={session} />
       <MyBox
         display="grid"
         gridTemplateColumns="1fr 2.5fr 1fr"
@@ -29,7 +32,7 @@ const Feed = (props: Props) => {
         height="100%"
       >
         <LeftContent />
-        <MainContent />
+        <MainContent session={session} />
         <RightContent />
       </MyBox>
 
