@@ -41,7 +41,7 @@ export const postRouter = createTRPCRouter({
         return true;
       } catch (error: any) {
         // console.log("create post err", error?.message);
-        throw new TRPCError({code: 'BAD_REQUEST'});
+        throw new TRPCError({ code: "BAD_REQUEST" });
       }
     }),
 
@@ -55,7 +55,8 @@ export const postRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { prisma } = ctx;
-      const { cursor, limit, orderBy } = input;
+      const { cursor, orderBy } = input;
+      const limit = input.limit ?? 5;
 
       const posts = await prisma.post.findMany({
         include: postPopulated,
@@ -109,7 +110,7 @@ export const postRouter = createTRPCRouter({
         return true;
       } catch (error: any) {
         // console.log(error?.message);
-        throw new TRPCError({code: 'BAD_REQUEST'});
+        throw new TRPCError({ code: "BAD_REQUEST" });
       }
     }),
 
@@ -120,7 +121,7 @@ export const postRouter = createTRPCRouter({
       const { postId } = input;
       const { id: userId } = session.user;
 
-      return await prisma.like.delete({
+      await prisma.like.delete({
         where: {
           postId_userId: {
             postId,
@@ -128,6 +129,8 @@ export const postRouter = createTRPCRouter({
           },
         },
       });
+
+      return true;
     }),
 
   share: publicProcedure

@@ -19,6 +19,8 @@ type Props = {
 };
 
 const MainContent = ({ session }: Props) => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const utils = trpc.useContext();
   const {
     data: postData,
@@ -33,40 +35,42 @@ const MainContent = ({ session }: Props) => {
   const posts = postData?.pages.flatMap((page) => page.posts) ?? [];
   // console.log("posts", posts);
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const { mutate } = trpc.post.createPost.useMutation({
-    onSuccess: async () => {
+  const { mutateAsync } = trpc.post.createPost.useMutation({
+    onMutate: async () => {
       // cancel query
-      await utils.post.getPosts.cancel();
-      await utils.user.getUsers.cancel();
+      // await utils.post.getPosts.cancel();
+      // await utils.user.getUsers.cancel();
 
-      // get updated data
-      const userUpdate = utils.user.getUsers.getData();
-      const postUpdate = utils.post.getPosts.getData();
+      // // get updated data
+      // const userUpdate = utils.user.getUsers.getData();
+      // const postUpdate = utils.post.getPosts.getData();
 
-      // set updated date
-      if (userUpdate) utils.user.getUsers.setData(undefined, userUpdate);
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+      // // set updated date
+      // if (userUpdate) utils.user.getUsers.setData(undefined, userUpdate);
+      // if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
 
       setIsOpen(false);
     },
-    onSettled: async () => {
-      // invalidate old data
+    onSuccess: async () => {
+      // refetches posts after a post is added
       await utils.post.getPosts.invalidate();
       await utils.user.getUsers.invalidate();
     },
   });
 
   // handle onCreatePost
-  const onCreatePost = (post: PostInput) => {
+  const onCreatePost = async (post: PostInput) => {
     // console.log("onCreatepost", post);
 
-    mutate({
-      title: post.title,
-      body: post.body,
-      tags: post.tags.map((p) => p.text),
-    });
+    try {
+      await mutateAsync({
+        title: post.title,
+        body: post.body,
+        tags: post.tags.map((p) => p.text),
+      });
+    } catch (error) {
+      console.log("Failed to create post", error);
+    }
   };
 
   // handle load more

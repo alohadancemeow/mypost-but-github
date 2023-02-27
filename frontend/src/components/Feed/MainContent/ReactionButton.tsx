@@ -14,8 +14,8 @@ import { PostPopulated } from "../../../../types/myTypes";
 type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
-  handleLike: () => void;
-  onShare: () => void;
+  handleLike: () => Promise<void>;
+  onShare: () => Promise<void>;
   post: PostPopulated;
 };
 

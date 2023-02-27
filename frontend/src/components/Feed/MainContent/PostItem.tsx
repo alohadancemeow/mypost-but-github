@@ -40,24 +40,24 @@ const PostItem = ({ session, post }: Props) => {
 
   // call like - unlike mutation,
   // and update cache
-  const { mutate: likeMutation } = trpc.post.like.useMutation({
-    onSuccess: async () => {
-      await utils.post.getPosts.cancel();
-      const postUpdate = utils.post.getPosts.getData();
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+  const { mutateAsync: likeMutation } = trpc.post.like.useMutation({
+    onMutate: async () => {
+      // await utils.post.getPosts.cancel();
+      // const postUpdate = utils.post.getPosts.getData();
+      // if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
     },
-    onSettled: async () => {
+    onSuccess: async () => {
       await utils.post.getPosts.invalidate();
     },
   });
 
-  const { mutate: unlikeMutation } = trpc.post.unlike.useMutation({
-    onSuccess: async () => {
-      await utils.post.getPosts.cancel();
-      const postUpdate = utils.post.getPosts.getData();
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+  const { mutateAsync: unlikeMutation } = trpc.post.unlike.useMutation({
+    onMutate: async () => {
+      // await utils.post.getPosts.cancel();
+      // const postUpdate = utils.post.getPosts.getData();
+      // if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
     },
-    onSettled: async () => {
+    onSuccess: async () => {
       await utils.post.getPosts.invalidate();
     },
   });
@@ -67,56 +67,60 @@ const PostItem = ({ session, post }: Props) => {
     postId: post.id,
   });
 
-  const { mutate: createComment } = trpc.comment.createComment.useMutation({
-    onSuccess: async () => {
-      await utils.post.getPosts.cancel();
-      await utils.comment.getComments.cancel();
-
-      const postUpdate = utils.post.getPosts.getData();
-      const commentUpdate = utils.comment.getComments.getData();
-
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
-      if (commentUpdate)
-        utils.comment.getComments.setData({ postId: post.id }, commentUpdate);
-    },
-    onSettled: async () => {
-      await utils.post.getPosts.invalidate();
-      await utils.comment.getComments.invalidate();
-    },
-  });
+  const { mutateAsync: createComment } = trpc.comment.createComment.useMutation(
+    {
+      onMutate: async () => {
+        // await utils.post.getPosts.cancel();
+        // await utils.comment.getComments.cancel();
+        // const postUpdate = utils.post.getPosts.getData();
+        // const commentUpdate = utils.comment.getComments.getData();
+        // if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+        // if (commentUpdate)
+        //   utils.comment.getComments.setData({ postId: post.id }, commentUpdate);
+      },
+      onSuccess: async () => {
+        await utils.post.getPosts.invalidate();
+        await utils.comment.getComments.invalidate();
+      },
+    }
+  );
 
   // share increment
-  const { mutate: shareMutation } = trpc.post.share.useMutation({
-    onSuccess: async () => {
-      await utils.post.getPosts.cancel();
-      const postUpdate = utils.post.getPosts.getData();
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+  const { mutateAsync: shareMutation } = trpc.post.share.useMutation({
+    onMutate: async () => {
+      // await utils.post.getPosts.cancel();
+      // const postUpdate = utils.post.getPosts.getData();
+      // if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
     },
-    onSettled: async () => {
+    onSuccess: async () => {
       await utils.post.getPosts.invalidate();
     },
   });
 
-  const onShare = () => {
-    shareMutation({ postId: post.id });
+  const onShare = async () => {
+    await shareMutation({ postId: post.id });
   };
 
   // Handle onCreateComment
-  const onCreateComment = () => {
-    createComment({
-      postId: post.id,
-      body: commentBody,
-    });
+  const onCreateComment = async () => {
+    try {
+      await createComment({
+        postId: post.id,
+        body: commentBody,
+      });
+    } catch (error) {
+      console.log("Failed to create comment", error);
+    }
 
     setCommentBody("");
   };
 
   // Handle like - unlike
-  const handleLike = () => {
+  const handleLike = async () => {
     if (!selected.like) {
-      likeMutation({ postId: post.id });
+      await likeMutation({ postId: post.id });
     } else {
-      unlikeMutation({ postId: post.id });
+      await unlikeMutation({ postId: post.id });
     }
   };
 

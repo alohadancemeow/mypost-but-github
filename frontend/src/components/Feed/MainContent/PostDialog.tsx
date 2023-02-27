@@ -22,7 +22,7 @@ import { PostInput, tokens } from "../../../../types/myTypes";
 type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onCreatePost: (post: PostInput) => void;
+  onCreatePost: (post: PostInput) => Promise<void>;
 };
 
 const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
@@ -180,9 +180,7 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
                     opacity: 0.7,
                   },
                 }}
-                onClick={() => {
-                  onSubmit();
-                }}
+                onClick={onSubmit}
               >
                 <StyledOcticon icon={RocketIcon} size={18} sx={{ mr: "8px" }} />
                 <Text

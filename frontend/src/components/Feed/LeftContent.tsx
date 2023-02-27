@@ -105,7 +105,7 @@ const LeftContent = () => {
           }}
           onClick={() => console.log("show more cliked")}
         >
-          Show more
+          {isLoading ? "Loading user..." : "Show more"}
         </Text>
       </Box>
     </MyBox>
