@@ -1,25 +1,25 @@
+import React, { useCallback, useState } from "react";
 import { Avatar, Box, TextInput } from "@primer/react";
 import { Session } from "next-auth";
-import React from "react";
 
 type Props = {
   session: Session;
-  commentBody: string;
-  setCommentBody: React.Dispatch<React.SetStateAction<string>>;
-  onCreateComment: () => void;
+  onCreateComment: (postId: string, commentBody: string) => Promise<void>;
+  postId: string;
 };
 
-const CommentInput = ({
-  session,
-  onCreateComment,
-  setCommentBody,
-  commentBody,
-}: Props) => {
-  const handleOnCreateComment = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      onCreateComment();
-    }
-  };
+const CommentInput = ({ session, onCreateComment, postId }: Props) => {
+  const [commentBody, setCommentBody] = useState<string>("");
+
+  const handleOnCreateComment = useCallback(
+    async (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        await onCreateComment(postId, commentBody);
+        setCommentBody("");
+      }
+    },
+    [onCreateComment, commentBody, setCommentBody]
+  );
 
   return (
     <Box

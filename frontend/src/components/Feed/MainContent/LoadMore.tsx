@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { RocketIcon } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text } from "@primer/react";
 
@@ -9,11 +9,11 @@ type Props = {
 };
 
 const LoadMore = ({ hasNextPage, isFetching, loadNextPost }: Props) => {
-  const handleLoadMore = async () => {
+  const handleLoadMore = useCallback(async () => {
     if (hasNextPage && !isFetching) {
       await loadNextPost();
     }
-  };
+  }, [loadNextPost, isFetching, hasNextPage]);
   return (
     <Box
       display="flex"

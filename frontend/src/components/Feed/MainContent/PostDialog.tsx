@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import {
   Box,
@@ -37,31 +37,37 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
   const closeDialog = () => setIsOpen(false);
 
   // handle remove token -> tags
-  const onTokenRemove = (tokenId: any) => {
-    setPostInput({
-      ...postInput,
-      tags:
-        postInput.tags && postInput.tags.filter((tag) => tag.id !== tokenId),
-    });
-  };
-
-  // handle add token -> tags
-  const onTokenAdd = (token: { text: string; id: number }) => {
-    if (!postInput.tags.some((t) => t.id === token.id)) {
+  const onTokenRemove = useCallback(
+    (tokenId: any) => {
       setPostInput({
         ...postInput,
-        tags: [...postInput.tags, { ...token }],
+        tags:
+          postInput.tags && postInput.tags.filter((tag) => tag.id !== tokenId),
       });
-    }
-  };
+    },
+    [setPostInput, postInput]
+  );
+
+  // handle add token -> tags
+  const onTokenAdd = useCallback(
+    (token: { text: string; id: number }) => {
+      if (!postInput.tags.some((t) => t.id === token.id)) {
+        setPostInput({
+          ...postInput,
+          tags: [...postInput.tags, { ...token }],
+        });
+      }
+    },
+    [setPostInput, postInput]
+  );
 
   // Handle onSubmit -> create post
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     if (!postInput.title || !postInput.body || postInput.tags.length === 0) {
       return null;
     }
     return onCreatePost(postInput);
-  };
+  }, [onCreatePost, postInput]);
 
   return (
     <Box>
