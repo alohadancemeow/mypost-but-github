@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 
-import { Box } from "@primer/react";
+import { Box, Text } from "@primer/react";
 
 import LoadMore from "./LoadMore";
 import PostItem from "./PostItem";
@@ -30,6 +30,7 @@ const MainContent = ({ session }: Props) => {
     hasNextPage,
     fetchNextPage,
     isFetching,
+    isLoading,
   } = trpc.post.getPosts.useInfiniteQuery(
     { limit: 5 },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
@@ -38,21 +39,22 @@ const MainContent = ({ session }: Props) => {
   const posts = postData?.pages.flatMap((page) => page.posts) ?? [];
 
   // Create post
-  const { mutateAsync } = trpc.post.createPost.useMutation({
-    onMutate: async () => {
-      // cancel query
-      await utils.user.getUsers.cancel();
-      await utils.post.getPosts.cancel();
+  const { mutateAsync: createPost, isLoading: isCreatePostLoading } =
+    trpc.post.createPost.useMutation({
+      onMutate: async () => {
+        // cancel query
+        await utils.user.getUsers.cancel();
+        await utils.post.getPosts.cancel();
 
-      // get updated data
-      const userUpdate = utils.user.getUsers.getData();
-      const postUpdate = utils.post.getPosts.getData();
+        // get updated data
+        const userUpdate = utils.user.getUsers.getData();
+        const postUpdate = utils.post.getPosts.getData();
 
-      // set updated date
-      if (userUpdate) utils.user.getUsers.setData(undefined, userUpdate);
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
-    },
-  });
+        // set updated date
+        if (userUpdate) utils.user.getUsers.setData(undefined, userUpdate);
+        if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+      },
+    });
 
   // Create comment
   const { mutateAsync: createComment } = trpc.comment.createComment.useMutation(
@@ -106,18 +108,18 @@ const MainContent = ({ session }: Props) => {
   const onCreatePost = useCallback(
     async (post: PostInput) => {
       try {
-        await mutateAsync({
+        const data = await createPost({
           title: post.title,
           body: post.body,
           tags: post.tags.map((p) => p.text),
         });
 
-        setIsOpen(false);
+        if (data) setIsOpen(false);
       } catch (error) {
         console.log("Failed to create post", error);
       }
     },
-    [mutateAsync]
+    [createPost]
   );
 
   // handle load more
@@ -157,8 +159,11 @@ const MainContent = ({ session }: Props) => {
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           onCreatePost={onCreatePost}
+          isCreatePostLoading={isCreatePostLoading}
         />
         <HeadUnderLine />
+
+        {isLoading && <Text>Loading posts...</Text>}
 
         {posts &&
           posts.map((post) => (

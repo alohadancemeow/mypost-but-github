@@ -23,9 +23,15 @@ type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onCreatePost: (post: PostInput) => Promise<void>;
+  isCreatePostLoading: boolean;
 };
 
-const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
+const PostDialog = ({
+  isOpen,
+  setIsOpen,
+  onCreatePost,
+  isCreatePostLoading,
+}: Props) => {
   const [postInput, setPostInput] = useState<PostInput>({
     title: "",
     body: "",
@@ -197,7 +203,7 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
                     color: "#006EED",
                   }}
                 >
-                  Post
+                  {isCreatePostLoading ? "Posting..." : "Post"}
                 </Text>
               </Box>
             </MyBox>
