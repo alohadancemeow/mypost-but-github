@@ -12,8 +12,21 @@ export default createNextApiHandler({
     process.env.NODE_ENV === "development"
       ? ({ path, error }) => {
           console.error(
-            `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
+            `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`
           );
         }
       : undefined,
+
+  /**
+   * Enable query batching
+   */
+  batching: {
+    enabled: true,
+  },
+  /**
+   * @link https://trpc.io/docs/caching#api-response-caching
+   */
+  // responseMeta() {
+  //   // ...
+  // },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
 import {
   Box,
@@ -22,10 +22,16 @@ import { PostInput, tokens } from "../../../../types/myTypes";
 type Props = {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onCreatePost: (post: PostInput) => void;
+  onCreatePost: (post: PostInput) => Promise<void>;
+  isCreatePostLoading: boolean;
 };
 
-const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
+const PostDialog = ({
+  isOpen,
+  setIsOpen,
+  onCreatePost,
+  isCreatePostLoading,
+}: Props) => {
   const [postInput, setPostInput] = useState<PostInput>({
     title: "",
     body: "",
@@ -37,31 +43,42 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
   const closeDialog = () => setIsOpen(false);
 
   // handle remove token -> tags
-  const onTokenRemove = (tokenId: any) => {
-    setPostInput({
-      ...postInput,
-      tags:
-        postInput.tags && postInput.tags.filter((tag) => tag.id !== tokenId),
-    });
-  };
-
-  // handle add token -> tags
-  const onTokenAdd = (token: { text: string; id: number }) => {
-    if (!postInput.tags.some((t) => t.id === token.id)) {
+  const onTokenRemove = useCallback(
+    (tokenId: any) => {
       setPostInput({
         ...postInput,
-        tags: [...postInput.tags, { ...token }],
+        tags:
+          postInput.tags && postInput.tags.filter((tag) => tag.id !== tokenId),
       });
-    }
-  };
+    },
+    [setPostInput, postInput]
+  );
+
+  // handle add token -> tags
+  const onTokenAdd = useCallback(
+    (token: { text: string; id: number }) => {
+      if (!postInput.tags.some((t) => t.id === token.id)) {
+        setPostInput({
+          ...postInput,
+          tags: [...postInput.tags, { ...token }],
+        });
+      }
+    },
+    [setPostInput, postInput]
+  );
 
   // Handle onSubmit -> create post
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     if (!postInput.title || !postInput.body || postInput.tags.length === 0) {
       return null;
     }
-    return onCreatePost(postInput);
-  };
+    onCreatePost(postInput);
+    setPostInput({
+      title: "",
+      body: "",
+      tags: [],
+    });
+  }, [onCreatePost, postInput]);
 
   return (
     <Box>
@@ -180,9 +197,7 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
                     opacity: 0.7,
                   },
                 }}
-                onClick={() => {
-                  onSubmit();
-                }}
+                onClick={onSubmit}
               >
                 <StyledOcticon icon={RocketIcon} size={18} sx={{ mr: "8px" }} />
                 <Text
@@ -193,7 +208,7 @@ const PostDialog = ({ isOpen, setIsOpen, onCreatePost }: Props) => {
                     color: "#006EED",
                   }}
                 >
-                  Post
+                  {isCreatePostLoading ? "Posting..." : "Post"}
                 </Text>
               </Box>
             </MyBox>

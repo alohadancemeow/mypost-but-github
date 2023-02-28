@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import {
   CommentDiscussionIcon,
@@ -14,8 +14,8 @@ import { PostPopulated } from "../../../../types/myTypes";
 type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
-  handleLike: () => void;
-  onShare: () => void;
+  handleLike: (postId: string) => Promise<void>;
+  onShare: (postId: string) => Promise<void>;
   post: PostPopulated;
 };
 
@@ -26,15 +26,15 @@ const ReactionButton = ({
   post,
   onShare,
 }: Props) => {
-  const onLikeCliked = () => {
+  const onLikeCliked = useCallback(async () => {
     setSelected({ ...selected, like: !selected.like });
-    handleLike();
-  };
+    await handleLike(post.id);
+  }, [setSelected, handleLike, selected]);
 
-  const onShareCliked = () => {
+  const onShareCliked = useCallback(async () => {
     setSelected({ ...selected, share: !selected.share });
-    onShare();
-  };
+    await onShare(post.id);
+  }, [setSelected, onShare, selected]);
 
   return (
     <Box margin="22px 4px 0" display="flex">

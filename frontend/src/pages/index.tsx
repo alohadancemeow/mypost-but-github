@@ -5,8 +5,10 @@ import Feed from "../components/Feed";
 import Auth from "../components/Auth";
 
 const Home: NextPage = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   // console.log("session", session);
+
+  if (status === "loading") return <>Loading...</>;
 
   return <Layout>{session ? <Feed session={session} /> : <Auth />}</Layout>;
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Avatar, Box, Text } from "@primer/react";
 
 import ReactionButton from "./ReactionButton";
@@ -13,112 +13,63 @@ import { api as trpc } from "../../../utils/api";
 import { Session } from "next-auth";
 import { useFormatDate } from "../../../hooks/useFormatDate";
 
-type Props = {
-  session: Session;
-  post: PostPopulated;
-};
-
 export type ReactionButtonType = {
   like: boolean;
   comment: boolean;
   share: boolean;
 };
 
-const PostItem = ({ session, post }: Props) => {
+type Props = {
+  session: Session;
+  post: PostPopulated;
+  onCreateComment: (postId: string, commentBody: string) => Promise<void>;
+  onShare: (postId: string) => Promise<void>;
+};
+
+const PostItem = ({ session, post, onCreateComment, onShare }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     like: false,
     comment: false,
     share: false,
   });
-
-  const [commentBody, setCommentBody] = useState<string>("");
-
-  // call a custom hook
   const { dateFormate } = useFormatDate();
-
-  const utils = trpc.useContext();
-
-  // call like - unlike mutation,
-  // and update cache
-  const { mutate: likeMutation } = trpc.post.like.useMutation({
-    onSuccess: async () => {
-      await utils.post.getPosts.cancel();
-      const postUpdate = utils.post.getPosts.getData();
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
-    },
-    onSettled: async () => {
-      await utils.post.getPosts.invalidate();
-    },
-  });
-
-  const { mutate: unlikeMutation } = trpc.post.unlike.useMutation({
-    onSuccess: async () => {
-      await utils.post.getPosts.cancel();
-      const postUpdate = utils.post.getPosts.getData();
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
-    },
-    onSettled: async () => {
-      await utils.post.getPosts.invalidate();
-    },
-  });
 
   // Get comments - Create comment
   const { data: commentData } = trpc.comment.getComments.useQuery({
     postId: post.id,
   });
 
-  const { mutate: createComment } = trpc.comment.createComment.useMutation({
-    onSuccess: async () => {
-      await utils.post.getPosts.cancel();
-      await utils.comment.getComments.cancel();
+  const utils = trpc.useContext();
 
-      const postUpdate = utils.post.getPosts.getData();
-      const commentUpdate = utils.comment.getComments.getData();
-
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
-      if (commentUpdate)
-        utils.comment.getComments.setData({ postId: post.id }, commentUpdate);
-    },
-    onSettled: async () => {
-      await utils.post.getPosts.invalidate();
-      await utils.comment.getComments.invalidate();
-    },
-  });
-
-  // share increment
-  const { mutate: shareMutation } = trpc.post.share.useMutation({
-    onSuccess: async () => {
+  // call like - unlike mutation,
+  // and update cache
+  const { mutateAsync: likeMutation } = trpc.post.like.useMutation({
+    onMutate: async () => {
       await utils.post.getPosts.cancel();
       const postUpdate = utils.post.getPosts.getData();
       if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
     },
-    onSettled: async () => {
-      await utils.post.getPosts.invalidate();
-    },
   });
 
-  const onShare = () => {
-    shareMutation({ postId: post.id });
-  };
-
-  // Handle onCreateComment
-  const onCreateComment = () => {
-    createComment({
-      postId: post.id,
-      body: commentBody,
-    });
-
-    setCommentBody("");
-  };
+  const { mutateAsync: unlikeMutation } = trpc.post.unlike.useMutation({
+    onMutate: async () => {
+      await utils.post.getPosts.cancel();
+      const postUpdate = utils.post.getPosts.getData();
+      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
+    },
+  });
 
   // Handle like - unlike
-  const handleLike = () => {
-    if (!selected.like) {
-      likeMutation({ postId: post.id });
-    } else {
-      unlikeMutation({ postId: post.id });
-    }
-  };
+  const handleLike = useCallback(
+    async (postId: string) => {
+      if (!selected.like) {
+        await likeMutation({ postId });
+      } else {
+        await unlikeMutation({ postId });
+      }
+    },
+    [likeMutation, unlikeMutation, selected]
+  );
 
   // if you've liked, set like -> true
   useEffect(() => {
@@ -216,9 +167,8 @@ const PostItem = ({ session, post }: Props) => {
           </>
           <CommentInput
             session={session}
-            commentBody={commentBody}
-            setCommentBody={setCommentBody}
             onCreateComment={onCreateComment}
+            postId={post.id}
           />
         </>
       )}
