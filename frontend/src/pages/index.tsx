@@ -23,7 +23,9 @@ const Home: NextPage = () => {
           description: `${siteMetadata.description}`,
           images: [
             {
-              url: "/login-page.png",
+              url:
+                "/login-page.png" ??
+                "https://images.unsplash.com/photo-1516979187457-637abb4f9353?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
               width: 800,
               height: 600,
               alt: "home page",
@@ -39,9 +41,8 @@ const Home: NextPage = () => {
           cardType: "summary_large_image",
         }}
       />
-      {status === "authenticated" && (
-        <Layout>{session ? <Feed session={session} /> : <Auth />}</Layout>
-      )}
+
+      <Layout>{session ? <Feed session={session} /> : <Auth />}</Layout>
     </>
   );
 };
