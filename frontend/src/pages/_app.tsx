@@ -5,13 +5,14 @@ import { getSession, SessionProvider } from "next-auth/react";
 import { api } from "../utils/api";
 
 // import "../styles/globals.css";
-import '../styles/myStyle.css'
+import "../styles/myStyle.css";
 
 import { SSRProvider } from "@primer/react";
 import { ThemeProvider } from "@primer/react";
 import deepmerge from "deepmerge";
 import { BaseStyles } from "@primer/react";
 import { Toaster } from "react-hot-toast";
+import Head from "next/head";
 
 const theme = {
   colors: {
@@ -39,16 +40,26 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <SessionProvider session={session}>
-      <SSRProvider>
-        <ThemeProvider theme={customTheme}>
-          <BaseStyles>
-            <Component {...pageProps} />
-            <Toaster />
-          </BaseStyles>
-        </ThemeProvider>
-      </SSRProvider>
-    </SessionProvider>
+    <>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width"
+        />
+        <link rel="icon" href="/paper-plane.png" />
+      </Head>
+
+      <SessionProvider session={session}>
+        <SSRProvider>
+          <ThemeProvider theme={customTheme}>
+            <BaseStyles>
+              <Component {...pageProps} />
+              <Toaster />
+            </BaseStyles>
+          </ThemeProvider>
+        </SSRProvider>
+      </SessionProvider>
+    </>
   );
 };
 
