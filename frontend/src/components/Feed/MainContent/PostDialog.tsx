@@ -72,7 +72,12 @@ const PostDialog = ({
     if (!postInput.title || !postInput.body || postInput.tags.length === 0) {
       return null;
     }
-    return onCreatePost(postInput);
+    onCreatePost(postInput);
+    setPostInput({
+      title: "",
+      body: "",
+      tags: [],
+    });
   }, [onCreatePost, postInput]);
 
   return (

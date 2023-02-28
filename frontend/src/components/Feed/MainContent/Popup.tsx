@@ -8,6 +8,7 @@ import { ReactionButtonType } from "./PostItem";
 import { XCircleFillIcon } from "@primer/octicons-react";
 
 import { FacebookShareButton, TwitterShareButton } from "react-share";
+import { siteMetadata } from "../../../../site/siteMetadata";
 
 type Props = {
   selected: ReactionButtonType;
@@ -48,7 +49,8 @@ const Popup = ({ selected, setSelected }: Props) => {
         </Box>
         <Box display="flex" flexDirection="column" alignItems="flex-start">
           <FacebookShareButton
-            url="http://github.com"
+            // url="http://github.com"
+            url={`${siteMetadata.siteAddress}`}
             title="Let's talk about this"
             hashtag="#mypostbutgithub"
           >
@@ -74,7 +76,8 @@ const Popup = ({ selected, setSelected }: Props) => {
             </MyButton>
           </FacebookShareButton>
           <TwitterShareButton
-            url="http://github.com"
+            // url="http://github.com"
+            url={`${siteMetadata.siteAddress}`}
             hashtags={["mypostbutgithub"]}
             title="Let's talk about this"
           >
