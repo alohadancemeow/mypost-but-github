@@ -8,9 +8,13 @@ const Home: NextPage = () => {
   const { data: session, status } = useSession();
   // console.log("session", session);
 
-  if (status === "loading") return <>Loading...</>;
-
-  return <Layout>{session ? <Feed session={session} /> : <Auth />}</Layout>;
+  return (
+    <>
+      {status === "authenticated" && (
+        <Layout>{session ? <Feed session={session} /> : <Auth />}</Layout>
+      )}
+    </>
+  );
 };
 
 export default Home;
