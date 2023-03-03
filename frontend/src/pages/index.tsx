@@ -6,7 +6,6 @@ import Auth from "../components/Auth";
 
 import { siteMetadata } from "../../site/siteMetadata";
 import { NextSeo } from "next-seo";
-import { userStore } from "../../states/userStore";
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
