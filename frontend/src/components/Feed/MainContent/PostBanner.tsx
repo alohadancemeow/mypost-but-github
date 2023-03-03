@@ -4,12 +4,13 @@ import styled from "styled-components";
 import { BookIcon } from "@primer/octicons-react";
 import { Box, Text } from "@primer/react";
 import { MyButton } from "../../Auth";
+import { postStore } from "../../../../states/postStore";
 
-type Props = {
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
+type Props = {};
 
-const PostBanner = ({ setIsOpen }: Props) => {
+const PostBanner = (props: Props) => {
+  const setIsOpen = postStore((state) => state.setIsOpen);
+
   return (
     <MyBox
       display="flex"
@@ -37,7 +38,7 @@ const PostBanner = ({ setIsOpen }: Props) => {
         rounded="4px"
         gap="32px 0 0"
         color="#006EED"
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsOpen()}
       >
         Create a post
       </MyButton>
