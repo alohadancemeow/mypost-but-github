@@ -12,6 +12,8 @@ import { PostPopulated } from "../../../../types/myTypes";
 import { api as trpc } from "../../../utils/api";
 import { Session } from "next-auth";
 import { useFormatDate } from "../../../hooks/useFormatDate";
+import { postStore } from "../../../../states/postStore";
+import { shallow } from "zustand/shallow";
 
 export type ReactionButtonType = {
   like: boolean;
@@ -32,6 +34,7 @@ const PostItem = ({ session, post, onCreateComment, onShare }: Props) => {
     comment: false,
     share: false,
   });
+
   const { dateFormate } = useFormatDate();
 
   // Get comments - Create comment

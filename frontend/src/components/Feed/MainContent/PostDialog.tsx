@@ -18,29 +18,24 @@ import {
 } from "@primer/octicons-react";
 
 import { PostInput, tokens } from "../../../../types/myTypes";
+import { postStore } from "../../../../states/postStore";
+import { shallow } from "zustand/shallow";
 
 type Props = {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onCreatePost: (post: PostInput) => Promise<void>;
   isCreatePostLoading: boolean;
 };
 
-const PostDialog = ({
-  isOpen,
-  setIsOpen,
-  onCreatePost,
-  isCreatePostLoading,
-}: Props) => {
-  const [postInput, setPostInput] = useState<PostInput>({
-    title: "",
-    body: "",
-    tags: [],
-  });
-
-  //   console.log("postInput", postInput);
-
-  const closeDialog = () => setIsOpen(false);
+const PostDialog = ({ onCreatePost, isCreatePostLoading }: Props) => {
+  const { isOpen, setIsOpen, postInput, setPostInput } = postStore(
+    (state) => ({
+      isOpen: state.isOpen,
+      setIsOpen: state.setIsOpen,
+      postInput: state.postInput,
+      setPostInput: state.setPostInput,
+    }),
+    shallow
+  );
 
   // handle remove token -> tags
   const onTokenRemove = useCallback(
@@ -72,6 +67,7 @@ const PostDialog = ({
     if (!postInput.title || !postInput.body || postInput.tags.length === 0) {
       return null;
     }
+
     onCreatePost(postInput);
     setPostInput({
       title: "",
@@ -86,7 +82,7 @@ const PostDialog = ({
         <Dialog
           sx={{ bg: "#373E47", color: "white" }}
           title={<Text as="h2">Create your post</Text>}
-          onClose={closeDialog}
+          onClose={() => setIsOpen()}
         >
           <>
             <MyBox>
@@ -106,6 +102,7 @@ const PostDialog = ({
                   borderRadius: "3px",
                   marginInlineStart: "15px",
                 }}
+                value={postInput.title}
                 onChange={(e) =>
                   setPostInput({ ...postInput, title: e.target.value })
                 }
@@ -118,9 +115,7 @@ const PostDialog = ({
 
               <Textarea
                 placeholder="Enter post body"
-                //   onChange={handleChange}
-                //   value={value}
-
+                value={postInput.body}
                 onChange={(e) =>
                   setPostInput({ ...postInput, body: e.target.value })
                 }

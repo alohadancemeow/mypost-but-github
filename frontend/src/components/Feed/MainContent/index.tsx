@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import styled from "styled-components";
 
 import { Box, Text } from "@primer/react";
@@ -14,13 +14,14 @@ import { api as trpc } from "../../../utils/api";
 import { PostInput } from "../../../../types/myTypes";
 import { Session } from "next-auth";
 import { useIsMutating } from "@tanstack/react-query";
+import { postStore } from "../../../../states/postStore";
 
 type Props = {
   session: Session;
 };
 
 const MainContent = ({ session }: Props) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const setIsOpen = postStore((state) => state.setIsOpen);
 
   const utils = trpc.useContext();
 
@@ -114,7 +115,7 @@ const MainContent = ({ session }: Props) => {
           tags: post.tags.map((p) => p.text),
         });
 
-        if (data) setIsOpen(false);
+        if (data) setIsOpen();
       } catch (error) {
         console.log("Failed to create post", error);
       }
@@ -154,10 +155,8 @@ const MainContent = ({ session }: Props) => {
         borderLeft="1px solid #636568"
         borderRadius="8px"
       >
-        <PostBanner setIsOpen={setIsOpen} />
+        <PostBanner />
         <PostDialog
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
           onCreatePost={onCreatePost}
           isCreatePostLoading={isCreatePostLoading}
         />
