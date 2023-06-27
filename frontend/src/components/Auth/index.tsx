@@ -109,7 +109,8 @@ const Auth = () => {
               Email
             </FormControl.Label>
             <TextInput
-              leadingVisual={MailIcon}
+              // @ts-expect-error
+              leadingVisual={<MailIcon />}
               aria-label="Email"
               type="email"
               name="email"
@@ -128,7 +129,8 @@ const Auth = () => {
               Password
             </FormControl.Label>
             <TextInput
-              leadingVisual={LockIcon}
+              // @ts-expect-error
+              leadingVisual={<LockIcon />}
               aria-label="Password"
               type="password"
               name="password"
