@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { signIn } from "next-auth/react";
+import { trpc } from "@/utils/trpcClient";
+import { toast } from "react-hot-toast";
 
 import { Box, Text, FormControl, TextInput } from "@primer/react";
 import {
@@ -13,14 +15,22 @@ import {
 } from "@primer/octicons-react";
 import { AiFillGoogleCircle } from "react-icons/ai";
 
-import { trpc } from "@/utils/trpcClient";
-import { toast } from "react-hot-toast";
+import Modal from "../Modal";
+import useAuthModal from "@/hooks/useAuthModal";
 
-const Auth = () => {
+const AuthModal = () => {
   const [user, setUser] = useState<{ email: string; password: string }>({
     email: "",
     password: "",
   });
+
+  const { isOpen, onClose, onOpen } = useAuthModal();
+
+  const onChange = (open: boolean) => {
+    if (!open) {
+      onClose();
+    }
+  };
 
   const { mutateAsync } = trpc.user.createUser.useMutation({
     onError(error) {
@@ -68,44 +78,44 @@ const Auth = () => {
   };
 
   return (
-    <Box bg={"canvas.bg"} height={"100vh"} display={"flex"}>
+    <Modal
+      title={
+        <Box display="flex" justifyContent={"center"} alignItems="center">
+          <RocketIcon size={24} fill="white" />
+          <Text
+            as="p"
+            sx={{
+              fontWeight: "bold",
+              color: "canvas.default",
+              padding: "0 10px",
+              fontSize: "18px",
+            }}
+          >
+            Mypost but Github
+          </Text>
+        </Box>
+      }
+      description="Login to your account."
+      isOpen={isOpen}
+      onChange={onChange}
+    >
       <Box
         margin={"auto"}
-        width={394}
-        height={462}
-        border={"1px solid rgba(68, 76, 86, 1)"}
+        width={"auto"}
+        height={400}
+        // border={"1px solid rgba(68, 76, 86, 1)"}
       >
         <Box
           display={"flex"}
           flexDirection={"column"}
           justifyContent={"center"}
           alignItems={"center"}
-          // width='219px'
         >
-          <Box
-            display="flex"
-            justifyContent={"center"}
-            alignItems="center"
-            marginBottom={24}
-          >
-            <RocketIcon size={24} fill="white" />
-            <Text
-              as="p"
-              sx={{
-                fontWeight: "bold",
-                color: "canvas.default",
-                padding: "10px",
-                fontSize: "18px",
-              }}
-            >
-              Mypost but Github
-            </Text>
-          </Box>
           <FormControl id="email">
             <FormControl.Label
               htmlFor="email"
               sx={{
-                fontWeight: "bold",
+                fontWeight: "500",
                 color: "canvas.default",
               }}
             >
@@ -126,7 +136,7 @@ const Auth = () => {
             <FormControl.Label
               htmlFor="password"
               sx={{
-                fontWeight: "bold",
+                fontWeight: "500",
                 color: "canvas.default",
               }}
             >
@@ -151,7 +161,7 @@ const Auth = () => {
           >
             <MyButton
               w="110px"
-              h="30px"
+              // h="30px"
               rounded="4px"
               color="#06A833"
               onClick={() => {
@@ -162,7 +172,7 @@ const Auth = () => {
             </MyButton>
             <MyButton
               w="110px"
-              h="30px"
+              // h="30px"
               rounded="4px"
               color="#444C56"
               onClick={() => {
@@ -178,7 +188,6 @@ const Auth = () => {
             justifyContent="center"
             alignItems="center"
             margin="15px 0"
-            // border="1px solid red"
           >
             <Line />
             <Text
@@ -211,7 +220,12 @@ const Auth = () => {
               >
                 <AiFillGoogleCircle size={18} />
                 <Text
-                  sx={{ marginInlineStart: "10px", alignContent: "center" }}
+                  sx={{
+                    marginInlineStart: "10px",
+                    alignContent: "center",
+                    fontWeight: "400",
+                    fontSize: "14px",
+                  }}
                 >
                   Continue with google
                 </Text>
@@ -235,7 +249,13 @@ const Auth = () => {
                 }}
               >
                 <MarkGithubIcon size={18} />
-                <Text sx={{ marginInlineStart: "10px" }}>
+                <Text
+                  sx={{
+                    marginInlineStart: "10px",
+                    fontWeight: "400",
+                    fontSize: "14px",
+                  }}
+                >
                   Continue with Github
                 </Text>
               </div>
@@ -243,11 +263,11 @@ const Auth = () => {
           </Box>
         </Box>
       </Box>
-    </Box>
+    </Modal>
   );
 };
 
-export default Auth;
+export default AuthModal;
 
 type ButtonType = {
   color?: string;

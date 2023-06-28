@@ -17,8 +17,10 @@ const Nav = ({ session }: Props) => {
       sx={{
         height: "64px",
         padding: "0 3rem",
+        zIndex: '1'
         // border: "1px solid red",
       }}
+      
     >
       <Header.Item full>
         <Header.Link

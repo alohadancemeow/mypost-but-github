@@ -45,7 +45,7 @@ export const postRouter = createTRPCRouter({
       }
     }),
 
-  getPosts: protectedProcedure
+  getPosts: publicProcedure
     .input(
       z.object({
         cursor: z.string().nullish(),

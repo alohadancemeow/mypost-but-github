@@ -8,6 +8,7 @@ import { ThemeProvider } from "@primer/react";
 import deepmerge from "deepmerge";
 import { BaseStyles } from "@primer/react";
 import { Toaster } from "react-hot-toast";
+import ModalProvider from "./ModalProvider";
 
 // # Custom theme
 const theme = {
@@ -44,6 +45,7 @@ const Providers = ({ children }: Props) => {
             <BaseStyles>
               {children}
               <Toaster />
+              <ModalProvider />
             </BaseStyles>
           </ThemeProvider>
         </SSRProvider>

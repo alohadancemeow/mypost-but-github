@@ -1,5 +1,4 @@
 import React from "react";
-import Auth from "@/components/Auth";
 import Feed from "@/components/Feed";
 
 type Props = {};
@@ -7,7 +6,6 @@ type Props = {};
 const page = (props: Props) => {
   return (
     <>
-      {/* <Auth /> */}
       <Feed />
     </>
   );

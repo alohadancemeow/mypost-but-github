@@ -3,13 +3,19 @@ import styled from "styled-components";
 
 import { BookIcon } from "@primer/octicons-react";
 import { Box, Text } from "@primer/react";
-import { MyButton } from "../../Auth";
+import { MyButton } from "@/components/Auth/AuthModal";
 import { postStore } from "@/states/postStore";
+import useAuthModal from "@/hooks/useAuthModal";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
 const PostBanner = (props: Props) => {
   const setIsOpen = postStore((state) => state.setIsOpen);
+  const { isOpen, onClose, onOpen } = useAuthModal();
+
+  const session = useSession();
+  console.log("session", session);
 
   return (
     <MyBox
@@ -38,7 +44,7 @@ const PostBanner = (props: Props) => {
         rounded="4px"
         gap="32px 0 0"
         color="#006EED"
-        onClick={() => setIsOpen()}
+        onClick={() => (session?.data?.user ? setIsOpen() : onOpen())}
       >
         Create a post
       </MyButton>
