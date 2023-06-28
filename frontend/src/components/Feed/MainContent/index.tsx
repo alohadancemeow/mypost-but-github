@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useCallback } from "react";
 import styled from "styled-components";
 
@@ -9,7 +11,7 @@ import HeadUnderLine from "./HeadUnderLine";
 import PostBanner from "./PostBanner";
 import PostDialog from "./PostDialog";
 
-import { api as trpc } from "../../../utils/api";
+import { trpc } from "../../../utils/trpcClient";
 
 import { PostInput } from "../../../../types/myTypes";
 import { Session } from "next-auth";

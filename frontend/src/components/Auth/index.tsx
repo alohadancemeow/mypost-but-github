@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import styled from "styled-components";
 import { signIn } from "next-auth/react";
@@ -11,7 +13,7 @@ import {
 } from "@primer/octicons-react";
 import { AiFillGoogleCircle } from "react-icons/ai";
 
-import { api as trpc } from "../../utils/api";
+import { trpc } from "../../utils/trpcClient";
 import { toast } from "react-hot-toast";
 
 const Auth = () => {

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback } from "react";
 import { RocketIcon } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text } from "@primer/react";

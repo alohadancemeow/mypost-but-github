@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import styled from "styled-components";
 
@@ -11,7 +13,7 @@ import {
 } from "@primer/react";
 import { PeopleIcon } from "@primer/octicons-react";
 
-import { api as trpc } from "../../utils/api";
+import { trpc } from "../../utils/trpcClient";
 
 const LeftContent = () => {
   const [username, setUsername] = useState<string>("");

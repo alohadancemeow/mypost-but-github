@@ -9,7 +9,7 @@ import Tag from "./Tag";
 
 import { PostPopulated } from "../../../../types/myTypes";
 
-import { api as trpc } from "../../../utils/api";
+import { api as trpc } from "../../../utils/trpcClient";
 import { Session } from "next-auth";
 import { useFormatDate } from "../../../hooks/useFormatDate";
 import { postStore } from "../../../../states/postStore";

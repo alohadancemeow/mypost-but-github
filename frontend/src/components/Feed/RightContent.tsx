@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";
 import { NumberIcon } from "@primer/octicons-react";
 
-import { api as trpc } from "../../utils/api";
+import { trpc } from "../../utils/trpcClient";
 import { useFormatDate } from "../../hooks/useFormatDate";
 
 const RightContent = () => {

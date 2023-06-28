@@ -1,18 +1,21 @@
-import { type NextPage } from "next";
-import { useSession } from "next-auth/react";
-import Layout from "../components/Layout";
-import Feed from "../components/Feed";
-import Auth from "../components/Auth";
+import React from "react";
+import Auth from "@/components/Auth";
 
-import { siteMetadata } from "../../site/siteMetadata";
-import { NextSeo } from "next-seo";
+type Props = {};
 
-const Home: NextPage = () => {
-  const { data: session, status } = useSession();
-
+const page = (props: Props) => {
   return (
     <>
-      <NextSeo
+      <Auth />
+    </>
+  );
+};
+
+export default page;
+
+// SEO --> you might need
+{
+  /* <NextSeo
         title={`${siteMetadata.homeTitle}`}
         description={siteMetadata.description}
         canonical={siteMetadata.siteAddress}
@@ -39,13 +42,5 @@ const Home: NextPage = () => {
           site: `${siteMetadata.twitter}`,
           cardType: "summary_large_image",
         }}
-      />
-
-      {status !== "loading" && (
-        <Layout>{session ? <Feed session={session} /> : <Auth />}</Layout>
-      )}
-    </>
-  );
-};
-
-export default Home;
+      /> */
+}
