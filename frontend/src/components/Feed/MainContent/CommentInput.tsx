@@ -1,9 +1,11 @@
+'use client'
+
 import React, { useCallback, useState } from "react";
 import { Avatar, Box, TextInput } from "@primer/react";
 import { Session } from "next-auth";
 
 type Props = {
-  session: Session;
+  session?: Session | null;
   onCreateComment: (postId: string, commentBody: string) => Promise<void>;
   postId: string;
 };
@@ -31,7 +33,7 @@ const CommentInput = ({ session, onCreateComment, postId }: Props) => {
     >
       <Box>
         <Avatar
-          src={`${session.user.image ?? "https://github.com/octocat.png"}`}
+          src={`${session?.user.image ?? "https://github.com/octocat.png"}`}
           size={24}
           alt="@octocat"
         />

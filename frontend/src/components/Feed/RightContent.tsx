@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import styled from "styled-components";
 import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";

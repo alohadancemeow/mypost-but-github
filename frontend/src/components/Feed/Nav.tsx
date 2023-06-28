@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import styled from "styled-components";
 import { RocketIcon, SignOutIcon } from "@primer/octicons-react";
@@ -6,7 +8,7 @@ import { signOut } from "next-auth/react";
 import { Session } from "next-auth";
 
 type Props = {
-  session: Session;
+  session?: Session | null;
 };
 
 const Nav = ({ session }: Props) => {
@@ -32,11 +34,11 @@ const Nav = ({ session }: Props) => {
       <Header.Item sx={{ mr: "0px" }}>
         <Header.Item>
           <MyText fontSize={16} fontWeight={400}>
-            Signed in as {session.user.name}
+            Signed in as {session?.user.name}
           </MyText>
         </Header.Item>
         <Avatar
-          src={`${session.user.image ?? "https://github.com/octocat.png"}`}
+          src={`${session?.user.image ?? "https://github.com/octocat.png"}`}
           size={20}
           alt="@octocat"
         />

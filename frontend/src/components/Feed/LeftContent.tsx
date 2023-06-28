@@ -13,7 +13,7 @@ import {
 } from "@primer/react";
 import { PeopleIcon } from "@primer/octicons-react";
 
-import { trpc } from "../../utils/trpcClient";
+import { trpc } from "@/utils/trpcClient";
 
 const LeftContent = () => {
   const [username, setUsername] = useState<string>("");

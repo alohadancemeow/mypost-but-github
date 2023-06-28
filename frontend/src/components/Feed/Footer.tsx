@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Box, Text, UnderlineNav } from "@primer/react";
 import { RocketIcon } from "@primer/octicons-react";

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { BookIcon } from "@primer/octicons-react";
 import { Box, Text } from "@primer/react";
 import { MyButton } from "../../Auth";
-import { postStore } from "../../../../states/postStore";
+import { postStore } from "@/states/postStore";
 
 type Props = {};
 
@@ -33,7 +33,7 @@ const PostBanner = (props: Props) => {
         Hope with further education, people can expand their horizons.
       </Text>
       <MyButton
-        w="114px"
+        w="125px"
         h="32px"
         rounded="4px"
         gap="32px 0 0"

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { postPopulated } from "../../../../types/myTypes";
+import { postPopulated } from "../../../types/myTypes";
 
 export const postRouter = createTRPCRouter({
   createPost: protectedProcedure

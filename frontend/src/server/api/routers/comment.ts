@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { commentPopulated } from "../../../../types/myTypes";
+import { commentPopulated } from "../../../types/myTypes";
 
 export const commentRouter = createTRPCRouter({
   createComment: protectedProcedure
@@ -29,7 +29,7 @@ export const commentRouter = createTRPCRouter({
         return true;
       } catch (error: any) {
         // console.log(error?.message);
-        throw new TRPCError({code: 'BAD_REQUEST'});
+        throw new TRPCError({ code: "BAD_REQUEST" });
       }
     }),
 

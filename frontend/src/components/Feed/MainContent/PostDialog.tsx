@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import {
   Box,
@@ -11,7 +11,7 @@ import {
   TextInput,
   TextInputWithTokens,
 } from "@primer/react";
-import { Dialog } from "@primer/react/drafts";
+import { Dialog } from "@primer/react";
 import {
   BookIcon,
   HashIcon,
@@ -19,8 +19,8 @@ import {
   RocketIcon,
 } from "@primer/octicons-react";
 
-import { PostInput, tokens } from "../../../../types/myTypes";
-import { postStore } from "../../../../states/postStore";
+import { PostInput, tokens } from "@/types/myTypes";
+import { postStore } from "@/states/postStore";
 import { shallow } from "zustand/shallow";
 
 type Props = {
@@ -82,10 +82,14 @@ const PostDialog = ({ onCreatePost, isCreatePostLoading }: Props) => {
     <Box>
       {isOpen && (
         <Dialog
+          isOpen={isOpen}
           sx={{ bg: "#373E47", color: "white" }}
-          title={<Text as="h2">Create your post</Text>}
-          onClose={() => setIsOpen()}
+          // title={<Text as="h2">Create your post</Text>}
+          onDismiss={() => setIsOpen()}
         >
+          <Dialog.Header id="header-id">
+            <Text as="h2">Create your post</Text>
+          </Dialog.Header>
           <>
             <MyBox>
               <Box>

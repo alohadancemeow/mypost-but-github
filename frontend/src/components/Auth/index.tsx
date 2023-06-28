@@ -13,7 +13,7 @@ import {
 } from "@primer/octicons-react";
 import { AiFillGoogleCircle } from "react-icons/ai";
 
-import { trpc } from "../../utils/trpcClient";
+import { trpc } from "@/utils/trpcClient";
 import { toast } from "react-hot-toast";
 
 const Auth = () => {
@@ -101,8 +101,9 @@ const Auth = () => {
               Mypost but Github
             </Text>
           </Box>
-          <FormControl>
+          <FormControl id="email">
             <FormControl.Label
+              htmlFor="email"
               sx={{
                 fontWeight: "bold",
                 color: "canvas.default",
@@ -121,8 +122,9 @@ const Auth = () => {
               onChange={(e) => setUser({ ...user, email: e.target.value })}
             />
           </FormControl>
-          <FormControl sx={{ margin: "10px" }}>
+          <FormControl sx={{ margin: "10px" }} id="password">
             <FormControl.Label
+              htmlFor="password"
               sx={{
                 fontWeight: "bold",
                 color: "canvas.default",

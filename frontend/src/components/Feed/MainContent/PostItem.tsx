@@ -7,12 +7,12 @@ import CommentItem from "./CommentItem";
 import CommentInput from "./CommentInput";
 import Tag from "./Tag";
 
-import { PostPopulated } from "../../../../types/myTypes";
+import { PostPopulated } from "../../../types/myTypes";
 
-import { api as trpc } from "../../../utils/trpcClient";
+import { trpc } from "../../../utils/trpcClient";
 import { Session } from "next-auth";
 import { useFormatDate } from "../../../hooks/useFormatDate";
-import { postStore } from "../../../../states/postStore";
+import { postStore } from "../../../states/postStore";
 import { shallow } from "zustand/shallow";
 
 export type ReactionButtonType = {
@@ -22,7 +22,7 @@ export type ReactionButtonType = {
 };
 
 type Props = {
-  session: Session;
+  session?: Session | null;
   post: PostPopulated;
   onCreateComment: (postId: string, commentBody: string) => Promise<void>;
   onShare: (postId: string) => Promise<void>;
@@ -76,7 +76,7 @@ const PostItem = ({ session, post, onCreateComment, onShare }: Props) => {
 
   // if you've liked, set like -> true
   useEffect(() => {
-    const liked = post.likes.some((p) => p.userId === session.user.id);
+    const liked = post.likes.some((p) => p.userId === session?.user.id);
     if (liked)
       setSelected({
         ...selected,

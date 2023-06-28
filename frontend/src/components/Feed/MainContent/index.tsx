@@ -11,15 +11,15 @@ import HeadUnderLine from "./HeadUnderLine";
 import PostBanner from "./PostBanner";
 import PostDialog from "./PostDialog";
 
-import { trpc } from "../../../utils/trpcClient";
+import { trpc } from "@/utils/trpcClient";
 
-import { PostInput } from "../../../../types/myTypes";
+import { PostInput } from "@/types/myTypes";
 import { Session } from "next-auth";
 import { useIsMutating } from "@tanstack/react-query";
-import { postStore } from "../../../../states/postStore";
+import { postStore } from "@/states/postStore";
 
 type Props = {
-  session: Session;
+  session?: Session | null;
 };
 
 const MainContent = ({ session }: Props) => {

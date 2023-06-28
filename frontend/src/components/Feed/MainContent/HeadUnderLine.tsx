@@ -1,3 +1,5 @@
+'use client'
+
 import React from "react";
 import { HomeIcon } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text, UnderlineNav } from "@primer/react";

@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import styled from "styled-components";
 import { Session } from "next-auth";
@@ -11,7 +13,7 @@ import Nav from "./Nav";
 import Footer from "./Footer";
 
 type Props = {
-  session: Session;
+  session?: Session | null;
 };
 
 const Feed = ({ session }: Props) => {

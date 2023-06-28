@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { PostInput } from "../types/myTypes";
+import { PostInput } from "@/types/myTypes";
 
 type PostStore = {
   isOpen: boolean;
