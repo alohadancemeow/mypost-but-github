@@ -5,13 +5,13 @@ import styled from "styled-components";
 import { RocketIcon, SignOutIcon } from "@primer/octicons-react";
 import { Avatar, Box, Header, StyledOcticon, Text } from "@primer/react";
 import { signOut } from "next-auth/react";
-import { Session } from "next-auth";
+import { trpc } from "@/utils/trpcClient";
 
-type Props = {
-  session?: Session | null;
-};
+type Props = {};
 
-const Nav = ({ session }: Props) => {
+const Nav = ({}: Props) => {
+  const { data: currentUser } = trpc.user.getCurrentUser.useQuery();
+
   return (
     <MyHeader
       sx={{
@@ -37,11 +37,11 @@ const Nav = ({ session }: Props) => {
       <Header.Item sx={{ mr: "0px" }}>
         <Header.Item>
           <MyText fontSize={16} fontWeight={400}>
-            Signed in as {session?.user.name}
+            Signed in as {currentUser?.name}
           </MyText>
         </Header.Item>
         <Avatar
-          src={`${session?.user.image ?? "https://github.com/octocat.png"}`}
+          src={`${currentUser?.image ?? "https://github.com/octocat.png"}`}
           size={20}
           alt="@octocat"
         />

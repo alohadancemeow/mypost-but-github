@@ -16,11 +16,22 @@ export const commentRouter = createTRPCRouter({
       const { prisma, session } = ctx;
       const { body, postId } = input;
 
-      if (!session.user) {
+      // issue: ID in session is missing
+      if (!session.user.email) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      const { id: userId } = session.user;
+      const user = await prisma.user.findUnique({
+        where: {
+          email: session.user.email,
+        },
+      });
+
+      if (!user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      const { id: userId } = user;
 
       try {
         const comment = await prisma.comment.create({

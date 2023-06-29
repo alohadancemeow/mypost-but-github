@@ -12,10 +12,10 @@ import Tag from "./Tag";
 import { PostPopulated } from "@/types/myTypes";
 
 import { trpc } from "@/utils/trpcClient";
-import { Session } from "next-auth";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import useLike from "@/hooks/useLike";
 import useAuthModal from "@/hooks/useAuthModal";
+import { User } from "@prisma/client";
 
 export type ReactionButtonType = {
   comment: boolean;
@@ -23,13 +23,13 @@ export type ReactionButtonType = {
 };
 
 type Props = {
-  session?: Session | null;
+  currentUser?: User | null;
   post: PostPopulated;
   onCreateComment: (postId: string, commentBody: string) => Promise<void>;
   onShare: (postId: string) => Promise<void>;
 };
 
-const PostItem = ({ session, post, onCreateComment, onShare }: Props) => {
+const PostItem = ({ currentUser, post, onCreateComment, onShare }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: false,
     share: false,
@@ -37,7 +37,6 @@ const PostItem = ({ session, post, onCreateComment, onShare }: Props) => {
 
   const authModal = useAuthModal();
   const { dateFormate } = useFormatDate();
-  const { data: currentUser } = trpc.user.getCurrentUser.useQuery();
   const { hasLiked, toggleLike } = useLike({ post, currentUser });
 
   // Get comments - Create comment
@@ -139,8 +138,9 @@ const PostItem = ({ session, post, onCreateComment, onShare }: Props) => {
                 <CommentItem key={comment.id} comment={comment} />
               ))}
           </>
+
           <CommentInput
-            session={session}
+            currentUser={currentUser}
             onCreateComment={onCreateComment}
             postId={post.id}
           />

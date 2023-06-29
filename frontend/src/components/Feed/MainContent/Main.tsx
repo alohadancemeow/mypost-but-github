@@ -14,16 +14,16 @@ import PostDialog from "./PostDialog";
 import { trpc } from "@/utils/trpcClient";
 
 import { PostInput } from "@/types/myTypes";
-import { Session } from "next-auth";
 import { useIsMutating } from "@tanstack/react-query";
 import { postStore } from "@/states/postStore";
 import Footer from "../Footer";
+import { User } from "@prisma/client";
 
 type Props = {
-  session?: Session | null;
+  currentUser?: User | null;
 };
 
-const MainContent = ({ session }: Props) => {
+const MainContent = ({ currentUser }: Props) => {
   const setIsOpen = postStore((state) => state.setIsOpen);
 
   const utils = trpc.useContext();
@@ -158,7 +158,7 @@ const MainContent = ({ session }: Props) => {
         // borderLeft="1px solid #636568"
         borderRadius="8px"
       >
-        <PostBanner />
+        <PostBanner currentUser={currentUser} />
         <PostDialog
           onCreatePost={onCreatePost}
           isCreatePostLoading={isCreatePostLoading}
@@ -171,7 +171,7 @@ const MainContent = ({ session }: Props) => {
           posts.map((post) => (
             <PostItem
               key={post.id}
-              session={session}
+              currentUser={currentUser}
               post={post}
               onCreateComment={onCreateComment}
               onShare={onShare}

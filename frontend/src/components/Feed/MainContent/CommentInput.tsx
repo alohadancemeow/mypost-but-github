@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
 import React, { useCallback, useState } from "react";
 import { Avatar, Box, TextInput } from "@primer/react";
-import { Session } from "next-auth";
+import { User } from "@prisma/client";
 
 type Props = {
-  session?: Session | null;
+  currentUser?: User | null;
   onCreateComment: (postId: string, commentBody: string) => Promise<void>;
   postId: string;
 };
 
-const CommentInput = ({ session, onCreateComment, postId }: Props) => {
+const CommentInput = ({ currentUser, onCreateComment, postId }: Props) => {
   const [commentBody, setCommentBody] = useState<string>("");
 
   const handleOnCreateComment = useCallback(
@@ -33,7 +33,7 @@ const CommentInput = ({ session, onCreateComment, postId }: Props) => {
     >
       <Box>
         <Avatar
-          src={`${session?.user.image ?? "https://github.com/octocat.png"}`}
+          src={`${currentUser?.image ?? "https://github.com/octocat.png"}`}
           size={24}
           alt="@octocat"
         />
@@ -43,13 +43,18 @@ const CommentInput = ({ session, onCreateComment, postId }: Props) => {
         aria-label="username"
         // name="username"
         // autoComplete="username"
-        placeholder="Type here..."
+        placeholder={
+          currentUser?.email === undefined
+            ? `Sign in to comment`
+            : "Type here..."
+        }
         type="text"
         value={commentBody}
         onChange={(e) => setCommentBody(e.target.value)}
         onKeyUp={(e) => {
           handleOnCreateComment(e);
         }}
+        disabled={currentUser?.email === undefined}
         sx={{
           bg: "transparent",
           border: "1px solid #444C56",

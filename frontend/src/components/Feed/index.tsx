@@ -2,7 +2,6 @@
 
 import React from "react";
 import styled from "styled-components";
-import { Session } from "next-auth";
 
 import { Box } from "@primer/react";
 
@@ -11,12 +10,10 @@ import MainContent from "./MainContent/Main";
 import RightContent from "./RightContent";
 import { trpc } from "@/utils/trpcClient";
 
-type Props = {
-  session?: Session | null;
-};
+type Props = {};
 
-const Feed = ({ session }: Props) => {
-  const { data } = trpc.user.getCurrentUser.useQuery();
+const Feed = ({}: Props) => {
+  const { data: currentUser } = trpc.user.getCurrentUser.useQuery();
   // console.log("currentUser", data);
 
   return (
@@ -40,7 +37,7 @@ const Feed = ({ session }: Props) => {
           height="100%"
           width="100%"
         >
-          <MainContent session={session} />
+          <MainContent currentUser={currentUser} />
           <RightContent />
         </MyBox>
       </Box>
