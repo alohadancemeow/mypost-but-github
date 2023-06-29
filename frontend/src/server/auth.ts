@@ -8,7 +8,6 @@ import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { env } from "../env.mjs";
 import { prisma } from "./db";
 import { compare } from "bcrypt";
 
@@ -23,6 +22,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      username?: string;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -41,32 +41,6 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  **/
 export const authOptions: NextAuthOptions = {
-  session: {
-    strategy: "jwt",
-  },
-  callbacks: {
-    /**
-     * "No session is returned after Credentials login"
-     * @solution https://github.com/nextauthjs/next-auth/discussions/4144
-     */
-
-    async jwt({ token, user }) {
-      if (user) {
-        // token = user;
-        token = { ...user };
-      }
-      return Promise.resolve(token);
-    },
-
-    async session({ session, token, user }) {
-      const sessionUser = { ...session.user, ...user, ...token };
-
-      return Promise.resolve({
-        ...session,
-        user: sessionUser,
-      });
-    },
-  },
   adapter: PrismaAdapter(prisma),
   providers: [
     GitHubProvider({
@@ -81,41 +55,44 @@ export const authOptions: NextAuthOptions = {
       type: "credentials",
       name: "Credentials",
       credentials: {
-        // email: { label: "Email", type: "text" },
-        // password: { label: "Password", type: "text" },
+        email: { label: "email", type: "text" },
+        password: { label: "password", type: "password" },
       },
-      async authorize(credentials, req) {
-        if (!credentials) return null;
-
-        const { email, password } = credentials as {
-          email: string;
-          password: string;
-        };
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Invalid credentials");
+        }
 
         // find user by email
         const user = await prisma.user.findUnique({
           where: {
-            email,
+            email: credentials.email,
           },
         });
 
-        if (!user) {
-          console.log("User not found");
-          throw new Error("User not found");
+        if (!user || !user?.password) {
+          throw new Error("Invalid credentials");
         }
 
         // compare password
-        const checkedPassword = await compare(password, user.password!);
+        const isCorrectPassword = await compare(
+          credentials.password,
+          user.password
+        );
 
-        if (!checkedPassword || user.email !== email) {
-          throw new Error("email or password invalid");
+        if (!isCorrectPassword) {
+          throw new Error("Invalid credentials");
         }
 
         return user;
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+  },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
 };
 
 /**

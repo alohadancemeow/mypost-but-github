@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { postPopulated } from "../../../types/myTypes";
+import { postPopulated } from "@/types/myTypes";
 
 export const postRouter = createTRPCRouter({
   createPost: protectedProcedure
@@ -16,29 +16,26 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { prisma, session } = ctx;
       const { title, body, tags } = input;
+
+      if (!session.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
       const { id: userId } = session.user;
 
       // create post
-      // @issue: createMany is not supported on SQLite unfortunately
       try {
-        await prisma.post.create({
+        const post = await prisma.post.create({
           data: {
             title,
             body,
-            userId,
-            tags: {
-              createMany: {
-                data:
-                  tags!.map((tag) => ({
-                    body: tag,
-                  })) ?? "Just sharing",
-              },
-            },
+            authorId: userId,
+            tags: tags,
             shares: 0,
           },
         });
 
-        return true;
+        return post;
       } catch (error: any) {
         // console.log("create post err", error?.message);
         throw new TRPCError({ code: "BAD_REQUEST" });
@@ -63,9 +60,7 @@ export const postRouter = createTRPCRouter({
         orderBy:
           orderBy === "likes"
             ? {
-                likes: {
-                  _count: "desc",
-                },
+                likedIds: "desc",
               }
             : {
                 createdAt: "desc",
@@ -89,25 +84,40 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { prisma, session } = ctx;
       const { postId } = input;
+
+      if (!session.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
       const { id: userId } = session.user;
 
+      // check if post is exist
+      const post = await prisma.post.findUnique({
+        where: {
+          id: postId,
+        },
+      });
+
+      if (!post) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      // like --> update post by adding currentUserId
       try {
-        await prisma.like.create({
+        const updatedPost = await prisma.post.update({
+          where: {
+            id: postId,
+          },
           data: {
-            post: {
-              connect: {
-                id: postId,
-              },
-            },
-            user: {
-              connect: {
-                id: userId,
-              },
+            likedIds: {
+              push: userId,
             },
           },
         });
 
-        return true;
+        //   TODO: Notification here
+
+        return updatedPost;
       } catch (error: any) {
         // console.log(error?.message);
         throw new TRPCError({ code: "BAD_REQUEST" });
@@ -119,18 +129,39 @@ export const postRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { prisma, session } = ctx;
       const { postId } = input;
+
+      if (!session.user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
       const { id: userId } = session.user;
 
-      await prisma.like.delete({
+      // check if post is exist
+      const post = await prisma.post.findUnique({
         where: {
-          postId_userId: {
-            postId,
-            userId,
-          },
+          id: postId,
         },
       });
 
-      return true;
+      if (!post) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      let updatedLikedIds = [...(post.likedIds || [])];
+
+      // unlike --> update post by deleting currentUserId
+      const updatedPost = await prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          likedIds: updatedLikedIds.filter((id) => id !== userId),
+        },
+      });
+
+      //   TODO: Notification here
+
+      return updatedPost;
     }),
 
   share: publicProcedure

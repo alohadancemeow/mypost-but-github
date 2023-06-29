@@ -11,12 +11,17 @@ import MainContent from "./MainContent";
 import RightContent from "./RightContent";
 import Nav from "./Nav";
 import Footer from "./Footer";
+import { trpc } from "@/utils/trpcClient";
 
 type Props = {
   session?: Session | null;
 };
 
 const Feed = ({ session }: Props) => {
+
+  const {data} = trpc.user.getCurrentUser.useQuery();
+  console.log("currentUser", data);
+  
   return (
     <Box
       bg="canvas.bg"
