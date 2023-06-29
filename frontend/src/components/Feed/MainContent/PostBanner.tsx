@@ -15,7 +15,7 @@ const PostBanner = (props: Props) => {
   const { isOpen, onClose, onOpen } = useAuthModal();
 
   const session = useSession();
-  console.log("session", session);
+  // console.log("session", session);
 
   return (
     <MyBox

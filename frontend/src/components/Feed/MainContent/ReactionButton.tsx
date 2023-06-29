@@ -11,14 +11,15 @@ import {
 import { Box, StyledOcticon, Text } from "@primer/react";
 
 import { ReactionButtonType } from "./PostItem";
-import { PostPopulated } from "../../../types/myTypes";
+import { PostPopulated } from "@/types/myTypes";
 
 type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
-  handleLike: (postId: string) => Promise<void>;
+  handleLike: () => void;
   onShare: (postId: string) => Promise<void>;
   post: PostPopulated;
+  hasLiked: boolean;
 };
 
 const ReactionButton = ({
@@ -27,12 +28,8 @@ const ReactionButton = ({
   handleLike,
   post,
   onShare,
+  hasLiked,
 }: Props) => {
-  const onLikeCliked = useCallback(async () => {
-    setSelected({ ...selected, like: !selected.like });
-    await handleLike(post.id);
-  }, [setSelected, handleLike, selected]);
-
   const onShareCliked = useCallback(async () => {
     setSelected({ ...selected, share: !selected.share });
     await onShare(post.id);
@@ -53,9 +50,9 @@ const ReactionButton = ({
             opacity: 0.7,
           },
         }}
-        onClick={onLikeCliked}
+        onClick={() => handleLike()}
       >
-        {selected && selected.like ? (
+        {hasLiked ? (
           <>
             <StyledOcticon
               icon={HeartFillIcon}
@@ -71,7 +68,7 @@ const ReactionButton = ({
             >
               Liked{" "}
               <MyText>
-                {post.likes.length === 0 ? "" : `· ${post.likes.length}`}
+                {post.likedIds.length === 0 ? "" : `· ${post.likedIds.length}`}
               </MyText>
             </Text>
           </>
@@ -88,7 +85,7 @@ const ReactionButton = ({
               Like{" "}
               <MyText>
                 {" "}
-                {post.likes.length === 0 ? "" : `· ${post.likes.length}`}
+                {post.likedIds.length === 0 ? "" : `· ${post.likedIds.length}`}
               </MyText>
             </Text>
           </>

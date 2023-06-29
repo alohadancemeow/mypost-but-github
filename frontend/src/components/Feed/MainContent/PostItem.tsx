@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+"use client";
+
+import React, { useState, useCallback } from "react";
 import { Avatar, Box, Text } from "@primer/react";
 
 import ReactionButton from "./ReactionButton";
@@ -7,16 +9,15 @@ import CommentItem from "./CommentItem";
 import CommentInput from "./CommentInput";
 import Tag from "./Tag";
 
-import { PostPopulated } from "../../../types/myTypes";
+import { PostPopulated } from "@/types/myTypes";
 
-import { trpc } from "../../../utils/trpcClient";
+import { trpc } from "@/utils/trpcClient";
 import { Session } from "next-auth";
-import { useFormatDate } from "../../../hooks/useFormatDate";
-import { postStore } from "../../../states/postStore";
-import { shallow } from "zustand/shallow";
+import { useFormatDate } from "@/hooks/useFormatDate";
+import useLike from "@/hooks/useLike";
+import useAuthModal from "@/hooks/useAuthModal";
 
 export type ReactionButtonType = {
-  like: boolean;
   comment: boolean;
   share: boolean;
 };
@@ -30,59 +31,28 @@ type Props = {
 
 const PostItem = ({ session, post, onCreateComment, onShare }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
-    like: false,
     comment: false,
     share: false,
   });
 
+  const authModal = useAuthModal();
   const { dateFormate } = useFormatDate();
+  const { data: currentUser } = trpc.user.getCurrentUser.useQuery();
+  const { hasLiked, toggleLike } = useLike({ post, currentUser });
 
   // Get comments - Create comment
   const { data: commentData } = trpc.comment.getComments.useQuery({
     postId: post.id,
   });
 
-  const utils = trpc.useContext();
-
-  // call like - unlike mutation,
-  // and update cache
-  const { mutateAsync: likeMutation } = trpc.post.like.useMutation({
-    onMutate: async () => {
-      await utils.post.getPosts.cancel();
-      const postUpdate = utils.post.getPosts.getData();
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
-    },
-  });
-
-  const { mutateAsync: unlikeMutation } = trpc.post.unlike.useMutation({
-    onMutate: async () => {
-      await utils.post.getPosts.cancel();
-      const postUpdate = utils.post.getPosts.getData();
-      if (postUpdate) utils.post.getPosts.setData({}, postUpdate);
-    },
-  });
-
   // Handle like - unlike
-  const handleLike = useCallback(
-    async (postId: string) => {
-      if (!selected.like) {
-        await likeMutation({ postId });
-      } else {
-        await unlikeMutation({ postId });
-      }
-    },
-    [likeMutation, unlikeMutation, selected]
-  );
+  const handleLike = useCallback(async () => {
+    if (!currentUser) {
+      return authModal.onOpen();
+    }
 
-  // if you've liked, set like -> true
-  useEffect(() => {
-    const liked = post.likes.some((p) => p.userId === session?.user.id);
-    if (liked)
-      setSelected({
-        ...selected,
-        like: true,
-      });
-  }, []);
+    toggleLike();
+  }, [authModal, currentUser, toggleLike]);
 
   return (
     <Box
@@ -146,8 +116,8 @@ const PostItem = ({ session, post, onCreateComment, onShare }: Props) => {
             {post.body}
           </Text>
           <Box marginTop={30}>
-            {post.tags.map((tag) => (
-              <Tag key={tag.id} text={tag.body ?? ""} />
+            {post.tags.map((tag, index) => (
+              <Tag key={index} text={tag ?? ""} />
             ))}
           </Box>
           <ReactionButton
@@ -156,6 +126,7 @@ const PostItem = ({ session, post, onCreateComment, onShare }: Props) => {
             handleLike={handleLike}
             onShare={onShare}
             post={post}
+            hasLiked={hasLiked}
           />
           <Popup selected={selected} setSelected={setSelected} />
         </Box>

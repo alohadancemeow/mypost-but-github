@@ -17,7 +17,7 @@ type Props = {
 
 const Feed = ({ session }: Props) => {
   const { data } = trpc.user.getCurrentUser.useQuery();
-  console.log("currentUser", data);
+  // console.log("currentUser", data);
 
   return (
     <Box

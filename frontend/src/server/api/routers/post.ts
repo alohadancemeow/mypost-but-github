@@ -17,11 +17,22 @@ export const postRouter = createTRPCRouter({
       const { prisma, session } = ctx;
       const { title, body, tags } = input;
 
-      if (!session.user) {
+      // issue: ID in session is missing
+      if (!session.user.email) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      const { id: userId } = session.user;
+      const user = await prisma.user.findUnique({
+        where: {
+          email: session.user.email,
+        },
+      });
+
+      if (!user) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      const { id: userId } = user;
 
       // create post
       try {
@@ -30,14 +41,14 @@ export const postRouter = createTRPCRouter({
             title,
             body,
             authorId: userId,
-            tags: tags,
+            tags: tags?.map((item) => item) ?? [],
             shares: 0,
           },
         });
 
         return post;
       } catch (error: any) {
-        // console.log("create post err", error?.message);
+        console.log("create post err", error?.message);
         throw new TRPCError({ code: "BAD_REQUEST" });
       }
     }),
@@ -80,16 +91,14 @@ export const postRouter = createTRPCRouter({
     }),
 
   like: protectedProcedure
-    .input(z.object({ postId: z.string() }))
+    .input(z.object({ postId: z.string(), userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const { prisma, session } = ctx;
-      const { postId } = input;
+      const { prisma } = ctx;
+      const { postId, userId } = input;
 
-      if (!session.user) {
+      if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-
-      const { id: userId } = session.user;
 
       // check if post is exist
       const post = await prisma.post.findUnique({
@@ -125,16 +134,14 @@ export const postRouter = createTRPCRouter({
     }),
 
   unlike: protectedProcedure
-    .input(z.object({ postId: z.string() }))
+    .input(z.object({ postId: z.string(), userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const { prisma, session } = ctx;
-      const { postId } = input;
+      const { prisma } = ctx;
+      const { postId, userId } = input;
 
-      if (!session.user) {
+      if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
-
-      const { id: userId } = session.user;
 
       // check if post is exist
       const post = await prisma.post.findUnique({
@@ -171,7 +178,7 @@ export const postRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { prisma, session } = ctx;
+      const { prisma } = ctx;
       const { postId } = input;
 
       await prisma.post.update({

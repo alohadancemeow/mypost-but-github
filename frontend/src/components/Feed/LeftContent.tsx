@@ -22,15 +22,17 @@ const LeftContent = () => {
 
   // filtering users by username
   const filteredUser =
-    userData?.filter((user) => user.name?.includes(username)) ?? userData;
+    userData?.filter((user) =>
+      user.name?.toLocaleLowerCase().includes(username.toLowerCase())
+    ) ?? userData;
 
   return (
     <MyBox
       style={{
         position: "-webkit-sticky",
         borderRight: "1px solid #444C56",
-        height: '100vh',
-        padding: '25px'
+        // height: '100vh',
+        padding: "25px",
       }}
     >
       <Box
