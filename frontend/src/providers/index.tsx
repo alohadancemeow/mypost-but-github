@@ -17,7 +17,7 @@ const theme = {
       default: "#fff",
       primary: "#22272E",
       secondary: "#444C56",
-      bg: "#373E47",
+      bg: "#373e47",
       border: "#444C56",
       subtext: "#ADBAC7",
       hightlight: "#006EED",

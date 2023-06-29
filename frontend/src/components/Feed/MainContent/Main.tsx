@@ -17,6 +17,7 @@ import { PostInput } from "@/types/myTypes";
 import { Session } from "next-auth";
 import { useIsMutating } from "@tanstack/react-query";
 import { postStore } from "@/states/postStore";
+import Footer from "../Footer";
 
 type Props = {
   session?: Session | null;
@@ -154,7 +155,7 @@ const MainContent = ({ session }: Props) => {
         bg="canvas.primary"
         // color="fg.onEmphasis"
         // border="1px solid red"
-        borderLeft="1px solid #636568"
+        // borderLeft="1px solid #636568"
         borderRadius="8px"
       >
         <PostBanner />
@@ -182,6 +183,7 @@ const MainContent = ({ session }: Props) => {
           loadNextPost={loadNextPost}
         />
       </MyBox>
+      <Footer />
     </div>
   );
 };
@@ -191,7 +193,7 @@ export default MainContent;
 // responsive
 const MyBox = styled(Box)`
   @media (max-width: 768px) {
-    border: none;
+    /* border: none; */
   }
   @media (max-width: 544px) {
     padding: 10px;

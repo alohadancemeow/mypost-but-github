@@ -28,6 +28,9 @@ const LeftContent = () => {
     <MyBox
       style={{
         position: "-webkit-sticky",
+        borderRight: "1px solid #444C56",
+        height: '100vh',
+        padding: '25px'
       }}
     >
       <Box

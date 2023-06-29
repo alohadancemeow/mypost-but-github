@@ -21,7 +21,7 @@ const RightContent = () => {
 
   return (
     <MyBox
-      p={3}
+      p={25}
       //  border="1px solid red"
     >
       <Box

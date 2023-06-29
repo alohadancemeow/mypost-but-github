@@ -8,17 +8,18 @@ const Footer = () => {
   return (
     <Box
       sx={{
-        margin: "0 10px",
+        // margin: "0 10px",
         color: "#57606A",
         // border: "1px solid red",
       }}
     >
-      <UnderlineNav aria-label="Main" />
+      {/* <UnderlineNav aria-label="Main" /> */}
       <Box
         display="flex"
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
+        // paddingLeft={30}
         marginBottom={24}
       >
         <Text

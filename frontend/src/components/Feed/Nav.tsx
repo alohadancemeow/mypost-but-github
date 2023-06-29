@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React from "react";
 import styled from "styled-components";
@@ -15,12 +15,13 @@ const Nav = ({ session }: Props) => {
   return (
     <MyHeader
       sx={{
-        height: "64px",
+        bg: "canvas.primary",
+        height: "65px",
         padding: "0 3rem",
-        zIndex: '1'
-        // border: "1px solid red",
+        color: "white",
+        zIndex: "1",
+        borderBottom: "1px solid #444C56",
       }}
-      
     >
       <Header.Item full>
         <Header.Link
