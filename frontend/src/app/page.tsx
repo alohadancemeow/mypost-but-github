@@ -1,7 +1,6 @@
 import React from "react";
 import Feed from "@/components/Feed";
 import Nav from "@/components/Feed/Nav";
-import LeftContent from "@/components/Feed/LeftContent";
 
 type Props = {};
 

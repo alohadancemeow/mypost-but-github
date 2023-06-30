@@ -16,6 +16,17 @@ export const userRouter = createTRPCRouter({
 
       //create user
       try {
+        const existingUser = await prisma.user.findUnique({
+          where: {
+            email,
+          },
+        });
+
+        if (existingUser) {
+          // console.log("user existed");
+          throw new TRPCError({ code: "BAD_REQUEST" });
+        }
+
         const user = await prisma.user.create({
           data: {
             email,
@@ -26,7 +37,7 @@ export const userRouter = createTRPCRouter({
 
         return user;
       } catch (error: any) {
-        // console.log(error?.message);
+        console.log(error?.message);
         throw new TRPCError({ code: "BAD_REQUEST" });
       }
     }),

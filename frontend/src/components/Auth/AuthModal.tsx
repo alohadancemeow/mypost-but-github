@@ -17,6 +17,7 @@ import { AiFillGoogleCircle } from "react-icons/ai";
 
 import Modal from "../Modal";
 import useAuthModal from "@/hooks/useAuthModal";
+import { useRouter } from "next/navigation";
 
 const AuthModal = () => {
   const [user, setUser] = useState<{ email: string; password: string }>({
@@ -24,6 +25,7 @@ const AuthModal = () => {
     password: "",
   });
 
+  const router = useRouter();
   const { isOpen, onClose, onOpen } = useAuthModal();
 
   const onChange = (open: boolean) => {
@@ -62,8 +64,8 @@ const AuthModal = () => {
     if (!user) return;
 
     const response = await signIn("credentials", {
-      redirect: false,
-      callbackUrl: `/`,
+      // redirect: false,
+      // callbackUrl: `/`,
       email: user.email,
       password: user.password,
     });
@@ -74,6 +76,8 @@ const AuthModal = () => {
 
     if (response?.ok) {
       toast.success("login successfully!");
+      router.refresh();
+      onClose();
     }
   };
 
@@ -129,6 +133,7 @@ const AuthModal = () => {
               name="email"
               autoComplete="email"
               placeholder="enter your email"
+              value={user.email}
               onChange={(e) => setUser({ ...user, email: e.target.value })}
             />
           </FormControl>
@@ -150,6 +155,7 @@ const AuthModal = () => {
               name="password"
               autoComplete="password"
               placeholder="enter your password"
+              value={user.password}
               onChange={(e) => setUser({ ...user, password: e.target.value })}
             />
           </FormControl>

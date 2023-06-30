@@ -22,7 +22,6 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      username?: string;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];

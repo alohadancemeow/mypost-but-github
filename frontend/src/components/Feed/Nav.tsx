@@ -34,25 +34,29 @@ const Nav = ({}: Props) => {
           </Text>
         </Header.Link>
       </Header.Item>
-      <Header.Item sx={{ mr: "0px" }}>
-        <Header.Item>
-          <MyText fontSize={16} fontWeight={400}>
-            Signed in as {currentUser?.name}
-          </MyText>
-        </Header.Item>
-        <Avatar
-          src={`${currentUser?.image ?? "https://github.com/octocat.png"}`}
-          size={20}
-          alt="@octocat"
-        />
-        <Box sx={{ cursor: "pointer" }} onClick={() => signOut()}>
-          <StyledOcticon
-            icon={SignOutIcon}
-            size={16}
-            sx={{ ml: "20px", cursor: "pointer" }}
+      {currentUser ? (
+        <Header.Item sx={{ mr: "0px" }}>
+          <Header.Item>
+            <MyText fontSize={16} fontWeight={400}>
+              Signed in as {currentUser?.name}
+            </MyText>
+          </Header.Item>
+          <Avatar
+            src={`${currentUser?.image ?? "https://github.com/octocat.png"}`}
+            size={20}
+            alt="@octocat"
           />
-        </Box>
-      </Header.Item>
+          <Box sx={{ cursor: "pointer" }} onClick={() => signOut()}>
+            <StyledOcticon
+              icon={SignOutIcon}
+              size={16}
+              sx={{ ml: "20px", cursor: "pointer" }}
+            />
+          </Box>
+        </Header.Item>
+      ) : (
+        <>sign in</>
+      )}
     </MyHeader>
   );
 };

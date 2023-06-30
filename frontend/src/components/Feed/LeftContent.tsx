@@ -55,9 +55,11 @@ const LeftContent = () => {
           </Heading>
         </Box>
         <TextInput
+          id="username"
           contrast
           aria-label="username"
           name="username"
+          value={username}
           type="text"
           placeholder="Find a creator..."
           autoComplete="username"
