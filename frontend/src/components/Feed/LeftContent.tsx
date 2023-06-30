@@ -32,7 +32,7 @@ const LeftContent = () => {
         position: "-webkit-sticky",
         borderRight: "1px solid #444C56",
         // height: '100vh',
-        padding: "25px",
+        padding: "40px 25px 25px",
       }}
     >
       <Box

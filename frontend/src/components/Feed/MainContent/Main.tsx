@@ -152,6 +152,7 @@ const MainContent = ({ currentUser }: Props) => {
     >
       <MyBox
         p={4}
+        marginTop={25}
         bg="canvas.primary"
         // color="fg.onEmphasis"
         // border="1px solid red"
@@ -197,5 +198,6 @@ const MyBox = styled(Box)`
   }
   @media (max-width: 544px) {
     padding: 10px;
+    margin: 0;
   }
 `;

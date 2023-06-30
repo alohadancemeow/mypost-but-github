@@ -6,18 +6,21 @@ import { RocketIcon, SignOutIcon } from "@primer/octicons-react";
 import { Avatar, Box, Header, StyledOcticon, Text } from "@primer/react";
 import { signOut } from "next-auth/react";
 import { trpc } from "@/utils/trpcClient";
+import { MyButton } from "../Auth/AuthModal";
+import useAuthModal from "@/hooks/useAuthModal";
 
 type Props = {};
 
 const Nav = ({}: Props) => {
   const { data: currentUser } = trpc.user.getCurrentUser.useQuery();
+  const authModal = useAuthModal();
 
   return (
     <MyHeader
       sx={{
         bg: "canvas.primary",
         height: "65px",
-        padding: "0 3rem",
+        padding: "0 5rem",
         color: "white",
         zIndex: "1",
         borderBottom: "1px solid #444C56",
@@ -55,7 +58,17 @@ const Nav = ({}: Props) => {
           </Box>
         </Header.Item>
       ) : (
-        <>sign in</>
+        <Header.Item sx={{ mr: "0px" }}>
+          <MyButton
+            w="130px"
+            h="32px"
+            rounded="4px"
+            bordered
+            onClick={() => authModal.onOpen()}
+          >
+            Join Us ✌️🎉
+          </MyButton>
+        </Header.Item>
       )}
     </MyHeader>
   );
@@ -65,6 +78,10 @@ export default Nav;
 
 // responsive
 const MyHeader = styled(Header)`
+  @media (max-width: 768px) {
+    padding: 0 2.5rem;
+  }
+
   @media (max-width: 544px) {
     padding: 0 1rem;
 

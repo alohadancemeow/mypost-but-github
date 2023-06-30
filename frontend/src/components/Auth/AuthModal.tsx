@@ -281,6 +281,7 @@ type ButtonType = {
   h?: string;
   rounded?: string;
   gap?: string;
+  bordered?: boolean;
 };
 
 // Styled component
@@ -291,7 +292,8 @@ export const MyButton = styled.button<ButtonType>`
   padding: 5px;
   font-weight: bold;
   text-decoration: none;
-  border: none;
+  /* border: none; */
+  border: ${({ bordered }) => (bordered ? "1px solid #444c56" : "none")};
   color: white;
   cursor: pointer;
   border-radius: ${({ rounded }) => rounded};

@@ -21,14 +21,19 @@ const RightContent = () => {
 
   return (
     <MyBox
-      p={25}
+      // p={25}
       //  border="1px solid red"
+
+      style={{
+        padding: "40px 10px 0px",
+      }}
     >
       <Box
         display="flex"
         alignItems={"center"}
         justifyContent="flex-start"
-        marginBottom={3}
+        // marginBottom={3}
+        paddingTop={16}
       >
         <StyledOcticon icon={NumberIcon} size={24} sx={{ mr: "10px" }} />
         <Heading sx={{ fontSize: "14px", lineHeight: "20px" }}>
@@ -95,7 +100,7 @@ export default RightContent;
 
 // responsive
 const MyBox = styled(Box)`
-  @media (max-width: 1012px) {
+  @media (max-width: 1200px) {
     display: none;
   }
 `;

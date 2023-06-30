@@ -26,12 +26,12 @@ const Feed = ({}: Props) => {
       color="white"
       // opacity='0.99'
     >
-      <Box display="flex" width="100%">
+      <LayoutBox display="flex" width="100%" padding="0 2.5rem">
         <LeftContent />
 
         <MyBox
           display="grid"
-          gridTemplateColumns="3fr 1fr"
+          gridTemplateColumns="2fr 1fr"
           // gridGap={3}
           margin="0 1rem 0"
           height="100%"
@@ -40,7 +40,7 @@ const Feed = ({}: Props) => {
           <MainContent currentUser={currentUser} />
           <RightContent />
         </MyBox>
-      </Box>
+      </LayoutBox>
     </Box>
   );
 };
@@ -49,13 +49,21 @@ export default Feed;
 
 // responsive
 const MyBox = styled(Box)`
-  @media (max-width: 1012px) {
+  @media (max-width: 1200px) {
     display: grid;
     grid-template-columns: 1fr;
   }
-  /* @media (max-width: 768px) {
+  @media (max-width: 768px) {
     display: grid;
     grid-template-columns: 1fr;
     margin: 0;
-  } */
+    padding: 0;
+  }
+`;
+
+const LayoutBox = styled(Box)`
+  @media (max-width: 768px) {
+    margin: 0;
+    padding: 10px;
+  }
 `;

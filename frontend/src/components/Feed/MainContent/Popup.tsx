@@ -25,8 +25,8 @@ const Popup = ({ selected, setSelected }: Props) => {
       caret="bottom"
       sx={{
         position: "absolute",
-        left: "52%",
-        bottom: "25%",
+        left: "38%",
+        bottom: "15%",
       }}
     >
       <Popover.Content

@@ -32,7 +32,7 @@ const ReactionButton = ({
 }: Props) => {
   const onShareCliked = useCallback(async () => {
     setSelected({ ...selected, share: !selected.share });
-    await onShare(post.id);
+    !selected.share && onShare(post.id);
   }, [setSelected, onShare, selected]);
 
   return (
@@ -40,6 +40,7 @@ const ReactionButton = ({
       <Box
         display="flex"
         alignItems="center"
+        marginRight={10}
         as="button"
         sx={{
           bg: "transparent",
@@ -56,7 +57,7 @@ const ReactionButton = ({
           <>
             <StyledOcticon
               icon={HeartFillIcon}
-              size={24}
+              size={18}
               sx={{ mr: "8px", color: "canvas.hightlight" }}
             />
             <Text
@@ -74,7 +75,7 @@ const ReactionButton = ({
           </>
         ) : (
           <>
-            <StyledOcticon icon={HeartIcon} size={24} sx={{ mr: "8px" }} />
+            <StyledOcticon icon={HeartIcon} size={18} sx={{ mr: "8px" }} />
             <Text
               sx={{
                 fontSize: "14px",
@@ -94,6 +95,7 @@ const ReactionButton = ({
       <Box
         display="flex"
         alignItems="center"
+        marginRight={10}
         as="button"
         sx={{
           bg: "transparent",
@@ -109,13 +111,13 @@ const ReactionButton = ({
         {selected && selected.comment ? (
           <StyledOcticon
             icon={CommentDiscussionIcon}
-            size={24}
+            size={18}
             sx={{ mr: "8px", color: "canvas.hightlight" }}
           />
         ) : (
           <StyledOcticon
             icon={CommentDiscussionIcon}
-            size={24}
+            size={18}
             sx={{ mr: "8px" }}
           />
         )}
@@ -151,11 +153,11 @@ const ReactionButton = ({
         {selected && selected.share ? (
           <StyledOcticon
             icon={ShareAndroidIcon}
-            size={24}
+            size={16}
             sx={{ mr: "8px", color: "canvas.hightlight" }}
           />
         ) : (
-          <StyledOcticon icon={ShareAndroidIcon} size={24} sx={{ mr: "8px" }} />
+          <StyledOcticon icon={ShareAndroidIcon} size={16} sx={{ mr: "8px" }} />
         )}
         <Text
           sx={{

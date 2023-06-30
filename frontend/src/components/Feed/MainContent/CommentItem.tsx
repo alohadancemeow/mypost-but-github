@@ -2,8 +2,8 @@
 
 import React from "react";
 import { Avatar, Box, Text } from "@primer/react";
-import { CommentPopulated } from "../../../types/myTypes";
-import { useFormatDate } from "../../../hooks/useFormatDate";
+import { CommentPopulated } from "@/types/myTypes";
+import { useFormatDate } from "@/hooks/useFormatDate";
 
 type Props = {
   comment: CommentPopulated;
@@ -16,7 +16,7 @@ const CommentItem = ({ comment }: Props) => {
       <div
         style={{
           width: "2px",
-          height: "30px",
+          height: "18px",
           background: "#444C56",
           marginInlineStart: "6rem",
         }}
@@ -27,6 +27,8 @@ const CommentItem = ({ comment }: Props) => {
         alignItems={"center"}
         justifyContent="flex-start"
         margin="0 25px"
+        height="fit-content"
+        // width='100%'
       >
         <Box>
           <Avatar
@@ -42,10 +44,14 @@ const CommentItem = ({ comment }: Props) => {
           border="1px solid #444C56"
           borderRadius="4px"
           width="100%"
-          padding="15px"
-          sx={{ bg: "#30363E" }}
+          padding="5px 15px"
+          sx={{
+            bg: "#30363E",
+            wordWrap: "break-word",
+            wordBreak: "break-all",
+          }}
         >
-          <Text fontSize="16px" marginBottom="8px">
+          <Text fontSize="14px" marginBottom="3px">
             {comment.user?.name}{" "}
             <span style={{ fontSize: "12px", color: "#ADBAC7" }}>
               · {dateFormate(comment.createdAt)}
