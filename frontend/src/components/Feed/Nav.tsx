@@ -6,7 +6,7 @@ import { RocketIcon, SignOutIcon } from "@primer/octicons-react";
 import { Avatar, Box, Header, StyledOcticon, Text } from "@primer/react";
 import { signOut } from "next-auth/react";
 import { trpc } from "@/utils/trpcClient";
-import { MyButton } from "../Auth/AuthModal";
+import { MyButton } from "../Modal/AuthModal";
 import useAuthModal from "@/hooks/useAuthModal";
 
 type Props = {};

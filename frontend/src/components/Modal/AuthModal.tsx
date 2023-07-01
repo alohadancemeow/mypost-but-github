@@ -15,7 +15,7 @@ import {
 } from "@primer/octicons-react";
 import { AiFillGoogleCircle } from "react-icons/ai";
 
-import Modal from "../Modal";
+import Modal from "./Modal";
 import useAuthModal from "@/hooks/useAuthModal";
 import { useRouter } from "next/navigation";
 

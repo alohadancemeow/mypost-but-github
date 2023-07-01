@@ -3,19 +3,19 @@ import styled from "styled-components";
 
 import { BookIcon } from "@primer/octicons-react";
 import { Box, Text } from "@primer/react";
-import { MyButton } from "@/components/Auth/AuthModal";
+import { MyButton } from "@/components/Modal/AuthModal";
 
-import { postStore } from "@/states/postStore";
-import useAuthModal from "@/hooks/useAuthModal";
 import { User } from "@prisma/client";
+import useAuthModal from "@/hooks/useAuthModal";
+import usePostModal from "@/hooks/usePostModal";
 
 type Props = {
   currentUser?: User | null;
 };
 
 const PostBanner = ({ currentUser }: Props) => {
-  const setIsOpen = postStore((state) => state.setIsOpen);
-  const { isOpen, onClose, onOpen } = useAuthModal();
+  const authModal = useAuthModal();
+  const postModal = usePostModal();
 
   return (
     <MyBox
@@ -44,7 +44,7 @@ const PostBanner = ({ currentUser }: Props) => {
         rounded="4px"
         gap="32px 0 0"
         color="#006EED"
-        onClick={() => (currentUser ? setIsOpen() : onOpen())}
+        onClick={() => (currentUser ? postModal.onOpen() : authModal.onOpen())}
       >
         Create a post
       </MyButton>

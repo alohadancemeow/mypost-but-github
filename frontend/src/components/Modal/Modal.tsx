@@ -1,3 +1,5 @@
+"use client";
+
 import * as Dialog from "@radix-ui/react-dialog";
 import { IoMdClose } from "react-icons/io";
 
@@ -5,7 +7,7 @@ interface ModalProps {
   isOpen: boolean;
   onChange: (open: boolean) => void;
   title: string | React.ReactNode;
-  description: string;
+  description?: string;
   children: React.ReactNode;
 }
 
@@ -19,12 +21,13 @@ const Modal: React.FC<ModalProps> = ({
   return (
     <Dialog.Root open={isOpen} defaultOpen={isOpen} onOpenChange={onChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed z-10 inset-0 bg-neutral-900/90 backdrop-blur-sm" />
+        <Dialog.Overlay className="fixed inset-0 z-10 bg-neutral-900/90 backdrop-blur-sm" />
         <Dialog.Content
           className="
             fixed 
             left-[50%] 
             top-[50%] 
+            z-10 
             h-full 
             max-h-full 
             w-full 
@@ -39,15 +42,14 @@ const Modal: React.FC<ModalProps> = ({
             focus:outline-none 
             md:h-auto 
             md:max-h-[85vh] 
-            md:w-[90vw] 
+            md:w-[90vw]
             md:max-w-[450px]
-            z-10
           "
         >
           <Dialog.Title className="mb-4 text-center text-xl font-bold ">
             {title}
           </Dialog.Title>
-          <Dialog.Description className="mb-10 text-center text-white text-sm leading-normal ">
+          <Dialog.Description className="mb-10 text-center text-sm leading-normal text-white ">
             {description}
           </Dialog.Description>
           <div>{children}</div>
