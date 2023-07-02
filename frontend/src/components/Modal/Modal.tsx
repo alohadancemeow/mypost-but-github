@@ -9,6 +9,7 @@ interface ModalProps {
   title: string | React.ReactNode;
   description?: string;
   children: React.ReactNode;
+  isPost?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -17,13 +18,14 @@ const Modal: React.FC<ModalProps> = ({
   title,
   description,
   children,
+  isPost,
 }) => {
   return (
     <Dialog.Root open={isOpen} defaultOpen={isOpen} onOpenChange={onChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-10 bg-neutral-900/90 backdrop-blur-sm" />
         <Dialog.Content
-          className="
+          className={`
             fixed 
             left-[50%] 
             top-[50%] 
@@ -43,8 +45,8 @@ const Modal: React.FC<ModalProps> = ({
             md:h-auto 
             md:max-h-[85vh] 
             md:w-[90vw]
-            md:max-w-[450px]
-          "
+            ${isPost ? "md:max-w-[600px]" : "md:max-w-[450px]"}
+          `}
         >
           <Dialog.Title className="mb-4 text-center text-xl font-bold ">
             {title}
