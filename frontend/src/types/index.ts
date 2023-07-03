@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { z } from "zod";
 
 // post response
 export const postPopulated = Prisma.validator<Prisma.PostInclude>()({
@@ -42,3 +43,9 @@ export const commentPopulated = Prisma.validator<Prisma.CommentInclude>()({
 export type CommentPopulated = Prisma.CommentGetPayload<{
   include: typeof commentPopulated;
 }>;
+
+// # Validator types
+export const UserValidator = z.object({
+  email: z.string().email(),
+  password: z.string(),
+});

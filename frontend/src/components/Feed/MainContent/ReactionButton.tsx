@@ -11,7 +11,7 @@ import {
 import { Box, StyledOcticon, Text } from "@primer/react";
 
 import { ReactionButtonType } from "./PostItem";
-import { PostPopulated } from "@/types/myTypes";
+import { PostPopulated } from "@/types";
 
 type Props = {
   selected: ReactionButtonType;

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Avatar, Box, Text } from "@primer/react";
-import { CommentPopulated } from "@/types/myTypes";
+import { CommentPopulated } from "@/types";
 import { useFormatDate } from "@/hooks/useFormatDate";
 
 type Props = {

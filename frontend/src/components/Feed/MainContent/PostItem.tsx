@@ -9,7 +9,7 @@ import CommentItem from "./CommentItem";
 import CommentInput from "./CommentInput";
 import Tag from "./Tag";
 
-import { PostPopulated } from "@/types/myTypes";
+import { PostPopulated } from "@/types";
 
 import { useFormatDate } from "@/hooks/useFormatDate";
 import useLike from "@/hooks/useLike";
@@ -39,7 +39,7 @@ const PostItem = ({ currentUser, post, onCreateComment, onShare }: Props) => {
   const { hasLiked, toggleLike } = useLike({ post, currentUser });
 
   // Get comments - Create comment
-  const commentData = new Array(3)
+  const commentData = new Array(3);
 
   // Handle like - unlike
   const handleLike = useCallback(async () => {

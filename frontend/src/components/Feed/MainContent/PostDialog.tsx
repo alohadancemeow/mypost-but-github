@@ -19,7 +19,7 @@ import {
   RocketIcon,
 } from "@primer/octicons-react";
 
-import { PostInput, tokens } from "@/types/myTypes";
+import { PostInput, tokens } from "@/types";
 import { postStore } from "@/states/postStore";
 import { shallow } from "zustand/shallow";
 

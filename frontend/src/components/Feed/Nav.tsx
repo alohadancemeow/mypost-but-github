@@ -7,14 +7,14 @@ import { signOut } from "next-auth/react";
 
 import { MyButton } from "../Modal/AuthModal";
 import useAuthModal from "@/hooks/useAuthModal";
+import { User } from "@prisma/client";
 
-type Props = {};
+type Props = {
+  currentUser?: User | null;
+};
 
-const Nav = ({}: Props) => {
+const Nav = ({ currentUser }: Props) => {
   const authModal = useAuthModal();
-
-  // TODO: get currentuser
-  const currentUser: any = null;
 
   return (
     <MyHeader

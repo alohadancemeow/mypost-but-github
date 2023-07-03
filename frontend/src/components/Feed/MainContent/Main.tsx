@@ -11,7 +11,7 @@ import HeadUnderLine from "./HeadUnderLine";
 import PostBanner from "./PostBanner";
 import PostDialog from "./PostDialog";
 
-import { PostInput } from "@/types/myTypes";
+import { PostInput } from "@/types";
 import { useIsMutating } from "@tanstack/react-query";
 import { postStore } from "@/states/postStore";
 import Footer from "../Footer";
@@ -26,7 +26,7 @@ const MainContent = ({ currentUser }: Props) => {
   const setIsOpen = postStore((state) => state.setIsOpen);
 
   //TODO: Get posts by limit 5
-  const posts = new Array(5)
+  const posts = new Array(5);
 
   // const posts = postData?.pages.flatMap((page) => page.posts) ?? [];
 
@@ -56,7 +56,6 @@ const MainContent = ({ currentUser }: Props) => {
     // await fetchNextPage();
   }, []);
 
-
   return (
     <div
       style={{
@@ -73,10 +72,7 @@ const MainContent = ({ currentUser }: Props) => {
         borderRadius="8px"
       >
         <PostBanner currentUser={currentUser} />
-        <PostDialog
-          onCreatePost={onCreatePost}
-          isCreatePostLoading={false}
-        />
+        <PostDialog onCreatePost={onCreatePost} isCreatePostLoading={false} />
         <HeadUnderLine />
 
         {/* {isLoading && <Text>Loading posts...</Text>} */}

@@ -8,14 +8,13 @@ import { Box } from "@primer/react";
 import LeftContent from "./LeftContent";
 import MainContent from "./MainContent/Main";
 import RightContent from "./RightContent";
+import { User } from "@prisma/client";
 
-type Props = {};
+type Props = {
+  currentUser?: User | null;
+};
 
-const Feed = ({}: Props) => {
-  // TODO: get currrent user
-  // console.log("currentUser", data);
-  const currentUser: any = null;
-
+const Feed = ({ currentUser }: Props) => {
   return (
     <Box
       bg="canvas.primary"

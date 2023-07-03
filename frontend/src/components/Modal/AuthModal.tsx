@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
 
+import { AiFillGoogleCircle } from "react-icons/ai";
 import { Box, Text, FormControl, TextInput } from "@primer/react";
 import {
   MailIcon,
@@ -12,20 +13,22 @@ import {
   RocketIcon,
   MarkGithubIcon,
 } from "@primer/octicons-react";
-import { AiFillGoogleCircle } from "react-icons/ai";
 
 import Modal from "./Modal";
 import useAuthModal from "@/hooks/useAuthModal";
 import { useRouter } from "next/navigation";
 
-const AuthModal = () => {
-  const [user, setUser] = useState<{ email: string; password: string }>({
-    email: "",
-    password: "",
-  });
+import { z } from "zod";
+import axios, { AxiosError } from "axios";
+import { UserValidator } from "@/types";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+type UserInput = z.infer<typeof UserValidator>;
+
+const AuthModal = () => {
   const router = useRouter();
-  const { isOpen, onClose, onOpen } = useAuthModal();
+  const { isOpen, onClose } = useAuthModal();
 
   const onChange = (open: boolean) => {
     if (!open) {
@@ -33,46 +36,77 @@ const AuthModal = () => {
     }
   };
 
-  // handle signup
-  const onSignup = async () => {
-    if (!user) return;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    watch,
+  } = useForm<UserInput>({
+    resolver: zodResolver(UserValidator),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-    // try {
-    //   const data = await mutateAsync({
-    //     email: user.email,
-    //     password: user.password,
-    //   });
+  const email = watch("email");
+  const password = watch("password");
 
-    //   if (data) {
-    //     await onSignin();
-    //   }
-    // } catch (error: any) {
-    //   // console.log("onSignup err", error);
-    //   // toast.error(error?.message!);
-    // }
-  };
+  // # Handle submit --> register
+  const onSubmit: SubmitHandler<UserInput> = useCallback(
+    async ({ email, password }) => {
+      axios
+        .post("api/register", {
+          email,
+          password,
+        })
+        .then((data) => {
+          if (data.status === 200) {
+            signIn("credentials", {
+              email,
+              password,
+            });
 
-  // handle signin
-  const onSignin = async () => {
-    if (!user) return;
+            toast.success("Account created.");
+            router.refresh();
+            onClose();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
 
-    const response = await signIn("credentials", {
-      // redirect: false,
-      // callbackUrl: `/`,
-      email: user.email,
-      password: user.password,
-    });
+          if (error instanceof AxiosError) {
+            toast.error(error.response?.data);
+          }
+        });
+    },
+    [email, password]
+  );
 
-    if (response?.error) {
-      toast.error(response.error);
-    }
+  // # Handle signin --> another submit
+  const onSignin: SubmitHandler<UserInput> = useCallback(
+    async ({ email, password }) => {
+      try {
+        const data = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
 
-    if (response?.ok) {
-      toast.success("login successfully!");
-      router.refresh();
-      onClose();
-    }
-  };
+        if (data?.error) {
+          toast.error(data.error);
+        } else {
+          toast.success("login successfully!");
+          router.refresh();
+          onClose();
+        }
+      } catch (error: any) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    },
+    [email, password]
+  );
 
   return (
     <Modal
@@ -103,10 +137,12 @@ const AuthModal = () => {
         // border={"1px solid rgba(68, 76, 86, 1)"}
       >
         <Box
+          as={"form"}
           display={"flex"}
           flexDirection={"column"}
           justifyContent={"center"}
           alignItems={"center"}
+          onSubmit={handleSubmit(onSubmit)}
         >
           <FormControl id="email">
             <FormControl.Label
@@ -123,11 +159,10 @@ const AuthModal = () => {
               leadingVisual={<MailIcon />}
               aria-label="Email"
               type="email"
-              name="email"
               autoComplete="email"
               placeholder="enter your email"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              {...register("email")}
+              aria-invalid={Boolean(errors.email)}
             />
           </FormControl>
           <FormControl sx={{ margin: "10px" }} id="password">
@@ -145,11 +180,10 @@ const AuthModal = () => {
               leadingVisual={<LockIcon />}
               aria-label="Password"
               type="password"
-              name="password"
               autoComplete="password"
               placeholder="enter your password"
-              value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
+              {...register("password")}
+              aria-invalid={Boolean(errors.password)}
             />
           </FormControl>
           <Box
@@ -163,20 +197,18 @@ const AuthModal = () => {
               // h="30px"
               rounded="4px"
               color="#06A833"
-              onClick={() => {
-                onSignin();
-              }}
+              onClick={handleSubmit(onSignin)}
+              disabled={isSubmitting}
             >
               Sign in
             </MyButton>
             <MyButton
+              type="submit"
               w="110px"
               // h="30px"
               rounded="4px"
               color="#444C56"
-              onClick={() => {
-                onSignup();
-              }}
+              disabled={isSubmitting}
             >
               Sign up
             </MyButton>
