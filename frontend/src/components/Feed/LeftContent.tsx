@@ -13,18 +13,17 @@ import {
 } from "@primer/react";
 import { PeopleIcon } from "@primer/octicons-react";
 
-import { trpc } from "@/utils/trpcClient";
-
 const LeftContent = () => {
   const [username, setUsername] = useState<string>("");
 
-  const { data: userData, error, isLoading } = trpc.user.getUsers.useQuery();
+  // TODO: filtering users by username
+  // const filteredUser =
+  //   userData?.filter((user) =>
+  //     user.name?.toLocaleLowerCase().includes(username.toLowerCase())
+  //   ) ?? userData;
 
-  // filtering users by username
-  const filteredUser =
-    userData?.filter((user) =>
-      user.name?.toLocaleLowerCase().includes(username.toLowerCase())
-    ) ?? userData;
+  const filteredUser = new Array(5);
+  const isLoading = false;
 
   return (
     <MyBox
@@ -74,7 +73,7 @@ const LeftContent = () => {
         />
         <Box marginBottom={4} marginTop={4}>
           {filteredUser &&
-            filteredUser.map((user) => (
+            filteredUser?.map((user) => (
               <Box
                 key={user.id}
                 marginTop={3}

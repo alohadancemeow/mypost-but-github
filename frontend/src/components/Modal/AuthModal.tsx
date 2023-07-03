@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { signIn } from "next-auth/react";
-import { trpc } from "@/utils/trpcClient";
 import { toast } from "react-hot-toast";
 
 import { Box, Text, FormControl, TextInput } from "@primer/react";
@@ -34,29 +33,23 @@ const AuthModal = () => {
     }
   };
 
-  const { mutateAsync } = trpc.user.createUser.useMutation({
-    onError(error) {
-      toast.error(error.message);
-    },
-  });
-
   // handle signup
   const onSignup = async () => {
     if (!user) return;
 
-    try {
-      const data = await mutateAsync({
-        email: user.email,
-        password: user.password,
-      });
+    // try {
+    //   const data = await mutateAsync({
+    //     email: user.email,
+    //     password: user.password,
+    //   });
 
-      if (data) {
-        await onSignin();
-      }
-    } catch (error: any) {
-      // console.log("onSignup err", error);
-      // toast.error(error?.message!);
-    }
+    //   if (data) {
+    //     await onSignin();
+    //   }
+    // } catch (error: any) {
+    //   // console.log("onSignup err", error);
+    //   // toast.error(error?.message!);
+    // }
   };
 
   // handle signin

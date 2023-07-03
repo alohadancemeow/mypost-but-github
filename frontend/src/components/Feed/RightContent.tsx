@@ -5,17 +5,19 @@ import styled from "styled-components";
 import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";
 import { NumberIcon } from "@primer/octicons-react";
 
-import { trpc } from "../../utils/trpcClient";
 import { useFormatDate } from "../../hooks/useFormatDate";
 
 const RightContent = () => {
-  const { data: postData } = trpc.post.getPosts.useQuery({
-    limit: 5,
-    orderBy: "likes",
-  });
+  // TODO: get post data by like
+  // const { data: postData } = trpc.post.getPosts.useQuery({
+  //   limit: 5,
+  //   orderBy: "likes",
+  // });
 
-  const posts = postData?.posts.flatMap((post) => post) ?? [];
+  // const posts = postData?.posts.flatMap((post) => post) ?? [];
   // console.log("posts", posts);
+
+  const posts = new Array(5);
 
   const { dateFormate } = useFormatDate();
 

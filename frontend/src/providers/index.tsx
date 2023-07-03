@@ -1,9 +1,6 @@
 "use client";
 
-import React from "react";
-import { ClientProvider } from "@/utils/trpcClient";
 import { SessionProvider } from "next-auth/react";
-import { SSRProvider } from "@primer/react";
 import { ThemeProvider } from "@primer/react";
 import deepmerge from "deepmerge";
 import { BaseStyles } from "@primer/react";
@@ -38,9 +35,7 @@ type Props = {
 
 const Providers = ({ children }: Props) => {
   return (
-    <ClientProvider>
       <SessionProvider>
-        <SSRProvider>
           <ThemeProvider theme={customTheme}>
             <BaseStyles>
               {children}
@@ -48,9 +43,7 @@ const Providers = ({ children }: Props) => {
               <ModalProvider />
             </BaseStyles>
           </ThemeProvider>
-        </SSRProvider>
       </SessionProvider>
-    </ClientProvider>
   );
 };
 

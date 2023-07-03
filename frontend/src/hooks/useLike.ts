@@ -5,8 +5,6 @@ import { Post, User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import useAuthModal from "./useAuthModal";
 
-import { trpc } from "@/utils/trpcClient";
-
 type Props = {
   post: Post;
   currentUser?: User | null;
@@ -17,8 +15,8 @@ const useLike = ({ post, currentUser }: Props) => {
   const authModal = useAuthModal();
 
   //   trpc mutation
-  const { mutate: like } = trpc.post.like.useMutation();
-  const { mutate: unlike } = trpc.post.unlike.useMutation();
+  const like = () => {};
+  const unlike = () => {};
 
   const hasLiked = useMemo(() => {
     const list = post?.likedIds || [];
@@ -34,13 +32,13 @@ const useLike = ({ post, currentUser }: Props) => {
     try {
       let request;
 
-      if (hasLiked) {
-        request = () => unlike({ postId: post.id, userId: currentUser.id });
-      } else {
-        request = () => like({ postId: post.id, userId: currentUser.id });
-      }
+      // if (hasLiked) {
+      //   request = () => unlike({ postId: post.id, userId: currentUser.id });
+      // } else {
+      //   request = () => like({ postId: post.id, userId: currentUser.id });
+      // }
 
-      request();
+      // request();
 
       router.refresh();
       // toast.success("Success");

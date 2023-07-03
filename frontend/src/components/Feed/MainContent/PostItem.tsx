@@ -11,7 +11,6 @@ import Tag from "./Tag";
 
 import { PostPopulated } from "@/types/myTypes";
 
-import { trpc } from "@/utils/trpcClient";
 import { useFormatDate } from "@/hooks/useFormatDate";
 import useLike from "@/hooks/useLike";
 import useAuthModal from "@/hooks/useAuthModal";
@@ -40,9 +39,7 @@ const PostItem = ({ currentUser, post, onCreateComment, onShare }: Props) => {
   const { hasLiked, toggleLike } = useLike({ post, currentUser });
 
   // Get comments - Create comment
-  const { data: commentData } = trpc.comment.getComments.useQuery({
-    postId: post.id,
-  });
+  const commentData = new Array(3)
 
   // Handle like - unlike
   const handleLike = useCallback(async () => {
@@ -112,7 +109,7 @@ const PostItem = ({ currentUser, post, onCreateComment, onShare }: Props) => {
             {post.title}
           </Text>
           <Text fontSize={14} fontWeight={400} color="#ADBAC7">
-            {post.body}
+            {/* {post.body} */}
           </Text>
           <Box marginTop={30}>
             {post.tags.map((tag, index) => (

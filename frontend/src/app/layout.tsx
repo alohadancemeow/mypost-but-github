@@ -1,7 +1,5 @@
-import React from "react";
 import { Inter } from "next/font/google";
 
-// import "@/styles/myStyle.css";
 import "@/styles/globals.css";
 import Providers from "@/providers";
 import StyledComponentsRegistry from "@/lib/registry";
@@ -20,7 +18,7 @@ type Props = {
 const RootLayout = ({ children }: Props) => {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning={true}>
         <StyledComponentsRegistry>
           <Providers>{children}</Providers>
         </StyledComponentsRegistry>

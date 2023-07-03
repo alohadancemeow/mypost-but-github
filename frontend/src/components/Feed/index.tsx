@@ -8,13 +8,13 @@ import { Box } from "@primer/react";
 import LeftContent from "./LeftContent";
 import MainContent from "./MainContent/Main";
 import RightContent from "./RightContent";
-import { trpc } from "@/utils/trpcClient";
 
 type Props = {};
 
 const Feed = ({}: Props) => {
-  const { data: currentUser } = trpc.user.getCurrentUser.useQuery();
+  // TODO: get currrent user
   // console.log("currentUser", data);
+  const currentUser: any = null;
 
   return (
     <Box

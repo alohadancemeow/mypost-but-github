@@ -1,19 +1,20 @@
 "use client";
 
-import React from "react";
 import styled from "styled-components";
 import { RocketIcon, SignOutIcon } from "@primer/octicons-react";
 import { Avatar, Box, Header, StyledOcticon, Text } from "@primer/react";
 import { signOut } from "next-auth/react";
-import { trpc } from "@/utils/trpcClient";
+
 import { MyButton } from "../Modal/AuthModal";
 import useAuthModal from "@/hooks/useAuthModal";
 
 type Props = {};
 
 const Nav = ({}: Props) => {
-  const { data: currentUser } = trpc.user.getCurrentUser.useQuery();
   const authModal = useAuthModal();
+
+  // TODO: get currentuser
+  const currentUser: any = null;
 
   return (
     <MyHeader
