@@ -17,6 +17,7 @@ import { postStore } from "@/states/postStore";
 import Footer from "../Footer";
 
 import { User } from "@prisma/client";
+import { usePaginatePosts } from "@/hooks/usePaginatePosts";
 
 type Props = {
   currentUser?: User | null;
@@ -27,6 +28,11 @@ const MainContent = ({ currentUser }: Props) => {
 
   //TODO: Get posts by limit 5
   const posts = new Array(5);
+
+  const { paginatePosts, isLoadingMore, isReachingEnd, error, setSize, size } =
+    usePaginatePosts();
+
+  console.log("paginatePosts", paginatePosts);
 
   // const posts = postData?.pages.flatMap((page) => page.posts) ?? [];
 
@@ -72,10 +78,7 @@ const MainContent = ({ currentUser }: Props) => {
         borderRadius="8px"
       >
         <PostBanner currentUser={currentUser} />
-        {/* <PostDialog onCreatePost={onCreatePost} isCreatePostLoading={false} /> */}
         <HeadUnderLine />
-
-        {/* {isLoading && <Text>Loading posts...</Text>} */}
 
         {posts &&
           posts?.map((post) => (
