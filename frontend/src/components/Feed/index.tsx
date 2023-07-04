@@ -9,16 +9,18 @@ import LeftContent from "./LeftContent";
 import MainContent from "./MainContent/Main";
 import RightContent from "./RightContent";
 import { User } from "@prisma/client";
+import { UserWithPost } from "@/types";
 
 type Props = {
   currentUser?: User | null;
+  users?: UserWithPost[] | null;
 };
 
-const Feed = ({ currentUser }: Props) => {
+const Feed = ({ currentUser, users }: Props) => {
   return (
     <Box
       bg="canvas.primary"
-      height="100vh"
+      height="100%"
       width="100%"
       display="flex"
       flexDirection="column"
@@ -26,7 +28,7 @@ const Feed = ({ currentUser }: Props) => {
       // opacity='0.99'
     >
       <LayoutBox display="flex" width="100%" padding="0 2.5rem">
-        <LeftContent />
+        <LeftContent users={users} />
 
         <MyBox
           display="grid"

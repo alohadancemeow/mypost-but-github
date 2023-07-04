@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Post, Prisma, User } from "@prisma/client";
 import { z } from "zod";
 
 // post response
@@ -55,3 +55,8 @@ export const PostValidator = z.object({
   content: z.any(),
   tags: z.array(z.string()),
 });
+
+// # Response type
+export type UserWithPost = User & {
+  posts: Post[];
+};

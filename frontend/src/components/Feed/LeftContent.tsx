@@ -12,17 +12,21 @@ import {
   TextInput,
 } from "@primer/react";
 import { PeopleIcon } from "@primer/octicons-react";
+import { UserWithPost } from "@/types";
 
-const LeftContent = () => {
+type Props = {
+  users?: UserWithPost[] | null;
+};
+
+const LeftContent = ({ users }: Props) => {
   const [username, setUsername] = useState<string>("");
 
   // TODO: filtering users by username
-  // const filteredUser =
-  //   userData?.filter((user) =>
-  //     user.name?.toLocaleLowerCase().includes(username.toLowerCase())
-  //   ) ?? userData;
+  const filteredUser =
+    users?.filter((user) =>
+      user.name?.toLocaleLowerCase().includes(username.toLowerCase())
+    ) ?? users;
 
-  const filteredUser = new Array(5);
   const isLoading = false;
 
   return (

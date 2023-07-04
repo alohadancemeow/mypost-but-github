@@ -14,37 +14,55 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import EditorJS from "@editorjs/editorjs";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 
 import "@/styles/editor.css";
+import axios, { AxiosError } from "axios";
+import { toast } from "react-hot-toast";
+import usePostModal from "@/hooks/usePostModal";
 
 export const PostValidator = z.object({
   title: z.string(),
   content: z.any(),
+  tags: z.array(z.string()),
 });
+
+const TagOptions = [
+  { value: "just sharing", label: "Just Sharing" },
+  { value: "programming", label: "Programming" },
+  { value: "review", label: "Review" },
+  { value: "Questioning", label: "Questioning" },
+];
 
 type FormData = z.infer<typeof PostValidator>;
 
 type Props = {};
 
 const Editor = (props: Props) => {
+  const animatedComponents = React.useMemo(() => makeAnimated(), [TagOptions]);
+
+  const router = useRouter();
+  const postModal = usePostModal();
+
+  const ref = useRef<EditorJS>();
+  const _titleRef = useRef<HTMLTextAreaElement>(null);
+
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<typeof TagOptions>();
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(PostValidator),
     defaultValues: {
       title: "",
       content: null,
+      tags: [],
     },
   });
-  const ref = useRef<EditorJS>();
-  const _titleRef = useRef<HTMLTextAreaElement>(null);
-  const router = useRouter();
-  const [isMounted, setIsMounted] = useState<boolean>(false);
-
-  console.log(ref.current, "ref");
-  console.log(isMounted, "isMounted");
 
   //   # Initialize Editor JS
   const initializeEditor = useCallback(async () => {
@@ -111,10 +129,44 @@ const Editor = (props: Props) => {
     }
   }, [isMounted, initializeEditor]);
 
-  // # Handle submit
-  const onSubmit = async () => {
-    // TODO: create post
-  };
+  // # Handle submit --> create post
+  const onSubmit = useCallback(
+    async (data: FormData) => {
+      const blocks = await ref.current?.save();
+
+      if (
+        !data.title ||
+        blocks?.blocks.length === 0 ||
+        selectedOption?.length === 0
+      ) {
+        return toast.error("please complete all form");
+      }
+
+      const payload: FormData = {
+        title: data.title,
+        content: blocks,
+        tags: selectedOption?.map((tag) => tag.label)!,
+      };
+
+      await axios
+        .post("/api/post", { ...payload })
+        .then((data) => {
+          if (data.status === 200) {
+            toast.success("Post created.");
+            router.refresh();
+            postModal.onClose();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+
+          if (error instanceof AxiosError) {
+            toast.error(error.response?.data);
+          }
+        });
+    },
+    [selectedOption]
+  );
 
   if (!isMounted) {
     return null;
@@ -124,13 +176,13 @@ const Editor = (props: Props) => {
 
   return (
     <div className="flex min-w-[500px] flex-col items-start gap-6">
-      <div className="w-full rounded-lg  p-4">
+      <div className="w-full p-4 rounded-lg">
         <form
           id="post-form"
           className="w-full "
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="prose prose-stone w-full dark:prose-invert ">
+          <div className="w-full prose prose-stone dark:prose-invert ">
             <TextareaAutosize
               ref={(e) => {
                 titleRef(e);
@@ -139,7 +191,7 @@ const Editor = (props: Props) => {
               }}
               {...rest}
               placeholder="Title"
-              className="w-full resize-none appearance-none overflow-hidden bg-transparent text-3xl text-white focus:outline-none"
+              className="w-full overflow-hidden text-3xl text-white bg-transparent appearance-none resize-none focus:outline-none"
             />
             <div
               id="editor"
@@ -147,16 +199,43 @@ const Editor = (props: Props) => {
             />
             <p className="text-sm text-gray-500">
               Use{" "}
-              <kbd className="rounded-md border bg-muted px-1 text-xs uppercase">
+              <kbd className="px-1 text-xs uppercase border rounded-md bg-muted">
                 Tab
               </kbd>{" "}
               to open the command menu.
             </p>
           </div>
+
+          <Select
+            defaultValue={selectedOption}
+            isMulti
+            name="tags"
+            options={TagOptions}
+            // className="mt-8 "
+            placeholder="Choose your tag..."
+            components={animatedComponents}
+            // value={selectedOption}
+            // @ts-expect-error
+            onChange={setSelectedOption}
+            classNames={{
+              control: () => "mt-8",
+              // input: () => "text-lg",
+              // option: () => "text-lg",
+            }}
+            theme={(theme) => ({
+              ...theme,
+              borderRadius: 6,
+              colors: {
+                ...theme.colors,
+                primary: "black",
+                primary25: "#444C56",
+              },
+            })}
+          />
         </form>
       </div>
 
-      <MyBox>
+      <MyBox as="button" type="submit" form="post-form" disabled={isSubmitting}>
         <Box
           display="flex"
           alignItems="center"

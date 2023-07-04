@@ -1,15 +1,16 @@
 import Feed from "@/components/Feed";
 import getCurrentUser from "@/actions/getCurrentUser";
+import getUsersByPost from "@/actions/getUsersByPost";
 
 type Props = {};
 
 const page = async (props: Props) => {
   const currentUser = await getCurrentUser();
-  console.log("currentUser", currentUser);
+  const users = await getUsersByPost();
 
   return (
     <>
-      <Feed currentUser={currentUser} />
+      <Feed currentUser={currentUser} users={users} />
     </>
   );
 };

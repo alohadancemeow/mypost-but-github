@@ -13,6 +13,8 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
+    console.log(body, "body");
+
     const { title, tags, content } = PostValidator.parse(body);
 
     const post = await prisma.post.create({

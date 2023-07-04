@@ -72,7 +72,7 @@ const MainContent = ({ currentUser }: Props) => {
         borderRadius="8px"
       >
         <PostBanner currentUser={currentUser} />
-        <PostDialog onCreatePost={onCreatePost} isCreatePostLoading={false} />
+        {/* <PostDialog onCreatePost={onCreatePost} isCreatePostLoading={false} /> */}
         <HeadUnderLine />
 
         {/* {isLoading && <Text>Loading posts...</Text>} */}
