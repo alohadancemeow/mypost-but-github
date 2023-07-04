@@ -37,8 +37,12 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs",
-    ".next/types/**/*.ts"
-, "tailwind.config.cjs"  ],
+    ".next/types/**/*.ts",
+    "tailwind.config.js",
+    "next.config.js",
+    "prettier.config.js",
+    "postcss.config.js"
+  ],
   "exclude": [
     "node_modules"
   ],
