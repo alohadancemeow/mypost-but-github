@@ -35,15 +35,15 @@ type Props = {
 
 const Providers = ({ children }: Props) => {
   return (
-      <SessionProvider>
-          <ThemeProvider theme={customTheme}>
-            <BaseStyles>
-              {children}
-              <Toaster />
-              <ModalProvider />
-            </BaseStyles>
-          </ThemeProvider>
-      </SessionProvider>
+    <SessionProvider>
+      <ThemeProvider theme={customTheme}>
+        <BaseStyles>
+          {children}
+          <Toaster />
+          <ModalProvider />
+        </BaseStyles>
+      </ThemeProvider>
+    </SessionProvider>
   );
 };
 

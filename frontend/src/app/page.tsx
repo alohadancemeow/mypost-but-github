@@ -1,6 +1,4 @@
 import Feed from "@/components/Feed";
-import Nav from "@/components/Feed/Nav";
-
 import getCurrentUser from "@/actions/getCurrentUser";
 
 type Props = {};
@@ -11,7 +9,6 @@ const page = async (props: Props) => {
 
   return (
     <>
-      <Nav currentUser={currentUser} />
       <Feed currentUser={currentUser} />
     </>
   );

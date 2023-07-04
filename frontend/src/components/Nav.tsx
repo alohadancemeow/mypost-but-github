@@ -5,7 +5,7 @@ import { RocketIcon, SignOutIcon } from "@primer/octicons-react";
 import { Avatar, Box, Header, StyledOcticon, Text } from "@primer/react";
 import { signOut } from "next-auth/react";
 
-import { MyButton } from "../Modal/AuthModal";
+import { MyButton } from "./Modal/AuthModal";
 import useAuthModal from "@/hooks/useAuthModal";
 import { User } from "@prisma/client";
 
@@ -42,7 +42,7 @@ const Nav = ({ currentUser }: Props) => {
         <Header.Item sx={{ mr: "0px" }}>
           <Header.Item>
             <MyText fontSize={16} fontWeight={400}>
-              Signed in as {currentUser?.name}
+              Signed in as {currentUser?.name ?? currentUser.email}
             </MyText>
           </Header.Item>
           <Avatar

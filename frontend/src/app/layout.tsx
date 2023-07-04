@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import Providers from "@/providers";
 import StyledComponentsRegistry from "@/lib/registry";
+import getCurrentUser from "@/actions/getCurrentUser";
+
+import Nav from "@/components/Nav";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,12 +18,17 @@ type Props = {
   children: React.ReactNode;
 };
 
-const RootLayout = ({ children }: Props) => {
+const RootLayout = async ({ children }: Props) => {
+  const currentUser = await getCurrentUser();
+
   return (
     <html lang="en">
       <body className={inter.className} suppressHydrationWarning={true}>
         <StyledComponentsRegistry>
-          <Providers>{children}</Providers>
+          <Providers>
+            <Nav currentUser={currentUser} />
+            {children}
+          </Providers>
         </StyledComponentsRegistry>
       </body>
     </html>
