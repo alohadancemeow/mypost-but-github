@@ -5,7 +5,7 @@ import { Box, Text } from "@primer/react";
 import { RocketIcon } from "@primer/octicons-react";
 
 import usePostModal from "@/hooks/usePostModal";
-import Editor from "./Editor";
+import Editor from "../Editor/Editor";
 
 type Props = {};
 

@@ -15,6 +15,7 @@ import { useFormatDate } from "@/hooks/useFormatDate";
 import useLike from "@/hooks/useLike";
 import useAuthModal from "@/hooks/useAuthModal";
 import { User } from "@prisma/client";
+import EditorOutput from "@/components/Editor/EditorOutput";
 
 export type ReactionButtonType = {
   comment: boolean;
@@ -108,9 +109,9 @@ const PostItem = ({ currentUser, post, onCreateComment, onShare }: Props) => {
           <Text fontSize={14} fontWeight={600} marginBottom={2}>
             {post.title}
           </Text>
-          <Text fontSize={14} fontWeight={400} color="#ADBAC7">
-            {/* {post.body} */}
-          </Text>
+
+          <EditorOutput content={post.body} />
+
           <Box marginTop={30}>
             {post.tags.map((tag, index) => (
               <Tag key={index} text={tag ?? ""} />
