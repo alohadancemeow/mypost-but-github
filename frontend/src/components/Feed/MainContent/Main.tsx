@@ -26,15 +26,14 @@ type Props = {
 const MainContent = ({ currentUser }: Props) => {
   const setIsOpen = postStore((state) => state.setIsOpen);
 
-  //TODO: Get posts by limit 5
-  const posts = new Array(5);
-
-  const { paginatePosts, isLoadingMore, isReachingEnd, error, setSize, size } =
-    usePaginatePosts();
-
-  console.log("paginatePosts", paginatePosts);
-
-  // const posts = postData?.pages.flatMap((page) => page.posts) ?? [];
+  const {
+    paginateData: paginatePosts,
+    isLoadingMore,
+    isReachingEnd,
+    error,
+    setSize,
+    size,
+  } = usePaginatePosts("/api/posts");
 
   //TODO: Create post
 
@@ -58,9 +57,12 @@ const MainContent = ({ currentUser }: Props) => {
   const onCreatePost = useCallback(async (post: PostInput) => {}, []);
 
   // handle load more
-  const loadNextPost = useCallback(async () => {
-    // await fetchNextPage();
-  }, []);
+  const loadNextPost = useCallback(
+    async () => await setSize(size + 1),
+    [size, setSize]
+  );
+
+  if (!paginatePosts) return <>load post...</>;
 
   return (
     <div
@@ -80,8 +82,8 @@ const MainContent = ({ currentUser }: Props) => {
         <PostBanner currentUser={currentUser} />
         <HeadUnderLine />
 
-        {posts &&
-          posts?.map((post) => (
+        {paginatePosts &&
+          paginatePosts?.map((post) => (
             <PostItem
               key={post.id}
               currentUser={currentUser}
@@ -91,8 +93,8 @@ const MainContent = ({ currentUser }: Props) => {
             />
           ))}
         <LoadMore
-          hasNextPage={false}
-          isFetching={false}
+          isLoadingMore={isLoadingMore}
+          isReachingEnd={isReachingEnd}
           loadNextPost={loadNextPost}
         />
       </MyBox>

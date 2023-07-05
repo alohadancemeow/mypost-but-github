@@ -82,7 +82,7 @@ const PostItem = ({ currentUser, post, onCreateComment, onShare }: Props) => {
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>posted</span>{" "}
             {post.title}{" "}
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>
-              {`· ${dateFormate(post.createdAt)}`}
+              {`· ${dateFormate(new Date(post.createdAt))}`}
             </span>{" "}
           </Text>
         </Box>

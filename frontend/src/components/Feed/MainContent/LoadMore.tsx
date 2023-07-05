@@ -5,17 +5,18 @@ import { RocketIcon } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text } from "@primer/react";
 
 type Props = {
-  hasNextPage?: boolean;
-  isFetching?: boolean;
-  loadNextPost: () => Promise<void>;
+  isLoadingMore?: boolean;
+  isReachingEnd?: boolean;
+  loadNextPost: () => Promise<any[] | undefined>;
 };
 
-const LoadMore = ({ hasNextPage, isFetching, loadNextPost }: Props) => {
+const LoadMore = ({ isLoadingMore, isReachingEnd, loadNextPost }: Props) => {
   const handleLoadMore = useCallback(async () => {
-    if (hasNextPage && !isFetching) {
+    if (!isReachingEnd && !isLoadingMore) {
       await loadNextPost();
     }
-  }, [loadNextPost, isFetching, hasNextPage]);
+  }, [loadNextPost, isReachingEnd, isLoadingMore]);
+
   return (
     <Box
       display="flex"
@@ -25,14 +26,14 @@ const LoadMore = ({ hasNextPage, isFetching, loadNextPost }: Props) => {
       padding="10px"
       border="1px solid #444C56"
       sx={{
-        cursor: "pointer",
+        cursor: `${isReachingEnd ? "not-allowed" : "pointer"}`,
         ":hover": {
           opacity: 0.7,
         },
       }}
       onClick={handleLoadMore}
     >
-      {hasNextPage && (
+      {!isReachingEnd && (
         <StyledOcticon icon={RocketIcon} size={18} sx={{ mr: "8px" }} />
       )}
       <Text
@@ -43,7 +44,11 @@ const LoadMore = ({ hasNextPage, isFetching, loadNextPost }: Props) => {
           color: "#006EED",
         }}
       >
-        {isFetching ? "Loading..." : hasNextPage ? "More" : "Mo more post"}
+        {isLoadingMore
+          ? "Loading..."
+          : !isReachingEnd
+          ? "More"
+          : "Mo more post"}
       </Text>
     </Box>
   );

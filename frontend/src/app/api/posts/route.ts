@@ -18,7 +18,7 @@ export async function GET(request: Request) {
         page: url.searchParams.get("page"),
       });
 
-    let whereClause = {};
+    // let whereClause = {};
 
     const posts = await prisma.post.findMany({
       take: parseInt(limit),
