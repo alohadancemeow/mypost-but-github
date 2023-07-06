@@ -2,7 +2,13 @@
 
 import { RocketIcon } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text } from "@primer/react";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import styled from "styled-components";
 
@@ -18,15 +24,12 @@ import Select from "react-select";
 import makeAnimated from "react-select/animated";
 
 import "@/styles/editor.css";
-import axios, { AxiosError } from "axios";
+
 import { toast } from "react-hot-toast";
+import axios, { AxiosError } from "axios";
 import usePostModal from "@/hooks/usePostModal";
 
-export const PostValidator = z.object({
-  title: z.string(),
-  content: z.any(),
-  tags: z.array(z.string()),
-});
+import { PostValidator } from "@/types";
 
 const TagOptions = [
   { value: "just sharing", label: "Just Sharing" },
@@ -40,7 +43,7 @@ type FormData = z.infer<typeof PostValidator>;
 type Props = {};
 
 const Editor = (props: Props) => {
-  const animatedComponents = React.useMemo(() => makeAnimated(), [TagOptions]);
+  const animatedComponents = useMemo(() => makeAnimated(), [TagOptions]);
 
   const router = useRouter();
   const postModal = usePostModal();

@@ -12,28 +12,55 @@ import { Box, StyledOcticon, Text } from "@primer/react";
 
 import { ReactionButtonType } from "./PostItem";
 import { PostPopulated } from "@/types";
+import { User } from "@prisma/client";
+import useAuthModal from "@/hooks/useAuthModal";
+
+import useShare from "@/hooks/useShare";
+import useLike from "@/hooks/useLike";
 
 type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
-  handleLike: () => void;
-  onShare: (postId: string) => Promise<void>;
   post: PostPopulated;
-  hasLiked: boolean;
+  currentUser?: User | null;
 };
 
 const ReactionButton = ({
   selected,
   setSelected,
-  handleLike,
   post,
-  onShare,
-  hasLiked,
+  currentUser,
 }: Props) => {
-  const onShareCliked = useCallback(async () => {
-    setSelected({ ...selected, share: !selected.share });
-    !selected.share && onShare(post.id);
-  }, [setSelected, onShare, selected]);
+  const authModal = useAuthModal();
+  const { hasLiked, toggleLike } = useLike({ post, currentUser });
+  const { sharePost } = useShare({ postId: post.id });
+
+  const handleShare = useCallback(
+    async (e: any) => {
+      e.stopPropagation();
+
+      setSelected({ ...selected, share: !selected.share });
+
+      if (!selected.share) {
+        await sharePost();
+      }
+    },
+    [setSelected, sharePost, selected.share]
+  );
+
+  // Handle like - unlike
+  const handleLike = useCallback(
+    async (e: any) => {
+      e.stopPropagation();
+
+      if (!currentUser) {
+        return authModal.onOpen();
+      }
+
+      toggleLike();
+    },
+    [authModal, currentUser, toggleLike]
+  );
 
   return (
     <Box margin="22px 4px 0" display="flex">
@@ -51,7 +78,7 @@ const ReactionButton = ({
             opacity: 0.7,
           },
         }}
-        onClick={() => handleLike()}
+        onClick={handleLike}
       >
         {hasLiked ? (
           <>
@@ -148,7 +175,7 @@ const ReactionButton = ({
             opacity: 0.7,
           },
         }}
-        onClick={onShareCliked}
+        onClick={handleShare}
       >
         {selected && selected.share ? (
           <StyledOcticon

@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { Post, User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import useAuthModal from "./useAuthModal";
+import axios, { AxiosError } from "axios";
 
 type Props = {
   post: Post;
@@ -14,17 +15,13 @@ const useLike = ({ post, currentUser }: Props) => {
   const router = useRouter();
   const authModal = useAuthModal();
 
-  //   trpc mutation
-  const like = () => {};
-  const unlike = () => {};
-
   const hasLiked = useMemo(() => {
     const list = post?.likedIds || [];
 
     return list.includes(currentUser?.id!);
   }, [post, currentUser]);
 
-  const toggleLike = useCallback(() => {
+  const toggleLike = useCallback(async () => {
     if (!currentUser) {
       return authModal.onOpen();
     }
@@ -32,18 +29,22 @@ const useLike = ({ post, currentUser }: Props) => {
     try {
       let request;
 
-      // if (hasLiked) {
-      //   request = () => unlike({ postId: post.id, userId: currentUser.id });
-      // } else {
-      //   request = () => like({ postId: post.id, userId: currentUser.id });
-      // }
+      if (hasLiked) {
+        request = () => axios.delete(`/api/post/${post.id}`);
+      } else {
+        request = () => axios.post(`/api/post/${post.id}`);
+      }
 
-      // request();
+      await request();
 
       router.refresh();
-      // toast.success("Success");
+      toast.success("Success");
     } catch (error) {
-      // toast.error("Something went wrong");
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data);
+      }
+
+      toast.error("Something went wrong");
     }
   }, [currentUser, hasLiked, post.id, authModal]);
 

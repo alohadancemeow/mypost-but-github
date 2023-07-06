@@ -95,3 +95,44 @@ export async function DELETE(
     });
   }
 }
+
+// # share
+export async function PATCH(
+  request: Request,
+  { params }: { params: { postId: string } }
+) {
+  const { postId } = params;
+
+  if (!postId || typeof postId !== "string") {
+    throw new Error("Invalid ID");
+  }
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) {
+      throw new Error("Invalid ID");
+    }
+
+    const updatedPost = await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        shares: {
+          increment: 1,
+        },
+      },
+    });
+
+    return NextResponse.json(updatedPost);
+  } catch (error) {
+    return new Response("Something went wrong. Please try later", {
+      status: 500,
+    });
+  }
+}

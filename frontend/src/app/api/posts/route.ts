@@ -5,7 +5,7 @@ import { z } from "zod";
 export async function GET(request: Request) {
   const url = new URL(request.url);
 
-  console.log("url", url);
+  // console.log("url", url);
 
   try {
     const { limit, page } = z

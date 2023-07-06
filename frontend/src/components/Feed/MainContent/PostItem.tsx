@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import { Avatar, Box, Text } from "@primer/react";
 
 import ReactionButton from "./ReactionButton";
@@ -12,8 +12,6 @@ import Tag from "./Tag";
 import { PostPopulated } from "@/types";
 
 import { useFormatDate } from "@/hooks/useFormatDate";
-import useLike from "@/hooks/useLike";
-import useAuthModal from "@/hooks/useAuthModal";
 import { User } from "@prisma/client";
 import EditorOutput from "@/components/Editor/EditorOutput";
 
@@ -26,30 +24,18 @@ type Props = {
   currentUser?: User | null;
   post: PostPopulated;
   onCreateComment: (postId: string, commentBody: string) => Promise<void>;
-  onShare: (postId: string) => Promise<void>;
 };
 
-const PostItem = ({ currentUser, post, onCreateComment, onShare }: Props) => {
+const PostItem = ({ currentUser, post, onCreateComment }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: false,
     share: false,
   });
 
-  const authModal = useAuthModal();
   const { dateFormate } = useFormatDate();
-  const { hasLiked, toggleLike } = useLike({ post, currentUser });
 
   // Get comments - Create comment
   const commentData = new Array(3);
-
-  // Handle like - unlike
-  const handleLike = useCallback(async () => {
-    if (!currentUser) {
-      return authModal.onOpen();
-    }
-
-    toggleLike();
-  }, [authModal, currentUser, toggleLike]);
 
   return (
     <Box
@@ -113,17 +99,15 @@ const PostItem = ({ currentUser, post, onCreateComment, onShare }: Props) => {
           <EditorOutput content={post.body} />
 
           <Box marginTop={30}>
-            {post.tags.map((tag, index) => (
+            {post?.tags?.map((tag, index) => (
               <Tag key={index} text={tag ?? ""} />
             ))}
           </Box>
           <ReactionButton
             selected={selected}
             setSelected={setSelected}
-            handleLike={handleLike}
-            onShare={onShare}
             post={post}
-            hasLiked={hasLiked}
+            currentUser={currentUser}
           />
           <Popup selected={selected} setSelected={setSelected} />
         </Box>

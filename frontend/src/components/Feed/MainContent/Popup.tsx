@@ -10,7 +10,7 @@ import { ReactionButtonType } from "./PostItem";
 import { XCircleFillIcon } from "@primer/octicons-react";
 
 import { FacebookShareButton, TwitterShareButton } from "react-share";
-import { siteMetadata } from "../../../../site/siteMetadata";
+import { siteMetadata } from "@/site/siteMetadata";
 
 type Props = {
   selected: ReactionButtonType;

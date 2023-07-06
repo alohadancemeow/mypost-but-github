@@ -1,30 +1,26 @@
 "use client";
 
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
-import { Box, Text } from "@primer/react";
+import { Box } from "@primer/react";
 
 import LoadMore from "./LoadMore";
 import PostItem from "./PostItem";
 import HeadUnderLine from "./HeadUnderLine";
 import PostBanner from "./PostBanner";
-import PostDialog from "./PostDialog";
 
-import { PostInput } from "@/types";
-import { useIsMutating } from "@tanstack/react-query";
-import { postStore } from "@/states/postStore";
 import Footer from "../Footer";
 
 import { User } from "@prisma/client";
 import { usePaginatePosts } from "@/hooks/usePaginatePosts";
+import { PostPopulated } from "@/types";
 
 type Props = {
   currentUser?: User | null;
 };
 
 const MainContent = ({ currentUser }: Props) => {
-  const setIsOpen = postStore((state) => state.setIsOpen);
 
   const {
     paginateData: paginatePosts,
@@ -35,15 +31,7 @@ const MainContent = ({ currentUser }: Props) => {
     size,
   } = usePaginatePosts("/api/posts");
 
-  //TODO: Create post
-
   //TODO:  Create comment
-
-  //TODO: share increment
-
-  const onShare = useCallback(async () => {
-    //  share fn
-  }, []);
 
   // Handle onCreateComment
   const onCreateComment = useCallback(
@@ -52,9 +40,6 @@ const MainContent = ({ currentUser }: Props) => {
     },
     []
   );
-
-  // handle onCreatePost
-  const onCreatePost = useCallback(async (post: PostInput) => {}, []);
 
   // handle load more
   const loadNextPost = useCallback(
@@ -89,7 +74,6 @@ const MainContent = ({ currentUser }: Props) => {
               currentUser={currentUser}
               post={post}
               onCreateComment={onCreateComment}
-              onShare={onShare}
             />
           ))}
         <LoadMore
