@@ -9,14 +9,15 @@ import LeftContent from "./LeftContent";
 import MainContent from "./MainContent/Main";
 import RightContent from "./RightContent";
 import { User } from "@prisma/client";
-import { UserWithPost } from "@/types";
+import { PostPopulated, UserWithPost } from "@/types";
 
 type Props = {
   currentUser?: User | null;
   users?: UserWithPost[] | null;
+  popularPosts?: PostPopulated[] | null
 };
 
-const Feed = ({ currentUser, users }: Props) => {
+const Feed = ({ currentUser, users, popularPosts }: Props) => {
   return (
     <Box
       bg="canvas.primary"
@@ -39,7 +40,7 @@ const Feed = ({ currentUser, users }: Props) => {
           width="100%"
         >
           <MainContent currentUser={currentUser} />
-          <RightContent />
+          <RightContent popularPosts={popularPosts}/>
         </MyBox>
       </LayoutBox>
     </Box>

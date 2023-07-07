@@ -6,20 +6,18 @@ import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";
 import { NumberIcon } from "@primer/octicons-react";
 
 import { useFormatDate } from "../../hooks/useFormatDate";
+import { PostPopulated } from "@/types";
 
-const RightContent = () => {
-  // TODO: get post data by like
-  // const { data: postData } = trpc.post.getPosts.useQuery({
-  //   limit: 5,
-  //   orderBy: "likes",
-  // });
+import EditorOutput from "../Editor/EditorOutput";
 
-  // const posts = postData?.posts.flatMap((post) => post) ?? [];
-  // console.log("posts", posts);
+type Props = {
+  popularPosts?: PostPopulated[] | null;
+};
 
-  const posts = new Array(5);
-
+const RightContent = ({ popularPosts: posts }: Props) => {
   const { dateFormate } = useFormatDate();
+
+  if (!posts) return <>Loading...</>;
 
   return (
     <MyBox
@@ -73,7 +71,7 @@ const RightContent = () => {
               bg="#30363E"
               borderRadius="4px"
               width="100%"
-              padding="10px 15px"
+              padding="8px 15px"
               sx={{
                 cursor: "pointer",
                 ":hover": {
@@ -81,14 +79,17 @@ const RightContent = () => {
                 },
               }}
             >
-              <Text fontSize="16px" marginBottom="8px">
+              <Text
+                fontSize="16px"
+                //  marginBottom="8px"
+              >
                 {post.title}{" "}
-                <span style={{ fontSize: "12px", color: "#ADBAC7" }}>
+                <span style={{ fontSize: "14px", color: "#ADBAC7" }}>
                   · {dateFormate(post.createdAt)}
                 </span>{" "}
               </Text>
               <MyDesc fontSize="12px" color="#ADBAC7">
-                {post.body}
+                <EditorOutput content={post.body} />
               </MyDesc>
             </Box>
           </Box>

@@ -14,14 +14,12 @@ import Footer from "../Footer";
 
 import { User } from "@prisma/client";
 import { usePaginatePosts } from "@/hooks/usePaginatePosts";
-import { PostPopulated } from "@/types";
 
 type Props = {
   currentUser?: User | null;
 };
 
 const MainContent = ({ currentUser }: Props) => {
-
   const {
     paginateData: paginatePosts,
     isLoadingMore,
