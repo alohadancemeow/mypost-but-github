@@ -155,7 +155,7 @@ const AuthModal = () => {
               Email
             </FormControl.Label>
             <TextInput
-              // @ts-expect-error
+              // @ts-ignore
               leadingVisual={<MailIcon />}
               aria-label="Email"
               type="email"
@@ -176,7 +176,7 @@ const AuthModal = () => {
               Password
             </FormControl.Label>
             <TextInput
-              // @ts-expect-error
+              // @ts-ignore
               leadingVisual={<LockIcon />}
               aria-label="Password"
               type="password"

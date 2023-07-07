@@ -1,19 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { Avatar, Box, Text } from "@primer/react";
 
-import ReactionButton from "./ReactionButton";
-import Popup from "./Popup";
-import CommentItem from "./CommentItem";
-import CommentInput from "./CommentInput";
-import Tag from "./Tag";
+import ReactionButton from "@/app/components/feed/mainContent/ReactionButton";
+import Popup from "@/app/components/feed/mainContent/Popup";
+import Tag from "@/app/components/feed/mainContent/Tag";
 
 import { PostPopulated } from "@/types";
 
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { User } from "@prisma/client";
-import EditorOutput from "@/components/Editor/EditorOutput";
+import EditorOutput from "@/app/components/editor/EditorOutput";
+import CommentSection from "@/app/components/feed/mainContent/CommentSection";
 
 export type ReactionButtonType = {
   comment: boolean;
@@ -23,19 +22,15 @@ export type ReactionButtonType = {
 type Props = {
   currentUser?: User | null;
   post: PostPopulated;
-  onCreateComment: (postId: string, commentBody: string) => Promise<void>;
 };
 
-const PostItem = ({ currentUser, post, onCreateComment }: Props) => {
+const PostItem = ({ currentUser, post }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: false,
     share: false,
   });
 
   const { dateFormate } = useFormatDate();
-
-  // Get comments - Create comment
-  const commentData = new Array(3);
 
   return (
     <Box
@@ -113,20 +108,7 @@ const PostItem = ({ currentUser, post, onCreateComment }: Props) => {
         </Box>
       </Box>
       {selected && selected.comment && (
-        <>
-          <>
-            {commentData &&
-              commentData.map((comment) => (
-                <CommentItem key={comment.id} comment={comment} />
-              ))}
-          </>
-
-          <CommentInput
-            currentUser={currentUser}
-            onCreateComment={onCreateComment}
-            postId={post.id}
-          />
-        </>
+          <CommentSection currentUser={currentUser} post={post} />
       )}
     </Box>
   );

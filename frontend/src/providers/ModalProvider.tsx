@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AuthModal from "@/components/Modal/AuthModal";
-import PostModal from "@/components/Modal/PostModal";
+import AuthModal from "@/app/components/modals/AuthModal";
+import PostModal from "@/app/components/modals/PostModal";
 
 type Props = {};
 

@@ -5,7 +5,7 @@ import Providers from "@/providers";
 import StyledComponentsRegistry from "@/lib/registry";
 import getCurrentUser from "@/actions/getCurrentUser";
 
-import Nav from "@/components/Nav";
+import Nav from "@/app/components/Nav";
 
 const inter = Inter({ subsets: ["latin"] });
 

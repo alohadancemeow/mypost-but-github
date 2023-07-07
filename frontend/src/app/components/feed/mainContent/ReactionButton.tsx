@@ -10,7 +10,7 @@ import {
 } from "@primer/octicons-react";
 import { Box, StyledOcticon, Text } from "@primer/react";
 
-import { ReactionButtonType } from "./PostItem";
+import { ReactionButtonType } from "@/app/components/feed/mainContent/PostItem";
 import { PostPopulated } from "@/types";
 import { User } from "@prisma/client";
 import useAuthModal from "@/hooks/useAuthModal";

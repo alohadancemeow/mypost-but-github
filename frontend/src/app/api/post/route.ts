@@ -1,5 +1,5 @@
 import getCurrentUser from "@/actions/getCurrentUser";
-import { prisma } from "@/lib/prismadb";
+import  prisma  from "@/lib/prismadb";
 import { PostValidator } from "@/types";
 import { NextResponse } from "next/server";
 import { z } from "zod";

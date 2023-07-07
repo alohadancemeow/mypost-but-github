@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { BookIcon } from "@primer/octicons-react";
 import { Box, Text } from "@primer/react";
-import { MyButton } from "@/components/Modal/AuthModal";
+import { MyButton } from "@/app/components/modals/AuthModal";
 
 import { User } from "@prisma/client";
 import useAuthModal from "@/hooks/useAuthModal";

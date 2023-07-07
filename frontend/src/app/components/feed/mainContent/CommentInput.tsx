@@ -4,28 +4,32 @@ import React, { useCallback, useState } from "react";
 import { Avatar, Box, TextInput } from "@primer/react";
 import { User } from "@prisma/client";
 
+import useComment from "@/hooks/useComment";
+
 type Props = {
   currentUser?: User | null;
-  onCreateComment: (postId: string, commentBody: string) => Promise<void>;
   postId: string;
 };
 
-const CommentInput = ({ currentUser, onCreateComment, postId }: Props) => {
+const CommentInput = ({ currentUser, postId }: Props) => {
   const [commentBody, setCommentBody] = useState<string>("");
 
-  const handleOnCreateComment = useCallback(
+  const { createComment} = useComment({ postId, body: commentBody });
+  
+
+  // # Handle create comment
+  const onCreateComment = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        await onCreateComment(postId, commentBody);
+        await createComment();
         setCommentBody("");
       }
     },
-    [onCreateComment, commentBody, setCommentBody]
+    [createComment, setCommentBody]
   );
 
   return (
     <Box
-      // marginTop={3}
       display="flex"
       alignItems={"center"}
       justifyContent="flex-start"
@@ -40,9 +44,7 @@ const CommentInput = ({ currentUser, onCreateComment, postId }: Props) => {
       </Box>
       <TextInput
         contrast
-        aria-label="username"
-        // name="username"
-        // autoComplete="username"
+        aria-label="text"
         placeholder={
           currentUser?.email === undefined
             ? `Sign in to comment`
@@ -52,14 +54,14 @@ const CommentInput = ({ currentUser, onCreateComment, postId }: Props) => {
         value={commentBody}
         onChange={(e) => setCommentBody(e.target.value)}
         onKeyUp={(e) => {
-          handleOnCreateComment(e);
+          onCreateComment(e);
         }}
         disabled={currentUser?.email === undefined}
         sx={{
           bg: "transparent",
           border: "1px solid #444C56",
           width: "100%",
-          height: "40px",
+          height: "38px",
           borderRadius: "3px",
           marginInlineStart: "15px",
         }}

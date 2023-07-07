@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { Box, Heading, Popover, Text } from "@primer/react";
 import { BsFacebook, BsTwitter } from "react-icons/bs";
-import { MyButton } from "@/components/Modal/AuthModal";
+import { MyButton } from "@/app/components/modals/AuthModal";
 import { ReactionButtonType } from "./PostItem";
 import { XCircleFillIcon } from "@primer/octicons-react";
 

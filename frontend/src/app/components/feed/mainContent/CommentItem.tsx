@@ -54,7 +54,7 @@ const CommentItem = ({ comment }: Props) => {
           <Text fontSize="14px" marginBottom="3px">
             {comment.user?.name}{" "}
             <span style={{ fontSize: "12px", color: "#ADBAC7" }}>
-              · {dateFormate(comment.createdAt)}
+              · {dateFormate(new Date(comment.createdAt))}
             </span>{" "}
           </Text>
           <Text fontSize="12px" color="#ADBAC7">

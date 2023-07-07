@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prismadb";
+import prisma  from "@/lib/prismadb";
 
 const getPopularPosts = async () => {
   const posts = await prisma.post.findMany({

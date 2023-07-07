@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prismadb";
+import  prisma  from "@/lib/prismadb";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -30,7 +30,11 @@ export async function GET(request: Request) {
       },
       include: {
         user: true,
-        comments: true,
+        comments: {
+          include: {
+            user: true
+          }
+        }
       },
     });
 

@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import styled from "styled-components";
 
 import { Box } from "@primer/react";
 
-import LoadMore from "./LoadMore";
-import PostItem from "./PostItem";
-import HeadUnderLine from "./HeadUnderLine";
-import PostBanner from "./PostBanner";
+import LoadMore from "@/app/components/feed/mainContent/LoadMore";
+import PostItem from "@/app/components/feed/mainContent/PostItem";
+import HeadUnderLine from "@/app/components/feed/mainContent/HeadUnderLine";
+import PostBanner from "@/app/components/feed/mainContent/PostBanner";
 
 import Footer from "../Footer";
 
@@ -20,6 +20,7 @@ type Props = {
 };
 
 const MainContent = ({ currentUser }: Props) => {
+
   const {
     paginateData: paginatePosts,
     isLoadingMore,
@@ -28,16 +29,6 @@ const MainContent = ({ currentUser }: Props) => {
     setSize,
     size,
   } = usePaginatePosts("/api/posts");
-
-  //TODO:  Create comment
-
-  // Handle onCreateComment
-  const onCreateComment = useCallback(
-    async (postId: string, commentBody: string) => {
-      //
-    },
-    []
-  );
 
   // handle load more
   const loadNextPost = useCallback(
@@ -57,9 +48,7 @@ const MainContent = ({ currentUser }: Props) => {
         p={4}
         marginTop={25}
         bg="canvas.primary"
-        // color="fg.onEmphasis"
         // border="1px solid red"
-        // borderLeft="1px solid #636568"
         borderRadius="8px"
       >
         <PostBanner currentUser={currentUser} />
@@ -67,12 +56,7 @@ const MainContent = ({ currentUser }: Props) => {
 
         {paginatePosts &&
           paginatePosts?.map((post) => (
-            <PostItem
-              key={post.id}
-              currentUser={currentUser}
-              post={post}
-              onCreateComment={onCreateComment}
-            />
+            <PostItem key={post.id} currentUser={currentUser} post={post} />
           ))}
         <LoadMore
           isLoadingMore={isLoadingMore}

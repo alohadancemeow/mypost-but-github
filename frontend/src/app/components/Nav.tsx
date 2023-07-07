@@ -5,7 +5,7 @@ import { RocketIcon, SignOutIcon } from "@primer/octicons-react";
 import { Avatar, Box, Header, StyledOcticon, Text } from "@primer/react";
 import { signOut } from "next-auth/react";
 
-import { MyButton } from "./Modal/AuthModal";
+import { MyButton } from "@/app/components/modals/AuthModal";
 import useAuthModal from "@/hooks/useAuthModal";
 import { User } from "@prisma/client";
 

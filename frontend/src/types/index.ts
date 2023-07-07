@@ -9,7 +9,11 @@ export const postPopulated = Prisma.validator<Prisma.PostInclude>()({
       image: true,
     },
   },
-  comments: true,
+  comments: {
+    include: {
+      user: true
+    }
+  },
 });
 
 export type PostPopulated = Prisma.PostGetPayload<{

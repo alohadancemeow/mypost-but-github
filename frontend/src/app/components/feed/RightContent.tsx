@@ -5,10 +5,10 @@ import styled from "styled-components";
 import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";
 import { NumberIcon } from "@primer/octicons-react";
 
-import { useFormatDate } from "../../hooks/useFormatDate";
+import { useFormatDate } from "@/hooks/useFormatDate";
 import { PostPopulated } from "@/types";
 
-import EditorOutput from "../Editor/EditorOutput";
+import EditorOutput from "@/app/components/editor/EditorOutput";
 
 type Props = {
   popularPosts?: PostPopulated[] | null;

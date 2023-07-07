@@ -1,4 +1,4 @@
-import Feed from "@/components/Feed";
+import Feed from "@/app/components/feed";
 import getCurrentUser from "@/actions/getCurrentUser";
 import getUsersByPost from "@/actions/getUsersByPost";
 import getPopularPosts from "@/actions/getPopularPosts";
