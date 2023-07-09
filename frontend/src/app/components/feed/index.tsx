@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { Box } from "@primer/react";
 
 import LeftContent from "./LeftContent";
-import MainContent from "./MainContent/Main";
+import MainContent from "./mainContent/Main";
 import RightContent from "./RightContent";
 import { User } from "@prisma/client";
 import { PostPopulated, UserWithPost } from "@/types";
