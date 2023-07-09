@@ -1,16 +1,9 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import  prisma  from "@/lib/prismadb";
+import { CommentValidator } from "@/types";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-export const CommentValidator = z.object({
-  postId: z.string(),
-  body: z.string(),
-});
-
-
-
-// POST
 export async function POST(request: Request) {
   const currentUser = await getCurrentUser();
 

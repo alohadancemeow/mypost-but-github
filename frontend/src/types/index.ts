@@ -20,20 +20,6 @@ export type PostPopulated = Prisma.PostGetPayload<{
   include: typeof postPopulated;
 }>;
 
-// post input
-export const tokens = [
-  { text: "Programming", id: 0 },
-  { text: "Education", id: 1 },
-  { text: "Just Sharing", id: 2 },
-  { text: "Review", id: 3 },
-];
-
-export type PostInput = {
-  title: string;
-  body: string;
-  tags: typeof tokens;
-};
-
 // comments
 export const commentPopulated = Prisma.validator<Prisma.CommentInclude>()({
   user: {
@@ -59,6 +45,12 @@ export const PostValidator = z.object({
   content: z.any(),
   tags: z.array(z.string()),
 });
+
+export const CommentValidator = z.object({
+  postId: z.string(),
+  body: z.string(),
+});
+
 
 // # Response type
 export type UserWithPost = User & {
