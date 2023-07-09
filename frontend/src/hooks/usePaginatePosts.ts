@@ -5,7 +5,12 @@ import useSWRInfinite from "swr/infinite";
  * @SWR docs: https://swr.vercel.app/docs/pagination
  */
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url, {
+  cache: 'no-cache',
+  next: {
+    tags: ['posts']
+  }
+}).then((res) => res.json());
 
 export const usePaginatePosts = (url: string) => {
   const PAGE_LIMIT = 3;

@@ -64,3 +64,5 @@ export const PostValidator = z.object({
 export type UserWithPost = User & {
   posts: Post[];
 };
+
+export type FormData = z.infer<typeof PostValidator>;
