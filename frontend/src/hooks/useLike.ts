@@ -7,6 +7,8 @@ import useAuthModal from "./useAuthModal";
 import axios, { AxiosError } from "axios";
 import { like, unlike } from "@/actions/serverActions";
 
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
 type Props = {
   post: Post;
   currentUser?: User | null;
@@ -15,6 +17,29 @@ type Props = {
 const useLike = ({ post, currentUser }: Props) => {
   const router = useRouter();
   const authModal = useAuthModal();
+
+  // Get access to query client instance
+  const queryClient = useQueryClient()
+
+  // like
+  const {mutate: likeMutation} = useMutation({
+    mutationFn: async () => {
+     await axios.post(`/api/post/${post.id}`)
+    },
+    onSuccess: ()=> {
+      queryClient.invalidateQueries(['posts-query'])
+    }
+  })
+
+  // unlike
+  const {mutate: unlikeMutation} = useMutation({
+    mutationFn: async () => {
+     await axios.delete(`/api/post/${post.id}`)
+    },
+    onSuccess: ()=> {
+      queryClient.invalidateQueries(['posts-query'])
+    }
+  })
 
   const hasLiked = useMemo(() => {
     const list = post?.likedIds || [];
@@ -32,13 +57,16 @@ const useLike = ({ post, currentUser }: Props) => {
 
       if (hasLiked) {
         // request = () => axios.delete(`/api/post/${post.id}`);
-        request = ()=> unlike(post.id)
+        // request = ()=> unlike(post.id)
+        request = () => unlikeMutation()
       } else {
         // request = () => axios.post(`/api/post/${post.id}`);
-        request =()=> like(post.id)
+        // request =()=> like(post.id)
+        request = () => likeMutation()
       }
 
-      await request();
+      // await request();
+     request();
 
       router.refresh();
       toast.success("Success");

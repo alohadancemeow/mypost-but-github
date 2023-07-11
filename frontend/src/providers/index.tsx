@@ -7,6 +7,11 @@ import { BaseStyles } from "@primer/react";
 import { Toaster } from "react-hot-toast";
 import ModalProvider from "./ModalProvider";
 
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+
 // # Custom theme
 const theme = {
   colors: {
@@ -33,9 +38,18 @@ type Props = {
   children: React.ReactNode;
 };
 
+const queryClient = new QueryClient({
+  // defaultOptions: {
+  //   queries: {
+  //     staleTime: Infinity,
+  //   },
+  // },
+})
+
 const Providers = ({ children }: Props) => {
   return (
     <SessionProvider>
+      <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={customTheme}>
         <BaseStyles>
           {children}
@@ -43,6 +57,7 @@ const Providers = ({ children }: Props) => {
           <ModalProvider />
         </BaseStyles>
       </ThemeProvider>
+      </QueryClientProvider>
     </SessionProvider>
   );
 };

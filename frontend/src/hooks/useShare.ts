@@ -3,6 +3,9 @@ import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+
 type Props = {
   postId: string;
 };
@@ -10,24 +13,36 @@ type Props = {
 const useShare = ({ postId }: Props) => {
   const router = useRouter();
 
-  const sharePost = useCallback(async () => {
-    axios
-      .patch(`/api/post/${postId}`)
-      .then((data) => {
-        if (data.status === 200) {
-          router.refresh();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
+  // Get access to query client instance
+  const queryClient = useQueryClient()
 
-        if (error instanceof AxiosError) {
-          toast.error(error.response?.data);
-        }
-      });
-  }, [postId]);
+  // const sharePost = useCallback(async () => {
+  //   axios
+  //     .patch(`/api/post/${postId}`)
+  //     .then((data) => {
+  //       if (data.status === 200) {
+  //         router.refresh();
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
 
-  return { sharePost };
+  //       if (error instanceof AxiosError) {
+  //         toast.error(error.response?.data);
+  //       }
+  //     });
+  // }, [postId]);
+
+  const {mutate: shareMutation} = useMutation({
+    mutationFn: async ()=> {
+      await axios.patch(`/api/post/${postId}`)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['posts-query'])
+    }
+  })
+
+  return { shareMutation };
 };
 
 export default useShare;

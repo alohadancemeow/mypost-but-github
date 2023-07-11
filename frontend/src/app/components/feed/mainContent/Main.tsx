@@ -12,8 +12,11 @@ import PostBanner from "@/app/components/feed/mainContent/PostBanner";
 
 import Footer from "../Footer";
 
+import axios from "axios";
 import { User } from "@prisma/client";
-import { usePaginatePosts } from "@/hooks/usePaginatePosts";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { PostPopulated } from "@/types";
+
 
 type Props = {
   currentUser?: User | null;
@@ -21,22 +24,36 @@ type Props = {
 
 const MainContent = ({ currentUser }: Props) => {
 
-  const {
-    paginateData: paginatePosts,
-    isLoadingMore,
-    isReachingEnd,
-    error,
-    setSize,
-    size,
-  } = usePaginatePosts("/api/posts");
+  const {data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch} = useInfiniteQuery({
+    queryKey: ['posts-query'],
+    queryFn: async ({pageParam = 1}) => {
+      const query = `/api/posts?limit=3&page=${pageParam}`
+      
+      const {data} = await axios.get(query)
+      return data as PostPopulated[]
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      // lastPage.nextCursor
+      return allPages.length + 1
+    },
+    initialData: {pages:[], pageParams: [1]},
+  })
+
+  const posts = data?.pages.flatMap((page) => page) ?? []
+  // console.log(posts, 'posts');
+
 
   // handle load more
   const loadNextPost = useCallback(
-    async () => await setSize(size + 1),
-    [size, setSize]
+    async () => {
+      if(hasNextPage && !isFetchingNextPage) {
+       await fetchNextPage()
+      }
+    },
+    [hasNextPage, isFetchingNextPage]
   );
 
-  if (!paginatePosts) return <>load post...</>;
+  // if (posts.length === 0) return <>load post...</>;
 
   return (
     <div
@@ -54,14 +71,16 @@ const MainContent = ({ currentUser }: Props) => {
         <PostBanner currentUser={currentUser} />
         <HeadUnderLine />
 
-        {paginatePosts &&
-          paginatePosts?.map((post) => (
+        {posts.length === 0 && <div>loading post...</div>}
+
+        {posts &&
+          posts?.map((post) => (
             <PostItem key={post.id} currentUser={currentUser} post={post} />
           ))}
         <LoadMore
-          isLoadingMore={isLoadingMore}
-          isReachingEnd={isReachingEnd}
           loadNextPost={loadNextPost}
+          isFetchingNextPage={isFetchingNextPage} 
+          hasNextPage={hasNextPage}
         />
       </MyBox>
       <Footer />
