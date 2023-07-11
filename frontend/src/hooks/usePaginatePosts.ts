@@ -6,9 +6,9 @@ import useSWRInfinite from "swr/infinite";
  */
 
 const fetcher = (url: string) => fetch(url, {
-  cache: 'no-cache',
+  cache: 'no-store',
   next: {
-    tags: ['posts']
+    tags: ['posts'],
   }
 }).then((res) => res.json());
 

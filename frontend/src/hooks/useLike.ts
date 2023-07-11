@@ -5,6 +5,7 @@ import { Post, User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import useAuthModal from "./useAuthModal";
 import axios, { AxiosError } from "axios";
+import { like, unlike } from "@/actions/serverActions";
 
 type Props = {
   post: Post;
@@ -30,9 +31,11 @@ const useLike = ({ post, currentUser }: Props) => {
       let request;
 
       if (hasLiked) {
-        request = () => axios.delete(`/api/post/${post.id}`);
+        // request = () => axios.delete(`/api/post/${post.id}`);
+        request = ()=> unlike(post.id)
       } else {
-        request = () => axios.post(`/api/post/${post.id}`);
+        // request = () => axios.post(`/api/post/${post.id}`);
+        request =()=> like(post.id)
       }
 
       await request();

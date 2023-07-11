@@ -30,9 +30,8 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import usePostModal from "@/hooks/usePostModal";
 
 import { FormData, PostValidator } from "@/types";
-import { revalidatePath, revalidateTag } from "next/cache";
 import { TagOptions } from "@/data/tags";
-import { createPost, revalidate } from "@/actions/serverActions";
+import { ResponseData, createPost } from "@/actions/serverActions";
 
 
 
@@ -129,87 +128,83 @@ const Editor = (props: Props) => {
   }, [isMounted, initializeEditor]);
 
   // # Handle submit --> create post
-  const onSubmit = useCallback(
-    async (data: FormData) => {
-      const blocks = await ref.current?.save();
+  // const onSubmit = useCallback(
+  //   async (data: FormData) => {
+  //     const blocks = await ref.current?.save();
 
-      if (
-        !data.title ||
-        blocks?.blocks.length === 0 ||
-        selectedOption?.length === 0
-      ) {
-        return toast.error("please complete all form");
+  //     if (
+  //       !data.title ||
+  //       blocks?.blocks.length === 0 ||
+  //       selectedOption?.length === 0
+  //     ) {
+  //       return toast.error("please complete all form");
+  //     }
+
+  //     const payload: FormData = {
+  //       title: data.title,
+  //       content: blocks,
+  //       tags: selectedOption?.map((tag) => tag.label)!,
+  //     };
+
+  //     axios
+  //       .post("/api/post", { ...payload })
+  //       .then((data) => {
+  //         if (data.status === 200) {
+  //           toast.success("Post created.");
+  //           router.refresh();
+  //           postModal.onClose();
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+          
+  //         if (error instanceof AxiosError) {
+  //           toast.error(error.response?.data);
+  //         }
+  //       });
+        
+  //       // revalidate('posts')
+  //   },
+  //   [selectedOption]
+  // );
+
+ 
+  
+
+  const onSubmit = useCallback(async (data: FormData) => {
+    const blocks = await ref.current?.save();
+
+    if (
+      !data.title ||
+      blocks?.blocks.length === 0 ||
+      selectedOption?.length === 0
+    ) {
+      return toast.error("please complete all form");
+    }
+
+    const payload: FormData = {
+      title: data.title,
+      content: blocks,
+      tags: selectedOption?.map((tag) => tag.label)!,
+    };
+
+   const postData:ResponseData = await createPost(payload)
+   console.log(postData, 'postData');
+
+   if (postData.data) {
+        toast.success("Post created.");
+        router.refresh();
+        postModal.onClose();
       }
 
-      const payload: FormData = {
-        title: data.title,
-        content: blocks,
-        tags: selectedOption?.map((tag) => tag.label)!,
-      };
+      if(postData.err) {
+        toast.error(postData.err);
+      }
 
-      axios
-        .post("/api/post", { ...payload })
-        .then((data) => {
-          if (data.status === 200) {
-            toast.success("Post created.");
-            router.refresh();
-            postModal.onClose();
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          
-          if (error instanceof AxiosError) {
-            toast.error(error.response?.data);
-          }
-        });
-        
-        // revalidate('posts')
-    },
-    [selectedOption]
-  );
-
-  // const onSubmit = useCallback(async (data: FormData) => {
-
-  //   const blocks = await ref.current?.save();
-
-  //   if (
-  //     !data.title ||
-  //     blocks?.blocks.length === 0 ||
-  //     selectedOption?.length === 0
-  //   ) {
-  //     return toast.error("please complete all form");
-  //   }
-
-  //   const payload: FormData = {
-  //     title: data.title,
-  //     content: blocks,
-  //     tags: selectedOption?.map((tag) => tag.label)!,
-  //   };
-
-  //  const res = await createPost(payload)
-  //  console.log(res, 'res');
-   
-  //     // .then((data) => {
-
-  //     //   if (data?.data.status === 200) {
-  //     //     console.log(data, 'data');
-  //     //     // toast.success("Post created.");
-  //     //     // router.refresh();
-  //     //     // postModal.onClose();
-  //     //   }
-  //     // })
-  //     // .catch((error) => {
-  //     //   console.log(error);
-
-  //     //   if (error instanceof AxiosError) {
-  //     //     toast.error(error.response?.data);
-  //     //   }
-  //     // });
+  }, [selectedOption])
 
 
-  // }, [selectedOption])
-
+  // # Check if isMounted
   if (!isMounted) {
     return null;
   }
