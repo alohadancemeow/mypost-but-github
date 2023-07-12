@@ -173,7 +173,7 @@ const Editor = (props: Props) => {
             />
             <div
               id="editor"
-              className="prose prose-invert min-h-[400px] w-full "
+              className="prose prose-invert min-h-[350px] w-full "
             />
             <p className="text-sm text-gray-500">
               Use{" "}
@@ -206,7 +206,7 @@ const Editor = (props: Props) => {
               colors: {
                 ...theme.colors,
                 primary: "black",
-                primary25: "#444C56",
+                primary25: "#868c94",
               },
             })}
           />

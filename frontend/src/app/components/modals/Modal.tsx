@@ -48,10 +48,10 @@ const Modal: React.FC<ModalProps> = ({
             ${isPost ? "md:max-w-[600px]" : "md:max-w-[450px]"}
           `}
         >
-          <Dialog.Title className="mb-4 text-center text-xl font-bold ">
+          <Dialog.Title className="mb-4 text-xl font-bold text-center ">
             {title}
           </Dialog.Title>
-          <Dialog.Description className="mb-10 text-center text-sm leading-normal text-white ">
+          <Dialog.Description className="mb-10 text-sm leading-normal text-center text-white ">
             {description}
           </Dialog.Description>
           <div>{children}</div>
