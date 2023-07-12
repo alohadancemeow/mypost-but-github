@@ -58,3 +58,4 @@ export type UserWithPost = User & {
 };
 
 export type FormData = z.infer<typeof PostValidator>;
+export type CommentInput = z.infer<typeof CommentValidator>

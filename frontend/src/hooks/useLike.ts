@@ -1,16 +1,17 @@
 import { useCallback, useMemo } from "react";
 import { toast } from "react-hot-toast";
 
-import { Post, User } from "@prisma/client";
+import {  User } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import useAuthModal from "./useAuthModal";
 import axios, { AxiosError } from "axios";
-import { like, unlike } from "@/actions/serverActions";
+// import { like, unlike } from "@/actions/serverActions";
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { PostPopulated } from "@/types";
 
 type Props = {
-  post: Post;
+  post: PostPopulated;
   currentUser?: User | null;
 };
 
@@ -26,8 +27,30 @@ const useLike = ({ post, currentUser }: Props) => {
     mutationFn: async () => {
      await axios.post(`/api/post/${post.id}`)
     },
-    onSuccess: ()=> {
-      queryClient.invalidateQueries(['posts-query'])
+    onMutate: async (newData: PostPopulated) => {
+
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['posts-query', newData.id]})
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(['posts-query', newData.id])
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(['posts-query', newData.id], newData)
+
+
+      // Return a context with the previous and new todo
+      return { previousData, newData }
+    },
+
+    // If the mutation fails, use the context we returned above
+    onError: (err, newData, context) => {
+      queryClient.setQueryData(['posts-query', context?.newData.id], context?.previousData)
+    },
+
+    // Always refetch after error or success:
+    onSuccess: (newData: any)=> {
+      queryClient.invalidateQueries({queryKey: ['posts-query', newData?.id]})
     }
   })
 
@@ -36,8 +59,30 @@ const useLike = ({ post, currentUser }: Props) => {
     mutationFn: async () => {
      await axios.delete(`/api/post/${post.id}`)
     },
-    onSuccess: ()=> {
-      queryClient.invalidateQueries(['posts-query'])
+    onMutate: async (newData: PostPopulated) => {
+
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['posts-query', newData.id]})
+
+      // Snapshot the previous value
+      const previousData = queryClient.getQueryData(['posts-query', newData.id])
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(['posts-query', newData.id], newData)
+
+
+      // Return a context with the previous and new todo
+      return { previousData, newData }
+    },
+    
+    // If the mutation fails, use the context we returned above
+    onError: (err, newData, context) => {
+      queryClient.setQueryData(['posts-query', context?.newData.id], context?.previousData)
+    },
+
+    // Always refetch after error or success:
+    onSuccess: (newData: any)=> {
+      queryClient.invalidateQueries({queryKey: ['posts-query', newData?.id]})
     }
   })
 
@@ -56,17 +101,13 @@ const useLike = ({ post, currentUser }: Props) => {
       let request;
 
       if (hasLiked) {
-        // request = () => axios.delete(`/api/post/${post.id}`);
-        // request = ()=> unlike(post.id)
-        request = () => unlikeMutation()
+        request = () => unlikeMutation(post)
       } else {
-        // request = () => axios.post(`/api/post/${post.id}`);
-        // request =()=> like(post.id)
-        request = () => likeMutation()
+        request = () => likeMutation(post)
       }
 
       // await request();
-     request();
+      request();
 
       router.refresh();
       toast.success("Success");

@@ -33,8 +33,9 @@ const ReactionButton = ({
 }: Props) => {
   const authModal = useAuthModal();
   const { hasLiked, toggleLike } = useLike({ post, currentUser });
-  const { shareMutation } = useShare({ postId: post.id });
+  const { share } = useShare({ post });
 
+  // Handle share
   const handleShare = useCallback(
     async (e: any) => {
       e.stopPropagation();
@@ -42,11 +43,10 @@ const ReactionButton = ({
       setSelected({ ...selected, share: !selected.share });
 
       if (!selected.share) {
-        // await sharePost();
-        shareMutation();
+        share();
       }
     },
-    [setSelected, shareMutation, selected.share]
+    [setSelected, share, selected.share]
   );
 
   // Handle like - unlike

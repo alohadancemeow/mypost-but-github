@@ -14,9 +14,6 @@ import styled from "styled-components";
 
 import TextareaAutosize from "react-textarea-autosize";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import EditorJS from "@editorjs/editorjs";
@@ -26,12 +23,9 @@ import makeAnimated from "react-select/animated";
 import "@/styles/editor.css";
 
 import { toast } from "react-hot-toast";
-import axios, { AxiosError, AxiosResponse } from "axios";
-import usePostModal from "@/hooks/usePostModal";
-
 import { FormData, PostValidator } from "@/types";
 import { TagOptions } from "@/data/tags";
-import { ResponseData, createPost } from "@/actions/serverActions";
+import useCreatePost from "@/hooks/useCreatePost";
 
 
 
@@ -40,8 +34,7 @@ type Props = {};
 const Editor = (props: Props) => {
   const animatedComponents = useMemo(() => makeAnimated(), [TagOptions]);
 
-  const router = useRouter();
-  const postModal = usePostModal();
+  const { createPost } = useCreatePost()
 
   const ref = useRef<EditorJS>();
   const _titleRef = useRef<HTMLTextAreaElement>(null);
@@ -128,49 +121,6 @@ const Editor = (props: Props) => {
   }, [isMounted, initializeEditor]);
 
   // # Handle submit --> create post
-  // const onSubmit = useCallback(
-  //   async (data: FormData) => {
-  //     const blocks = await ref.current?.save();
-
-  //     if (
-  //       !data.title ||
-  //       blocks?.blocks.length === 0 ||
-  //       selectedOption?.length === 0
-  //     ) {
-  //       return toast.error("please complete all form");
-  //     }
-
-  //     const payload: FormData = {
-  //       title: data.title,
-  //       content: blocks,
-  //       tags: selectedOption?.map((tag) => tag.label)!,
-  //     };
-
-  //     axios
-  //       .post("/api/post", { ...payload })
-  //       .then((data) => {
-  //         if (data.status === 200) {
-  //           toast.success("Post created.");
-  //           router.refresh();
-  //           postModal.onClose();
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-          
-  //         if (error instanceof AxiosError) {
-  //           toast.error(error.response?.data);
-  //         }
-  //       });
-        
-  //       // revalidate('posts')
-  //   },
-  //   [selectedOption]
-  // );
-
- 
-  
-
   const onSubmit = useCallback(async (data: FormData) => {
     const blocks = await ref.current?.save();
 
@@ -188,20 +138,11 @@ const Editor = (props: Props) => {
       tags: selectedOption?.map((tag) => tag.label)!,
     };
 
-   const postData:ResponseData = await createPost(payload)
-   console.log(postData, 'postData');
+    if (payload) {
+      await createPost(payload)
+    }
 
-   if (postData.data) {
-        toast.success("Post created.");
-        router.refresh();
-        postModal.onClose();
-      }
-
-      if(postData.err) {
-        toast.error(postData.err);
-      }
-
-  }, [selectedOption])
+  }, [selectedOption, createPost])
 
 
   // # Check if isMounted

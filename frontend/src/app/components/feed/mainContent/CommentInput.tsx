@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react";
 import { Avatar, Box, TextInput } from "@primer/react";
 import { User } from "@prisma/client";
 
-import useComment from "@/hooks/useComment";
+import useCreateComment from "@/hooks/useCreateComment";
 
 type Props = {
   currentUser?: User | null;
@@ -14,18 +14,17 @@ type Props = {
 const CommentInput = ({ currentUser, postId }: Props) => {
   const [commentBody, setCommentBody] = useState<string>("");
 
-  const { createComment} = useComment({ postId, body: commentBody });
-  
+  const { createComment } = useCreateComment();
 
   // # Handle create comment
   const onCreateComment = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        await createComment();
+        await createComment({ postId, body: commentBody });
         setCommentBody("");
       }
     },
-    [createComment, setCommentBody]
+    [createComment, setCommentBody, commentBody]
   );
 
   return (

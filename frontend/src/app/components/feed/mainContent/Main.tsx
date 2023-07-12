@@ -24,30 +24,32 @@ type Props = {
 
 const MainContent = ({ currentUser }: Props) => {
 
-  const {data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch} = useInfiniteQuery({
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
     queryKey: ['posts-query'],
-    queryFn: async ({pageParam = 1}) => {
+    queryFn: async ({ pageParam = 1 }) => {
       const query = `/api/posts?limit=3&page=${pageParam}`
-      
-      const {data} = await axios.get(query)
+
+      const { data } = await axios.get(query)
       return data as PostPopulated[]
     },
     getNextPageParam: (lastPage, allPages) => {
-      // lastPage.nextCursor
+      if (!lastPage || lastPage.length === 0) {
+        return null
+      }
       return allPages.length + 1
+
     },
-    initialData: {pages:[], pageParams: [1]},
+    initialData: { pages: [], pageParams: [1] },
   })
 
   const posts = data?.pages.flatMap((page) => page) ?? []
   // console.log(posts, 'posts');
 
-
   // handle load more
   const loadNextPost = useCallback(
     async () => {
-      if(hasNextPage && !isFetchingNextPage) {
-       await fetchNextPage()
+      if (hasNextPage && !isFetchingNextPage) {
+        await fetchNextPage()
       }
     },
     [hasNextPage, isFetchingNextPage]
@@ -79,7 +81,7 @@ const MainContent = ({ currentUser }: Props) => {
           ))}
         <LoadMore
           loadNextPost={loadNextPost}
-          isFetchingNextPage={isFetchingNextPage} 
+          isFetchingNextPage={isFetchingNextPage}
           hasNextPage={hasNextPage}
         />
       </MyBox>
