@@ -16,6 +16,7 @@ import axios from "axios";
 import { User } from "@prisma/client";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { PostPopulated } from "@/types";
+import Skeleton from "./Skeleton";
 
 
 type Props = {
@@ -73,7 +74,7 @@ const MainContent = ({ currentUser }: Props) => {
         <PostBanner currentUser={currentUser} />
         <HeadUnderLine />
 
-        {posts.length === 0 && <div>loading post...</div>}
+        {posts.length === 0 && <Skeleton />}
 
         {posts &&
           posts?.map((post) => (
