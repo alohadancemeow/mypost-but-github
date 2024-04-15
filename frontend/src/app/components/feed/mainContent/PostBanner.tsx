@@ -8,6 +8,8 @@ import { MyButton } from "@/app/components/modals/AuthModal";
 import { User } from "@prisma/client";
 import useAuthModal from "@/hooks/useAuthModal";
 import usePostModal from "@/hooks/usePostModal";
+import { useRouter } from "next/navigation";
+import { SignInButton } from "@clerk/nextjs";
 
 type Props = {
   currentUser?: User | null;
@@ -16,6 +18,8 @@ type Props = {
 const PostBanner = ({ currentUser }: Props) => {
   const authModal = useAuthModal();
   const postModal = usePostModal();
+
+  const router = useRouter()
 
   return (
     <MyBox
@@ -38,16 +42,35 @@ const PostBanner = ({ currentUser }: Props) => {
       <Text fontSize={14} fontWeight={400} color="#57606A">
         Hope with further education, people can expand their horizons.
       </Text>
-      <MyButton
+      {/* <MyButton
         w="125px"
         h="32px"
         rounded="4px"
         gap="32px 0 0"
         color="#006EED"
-        onClick={() => (currentUser ? postModal.onOpen() : authModal.onOpen())}
+        onClick={() => (currentUser 
+          ? postModal.onOpen() 
+          : authModal.onOpen()
+        )}
+      >
+        Create a post
+      </MyButton> */}
+
+      {currentUser ? <MyButton
+        w="125px"
+        h="32px"
+        rounded="4px"
+        gap="32px 0 0"
+        color="#006EED"
+        onClick={() => (currentUser 
+          ? postModal.onOpen() 
+          : authModal.onOpen()
+        )}
       >
         Create a post
       </MyButton>
+      : <SignInButton mode="modal"/>
+      }
     </MyBox>
   );
 };

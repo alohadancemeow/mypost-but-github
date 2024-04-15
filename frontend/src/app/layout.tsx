@@ -5,6 +5,9 @@ import Providers from "@/providers";
 import StyledComponentsRegistry from "@/lib/registry";
 import getCurrentUser from "@/actions/getCurrentUser";
 
+import { ClerkProvider } from '@clerk/nextjs'
+import { dark, neobrutalism } from "@clerk/themes";
+
 import Nav from "@/app/components/Nav";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,6 +25,11 @@ const RootLayout = async ({ children }: Props) => {
   const currentUser = await getCurrentUser();
 
   return (
+    <ClerkProvider
+    appearance={{
+      baseTheme: neobrutalism,
+    }}
+    >
     <html lang="en">
       <body className={inter.className} suppressHydrationWarning={true}>
         <StyledComponentsRegistry>
@@ -32,6 +40,7 @@ const RootLayout = async ({ children }: Props) => {
         </StyledComponentsRegistry>
       </body>
     </html>
+    </ClerkProvider>
   );
 };
 

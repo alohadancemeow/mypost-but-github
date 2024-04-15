@@ -8,13 +8,16 @@ import { signOut } from "next-auth/react";
 import { MyButton } from "@/app/components/modals/AuthModal";
 import useAuthModal from "@/hooks/useAuthModal";
 import { User } from "@prisma/client";
+import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
 
 type Props = {
   currentUser?: User | null;
 };
 
 const Nav = ({ currentUser }: Props) => {
-  const authModal = useAuthModal();
+  // const authModal = useAuthModal();
+
+  const {user} = useUser()
 
   return (
     <MyHeader
@@ -38,15 +41,15 @@ const Nav = ({ currentUser }: Props) => {
           </Text>
         </Header.Link>
       </Header.Item>
-      {currentUser ? (
+      {user ? (
         <Header.Item sx={{ mr: "0px" }}>
           <Header.Item>
             <MyText fontSize={16} fontWeight={400}>
-              Signed in as {currentUser?.name ?? currentUser.email}
+              {`Signed in as ${user.fullName ?? user.primaryEmailAddress}`}
             </MyText>
           </Header.Item>
           <Avatar
-            src={`${currentUser?.image ?? "https://github.com/octocat.png"}`}
+            src={`${user.imageUrl ?? "https://github.com/octocat.png"}`}
             size={20}
             alt="@octocat"
           />
@@ -60,7 +63,7 @@ const Nav = ({ currentUser }: Props) => {
         </Header.Item>
       ) : (
         <Header.Item sx={{ mr: "0px" }}>
-          <MyButton
+          {/* <MyButton
             w="130px"
             h="32px"
             rounded="4px"
@@ -68,7 +71,8 @@ const Nav = ({ currentUser }: Props) => {
             onClick={() => authModal.onOpen()}
           >
             Join Us ✌️🎉
-          </MyButton>
+          </MyButton> */}
+          <SignInButton mode="modal"/>
         </Header.Item>
       )}
     </MyHeader>

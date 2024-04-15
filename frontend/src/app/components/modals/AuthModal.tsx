@@ -23,6 +23,7 @@ import axios, { AxiosError } from "axios";
 import { UserValidator } from "@/types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SignIn } from "@clerk/nextjs";
 
 type UserInput = z.infer<typeof UserValidator>;
 
@@ -130,7 +131,8 @@ const AuthModal = () => {
       isOpen={isOpen}
       onChange={onChange}
     >
-      <Box
+      <SignIn />
+      {/* <Box
         margin={"auto"}
         width={"auto"}
         height={400}
@@ -293,7 +295,7 @@ const AuthModal = () => {
             </MyButton>
           </Box>
         </Box>
-      </Box>
+      </Box> */}
     </Modal>
   );
 };
