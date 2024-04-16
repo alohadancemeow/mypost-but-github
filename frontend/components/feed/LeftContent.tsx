@@ -11,19 +11,30 @@ import {
   Heading,
   TextInput,
 } from "@primer/react";
+
 import { PeopleIcon } from "@primer/octicons-react";
+import { User } from "@clerk/nextjs/dist/types/server";
+import usePostCount from "@/hooks/use-post-count";
+import { PostPopulated } from "@/types";
+import { useRouter } from "next/navigation";
 
 type Props = {
-  users?: any[] | null;
+  users?: User[] | null;
+  posts: PostPopulated[]
 };
 
-const LeftContent = ({ users }: Props) => {
+const LeftContent = ( {posts, users}: Props) => {
   const [username, setUsername] = useState<string>("");
 
-  // TODO: filtering users by username
+  const router = useRouter()
+  const { userPostCount} = usePostCount({posts})
+
+  // console.log(users, 'users');
+  // console.log(userPostCount, 'userPostCount');
+
   const filteredUser =
     users?.filter((user) =>
-      user.name?.toLocaleLowerCase().includes(username.toLowerCase())
+      user.firstName?.concat(user.lastName!)?.toLocaleLowerCase().includes(username.toLowerCase())
     ) ?? users;
 
   const isLoading = false;
@@ -64,7 +75,7 @@ const LeftContent = ({ users }: Props) => {
           value={username}
           type="text"
           placeholder="Find a creator..."
-          autoComplete="username"
+          autoComplete="none"
           sx={{
             bg: "transparent",
             border: "1px solid #444C56",
@@ -89,17 +100,17 @@ const LeftContent = ({ users }: Props) => {
                     opacity: 0.7,
                   },
                 }}
-                onClick={() => console.log("usercard clicked", user.id)}
+                onClick={() => router.push(`/user/${user.id}`)}
               >
                 <Avatar
-                  src={`${user.image ?? "https://github.com/octocat.png"}`}
+                  src={`${user.imageUrl ?? "https://github.com/octocat.png"}`}
                   size={24}
                   alt="@octocat"
                 />
                 <Box display="flex" flexDirection="column" marginLeft="15px">
-                  <Text fontSize="16px">{user.name} </Text>
+                  <Text fontSize="16px">{`${user.firstName} ${user.lastName}`} </Text>
                   <Text fontSize="12px" color="#006EED">
-                    {`${user.posts.length} posts`}
+                    {`${userPostCount[user.id] || 0} posts`}
                   </Text>
                 </Box>
               </Box>

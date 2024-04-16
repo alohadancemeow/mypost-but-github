@@ -1,6 +1,5 @@
 "use client";
 
-import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@primer/react";
 import deepmerge from "deepmerge";
 import { BaseStyles } from "@primer/react";
@@ -48,7 +47,6 @@ const queryClient = new QueryClient({
 
 const Providers = ({ children }: Props) => {
   return (
-    <SessionProvider>
       <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={customTheme}>
         <BaseStyles>
@@ -58,7 +56,6 @@ const Providers = ({ children }: Props) => {
         </BaseStyles>
       </ThemeProvider>
       </QueryClientProvider>
-    </SessionProvider>
   );
 };
 

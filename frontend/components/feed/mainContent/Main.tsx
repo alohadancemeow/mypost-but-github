@@ -62,6 +62,10 @@ const MainContent = ({ currentUser }: Props) => {
     <div
       style={{
         position: "-webkit-sticky",
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
       }}
     >
       <MyBox

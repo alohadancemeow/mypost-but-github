@@ -2,7 +2,7 @@
 
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { signIn } from "next-auth/react";
+// import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
 
 import { AiFillGoogleCircle } from "react-icons/ai";
@@ -63,10 +63,10 @@ const AuthModal = () => {
         })
         .then((data) => {
           if (data.status === 200) {
-            signIn("credentials", {
-              email,
-              password,
-            });
+            // signIn("credentials", {
+            //   email,
+            //   password,
+            // });
 
             toast.success("Account created.");
             router.refresh();
@@ -88,19 +88,19 @@ const AuthModal = () => {
   const onSignin: SubmitHandler<UserInput> = useCallback(
     async ({ email, password }) => {
       try {
-        const data = await signIn("credentials", {
-          email,
-          password,
-          redirect: false,
-        });
+        // const data = await signIn("credentials", {
+        //   email,
+        //   password,
+        //   redirect: false,
+        // });
 
-        if (data?.error) {
-          toast.error(data.error);
-        } else {
-          toast.success("login successfully!");
-          router.refresh();
-          onClose();
-        }
+        // if (data?.error) {
+        //   toast.error(data.error);
+        // } else {
+        //   toast.success("login successfully!");
+        //   router.refresh();
+        //   onClose();
+        // }
       } catch (error: any) {
         console.log(error);
         toast.error(error.message);

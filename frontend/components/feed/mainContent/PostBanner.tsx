@@ -42,35 +42,32 @@ const PostBanner = ({ currentUser }: Props) => {
       <Text fontSize={14} fontWeight={400} color="#57606A">
         Hope with further education, people can expand their horizons.
       </Text>
-      {/* <MyButton
-        w="125px"
-        h="32px"
-        rounded="4px"
-        gap="32px 0 0"
-        color="#006EED"
-        onClick={() => (currentUser 
-          ? postModal.onOpen() 
-          : authModal.onOpen()
-        )}
-      >
-        Create a post
-      </MyButton> */}
 
-      {currentUser ? <MyButton
+      {currentUser && <MyButton
         w="125px"
         h="32px"
         rounded="4px"
         gap="32px 0 0"
         color="#006EED"
-        onClick={() => (currentUser 
-          ? postModal.onOpen() 
-          : authModal.onOpen()
-        )}
+        onClick={() => postModal.onOpen()}
       >
         Create a post
       </MyButton>
-      : <SignInButton mode="modal"/>
       }
+      {!currentUser &&
+        <SignInButton mode="modal">
+          <MyButton
+            w="125px"
+            h="32px"
+            rounded="4px"
+            gap="32px 0 0"
+            color="#006EED"
+          >
+            Create a post
+          </MyButton>
+        </SignInButton>
+      }
+
     </MyBox>
   );
 };

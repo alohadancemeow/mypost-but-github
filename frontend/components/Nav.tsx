@@ -3,21 +3,16 @@
 import styled from "styled-components";
 import { RocketIcon, SignOutIcon } from "@primer/octicons-react";
 import { Avatar, Box, Header, StyledOcticon, Text } from "@primer/react";
-import { signOut } from "next-auth/react";
 
 import { MyButton } from "./modals/AuthModal";
-import useAuthModal from "../hooks/useAuthModal";
-import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
-import { User } from "@clerk/nextjs/dist/types/server";
+import { SignedIn, SignedOut, SignInButton, useAuth, UserButton, useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
-type Props = {
-  currentUser?: User | null;
-};
+type Props = {};
 
-const Nav = ({ currentUser }: Props) => {
-  // const authModal = useAuthModal();
-
+const Nav = (props: Props) => {
   const {user} = useUser()
+  const router = useRouter()
 
   return (
     <MyHeader
@@ -32,7 +27,8 @@ const Nav = ({ currentUser }: Props) => {
     >
       <Header.Item full>
         <Header.Link
-          href="#"
+          // href="/"
+          onClick={()=> router.push('/')}
           sx={{ fontSize: "18px", textDecoration: "none", color: "white" }}
         >
           <StyledOcticon icon={RocketIcon} size={24} sx={{ mr: 2 }} />
@@ -41,40 +37,34 @@ const Nav = ({ currentUser }: Props) => {
           </Text>
         </Header.Link>
       </Header.Item>
-      {user ? (
+
+      {user && (
         <Header.Item sx={{ mr: "0px" }}>
           <Header.Item>
             <MyText fontSize={16} fontWeight={400}>
-              {`Signed in as ${user.fullName ?? user.primaryEmailAddress}`}
+              {`${user.fullName ?? user.primaryEmailAddress}`}
             </MyText>
           </Header.Item>
-          <Avatar
-            src={`${user.imageUrl ?? "https://github.com/octocat.png"}`}
-            size={20}
-            alt="@octocat"
-          />
-          <Box sx={{ cursor: "pointer" }} onClick={() => signOut()}>
-            <StyledOcticon
-              icon={SignOutIcon}
-              size={16}
-              sx={{ ml: "20px", cursor: "pointer" }}
-            />
-          </Box>
         </Header.Item>
-      ) : (
-        <Header.Item sx={{ mr: "0px" }}>
-          {/* <MyButton
-            w="130px"
-            h="32px"
-            rounded="4px"
-            bordered
-            onClick={() => authModal.onOpen()}
-          >
-            Join Us ✌️🎉
-          </MyButton> */}
-          <SignInButton mode="modal"/>
-        </Header.Item>
-      )}
+      ) 
+    }
+     
+       <SignedIn>
+          <UserButton afterSignOutUrl="/"/>
+        </SignedIn>
+        <SignedOut>
+          <SignInButton mode="modal">
+            <MyButton
+             w="130px"
+             h="32px"
+             rounded="4px"
+             bordered
+            //  onClick={() => authModal.onOpen()}
+           >
+             Join Us ✌️🎉
+           </MyButton>
+           </SignInButton>
+        </SignedOut>
     </MyHeader>
   );
 };

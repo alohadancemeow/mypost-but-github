@@ -1,9 +1,8 @@
 import { Inter } from "next/font/google";
 
-import "@/styles/globals.css";
+import "./globals.css";
 import Providers from "@/providers";
 import StyledComponentsRegistry from "@/lib/registry";
-import getCurrentUser from "@/actions/getCurrentUser";
 
 import { ClerkProvider } from '@clerk/nextjs'
 import { dark, neobrutalism } from "@clerk/themes";
@@ -22,7 +21,6 @@ type Props = {
 };
 
 const RootLayout = async ({ children }: Props) => {
-  const currentUser = await getCurrentUser();
 
   return (
     <ClerkProvider
@@ -34,7 +32,7 @@ const RootLayout = async ({ children }: Props) => {
       <body className={inter.className} suppressHydrationWarning={true}>
         <StyledComponentsRegistry>
           <Providers>
-            <Nav currentUser={currentUser} />
+            <Nav />
             {children}
           </Providers>
         </StyledComponentsRegistry>

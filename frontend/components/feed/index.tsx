@@ -13,12 +13,13 @@ import { PostPopulated } from "@/types";
 
 type Props = {
   currentUser?: User | null;
-  users?: any[] | null;
-  popularPosts?: PostPopulated[] | null
+  users?: User[] | null;
+  popularPosts: PostPopulated[]
 };
 
 const Feed = ({ currentUser, users, popularPosts }: Props) => {
   return (
+    <>
     <Box
       bg="canvas.primary"
       height="100%"
@@ -26,10 +27,13 @@ const Feed = ({ currentUser, users, popularPosts }: Props) => {
       display="flex"
       flexDirection="column"
       color="white"
-      // opacity='0.99'
+    // opacity='0.99'
     >
-      <LayoutBox display="flex" width="100%" padding="0 2.5rem">
-        <LeftContent users={users} />
+      <LayoutBox height='100%' display="flex" width="100%" padding="0 2.5rem">
+        <LeftContent 
+        users={users}
+        posts={popularPosts}
+        />
 
         <MyBox
           display="grid"
@@ -40,10 +44,11 @@ const Feed = ({ currentUser, users, popularPosts }: Props) => {
           width="100%"
         >
           <MainContent currentUser={currentUser} />
-          <RightContent popularPosts={popularPosts}/>
+          <RightContent popularPosts={popularPosts} />
         </MyBox>
       </LayoutBox>
     </Box>
+    </>
   );
 };
 
