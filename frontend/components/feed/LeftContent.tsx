@@ -1,144 +1,105 @@
 "use client";
 
 import { useState } from "react";
-import styled from "styled-components";
 
-import {
-  Avatar,
-  Box,
-  StyledOcticon,
-  Text,
-  Heading,
-  TextInput,
-} from "@primer/react";
-
-import { PeopleIcon } from "@primer/octicons-react";
 import { User } from "@clerk/nextjs/dist/types/server";
 import usePostCount from "@/hooks/use-post-count";
 import { PostPopulated } from "@/types";
 import { useRouter } from "next/navigation";
+import { Users } from "lucide-react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {
   users?: User[] | null;
-  posts: PostPopulated[]
+  posts: PostPopulated[];
 };
 
-const LeftContent = ( {posts, users}: Props) => {
+const LeftContent = ({ posts, users }: Props) => {
   const [username, setUsername] = useState<string>("");
 
-  const router = useRouter()
-  const { userPostCount} = usePostCount({posts})
-
-  // console.log(users, 'users');
-  // console.log(userPostCount, 'userPostCount');
+  const router = useRouter();
+  const { userPostCount } = usePostCount({ posts });
 
   const filteredUser =
     users?.filter((user) =>
-      user.firstName?.concat(user.lastName!)?.toLocaleLowerCase().includes(username.toLowerCase())
+      user.firstName
+        ?.concat(user.lastName!)
+        ?.toLocaleLowerCase()
+        .includes(username.toLowerCase())
     ) ?? users;
 
   const isLoading = false;
 
   return (
-    <MyBox
+    <div
       style={{
         position: "-webkit-sticky",
         borderRight: "1px solid #444C56",
         // height: '100vh',
-        padding: "40px 25px 25px",
+        // padding: "40px 25px 25px",
       }}
+      className="h-full w-full p-10"
     >
-      <Box
-        p={3}
-        // border="1px solid red"
-        sx={{
-          position: "sticky",
-          top: "20px",
-        }}
+      <div
+      // className="p-3"
+
+      // sx={{
+      //   position: "sticky",
+      //   top: "20px",
+      // }}
       >
-        <Box
-          display="flex"
-          alignItems={"center"}
-          justifyContent="flex-start"
-          marginBottom={3}
-        >
-          <StyledOcticon icon={PeopleIcon} size={24} sx={{ mr: "10px" }} />
-          <Heading sx={{ fontSize: "14px", lineHeight: "20px" }}>
-            All post creators
-          </Heading>
-        </Box>
-        <TextInput
+        <div className="flex items-center justify-start mb-3 gap-3">
+          <Users size={20} />
+          <div className="text-sm font-semibold">All post creators</div>
+        </div>
+        <input
           id="username"
-          contrast
           aria-label="username"
           name="username"
           value={username}
           type="text"
           placeholder="Find a creator..."
           autoComplete="none"
-          sx={{
-            bg: "transparent",
-            border: "1px solid #444C56",
-            width: "244px",
-            height: "40px",
-            borderRadius: "3px",
-          }}
+          className=" placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 p-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
           onChange={(e) => setUsername(e.target.value)}
         />
-        <Box marginBottom={4} marginTop={4}>
+        <div className="my-8">
           {filteredUser &&
             filteredUser?.map((user) => (
-              <Box
+              <div
+                className="flex items-center gap-3 justify-start cursor-pointer mt-3 hover:text-opacity-15"
                 key={user.id}
-                marginTop={3}
-                display="flex"
-                alignItems={"center"}
-                justifyContent="flex-start"
-                sx={{
-                  cursor: "pointer",
-                  ":hover": {
-                    opacity: 0.7,
-                  },
-                }}
                 onClick={() => router.push(`/user/${user.id}`)}
               >
-                <Avatar
-                  src={`${user.imageUrl ?? "https://github.com/octocat.png"}`}
-                  size={24}
-                  alt="@octocat"
-                />
-                <Box display="flex" flexDirection="column" marginLeft="15px">
-                  <Text fontSize="16px">{`${user.firstName} ${user.lastName}`} </Text>
-                  <Text fontSize="12px" color="#006EED">
+                <Avatar>
+                  <AvatarImage
+                    className=""
+                    src={`${user.imageUrl ?? "https://github.com/octocat.png"}`}
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col mr-4">
+                  <div className="text-sm">
+                    {`${user.firstName} ${user.lastName}`}{" "}
+                  </div>
+                  <div className="text-sm text-[#006EED]">
                     {`${userPostCount[user.id] || 0} posts`}
-                  </Text>
-                </Box>
-              </Box>
+                  </div>
+                </div>
+              </div>
             ))}
-        </Box>
+        </div>
 
-        <Text
-          sx={{
-            cursor: "pointer",
-            fontSize: "14px",
-            ":hover": {
-              opacity: 0.7,
-            },
-          }}
+        <div
+          className="cursor-pointer text-sm hover:text-opacity-15"
           onClick={() => console.log("show more cliked")}
         >
           {isLoading ? "Loading user..." : "Show more"}
-        </Text>
-      </Box>
-    </MyBox>
+        </div>
+      </div>
+    </div>
   );
 };
 
 export default LeftContent;
-
-// fix responsive
-const MyBox = styled.div`
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;

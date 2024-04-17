@@ -5,7 +5,6 @@ import styled from "styled-components";
 
 import { Box, Heading, Popover, Text } from "@primer/react";
 import { BsFacebook, BsTwitter } from "react-icons/bs";
-import { MyButton } from "@/components/modals/AuthModal";
 import { ReactionButtonType } from "./PostItem";
 import { XCircleFillIcon } from "@primer/octicons-react";
 
@@ -56,10 +55,7 @@ const Popup = ({ selected, setSelected }: Props) => {
             title="Let's talk about this"
             hashtag="#mypostbutgithub"
           >
-            <MyButton
-              h="34px"
-              // color="#2E89F1"
-            >
+            <button className="h-[34px]">
               <div
                 style={{
                   display: "flex",
@@ -75,7 +71,7 @@ const Popup = ({ selected, setSelected }: Props) => {
                   Facebook
                 </Text>
               </div>
-            </MyButton>
+            </button>
           </FacebookShareButton>
           <TwitterShareButton
             // url="http://github.com"
@@ -83,7 +79,7 @@ const Popup = ({ selected, setSelected }: Props) => {
             hashtags={["mypostbutgithub"]}
             title="Let's talk about this"
           >
-            <MyButton rounded="16px" h="34px" color="#444C56" gap="5px 0">
+            <button className="h-[34px] bg-[#444C56] gap-5">
               <div
                 style={{
                   display: "flex",
@@ -95,7 +91,7 @@ const Popup = ({ selected, setSelected }: Props) => {
                 <BsTwitter size={18} color="#2E89F1" />
                 <Text sx={{ marginInlineStart: "10px" }}>Twitter</Text>
               </div>
-            </MyButton>
+            </button>
           </TwitterShareButton>
         </Box>
       </Popover.Content>

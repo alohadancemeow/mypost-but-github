@@ -3,10 +3,7 @@ import styled from "styled-components";
 
 import { BookIcon } from "@primer/octicons-react";
 import { Box, Text } from "@primer/react";
-import { MyButton } from "@/components/modals/AuthModal";
 
-import useAuthModal from "@/hooks/useAuthModal";
-import usePostModal from "@/hooks/usePostModal";
 import { useRouter } from "next/navigation";
 import { SignInButton } from "@clerk/nextjs";
 import { User } from "@clerk/nextjs/dist/types/server";
@@ -16,11 +13,6 @@ type Props = {
 };
 
 const PostBanner = ({ currentUser }: Props) => {
-  const authModal = useAuthModal();
-  const postModal = usePostModal();
-
-  const router = useRouter()
-
   return (
     <MyBox
       display="flex"
@@ -43,31 +35,21 @@ const PostBanner = ({ currentUser }: Props) => {
         Hope with further education, people can expand their horizons.
       </Text>
 
-      {currentUser && <MyButton
-        w="125px"
-        h="32px"
-        rounded="4px"
-        gap="32px 0 0"
-        color="#006EED"
-        onClick={() => postModal.onOpen()}
-      >
-        Create a post
-      </MyButton>
-      }
-      {!currentUser &&
+      {currentUser && (
+        <button
+          className="w-[125px] h-[32px] rounded-sm gap-5 bg-[#006EED]"
+          onClick={() => {}}
+        >
+          Create a post
+        </button>
+      )}
+      {!currentUser && (
         <SignInButton mode="modal">
-          <MyButton
-            w="125px"
-            h="32px"
-            rounded="4px"
-            gap="32px 0 0"
-            color="#006EED"
-          >
+          <button className="w-[125px] h-[32px] rounded-sm gap-5 bg-[#006EED]">
             Create a post
-          </MyButton>
+          </button>
         </SignInButton>
-      }
-
+      )}
     </MyBox>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Avatar, Box, Text } from "@primer/react";
 
 import ReactionButton from "./ReactionButton";
@@ -10,7 +10,6 @@ import Tag from "./Tag";
 import { PostPopulated } from "@/types";
 
 import { useFormatDate } from "@/hooks/useFormatDate";
-import EditorOutput from "@/components/editor/EditorOutput";
 import CommentSection from "./CommentSection";
 import { User } from "@clerk/nextjs/dist/types/server";
 
@@ -62,7 +61,9 @@ const PostItem = ({ currentUser, post }: Props) => {
           <Text fontSize="16px">
             {/* {post.user?.name}{" "} */}
             username
-            <span style={{ color: "#ADBAC7", padding: "0 3px" }}>posted</span>{" "}
+            <span style={{ color: "#ADBAC7", padding: "0 3px" }}>
+              posted
+            </span>{" "}
             {post.title}{" "}
             <span style={{ color: "#ADBAC7", padding: "0 3px" }}>
               {`· ${dateFormate(new Date(post.createdAt))}`}
@@ -92,7 +93,7 @@ const PostItem = ({ currentUser, post }: Props) => {
             {post.title}
           </Text>
 
-          <EditorOutput content={post.body} />
+          <div>TODO: EditorOutput</div>
 
           <Box marginTop={30}>
             {post?.tags?.map((tag, index) => (
@@ -109,7 +110,7 @@ const PostItem = ({ currentUser, post }: Props) => {
         </Box>
       </Box>
       {selected && selected.comment && (
-          <CommentSection currentUser={currentUser} post={post} />
+        <CommentSection currentUser={currentUser} post={post} />
       )}
     </Box>
   );

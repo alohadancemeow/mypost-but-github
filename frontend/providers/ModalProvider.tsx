@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AuthModal from "../components/modals/AuthModal";
-import PostModal from "../components/modals/PostModal";
 
 type Props = {};
 
@@ -19,8 +17,8 @@ const ModalProvider = (props: Props) => {
 
   return (
     <>
-      <AuthModal />
-      <PostModal />
+      {/* <AuthModal /> */}
+      {/* <PostModal /> */}
     </>
   );
 };

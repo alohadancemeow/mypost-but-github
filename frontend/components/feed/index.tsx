@@ -10,44 +10,57 @@ import RightContent from "./RightContent";
 
 import { User } from "@clerk/nextjs/dist/types/server";
 import { PostPopulated } from "@/types";
+import usePostModal from "@/hooks/usePostModal";
+// import NewEditor from "./mainContent/new-editor/new-editor";
+import { useMemo } from "react";
+import dynamic from "next/dynamic";
 
 type Props = {
   currentUser?: User | null;
   users?: User[] | null;
-  popularPosts: PostPopulated[]
+  popularPosts: PostPopulated[];
 };
 
+const content = "";
+
 const Feed = ({ currentUser, users, popularPosts }: Props) => {
+  const NewEditor = useMemo(
+    () =>
+      dynamic(
+        () => import("@/components/feed/mainContent/new-editor/new-editor"),
+        { ssr: false }
+      ),
+    []
+  );
+
+  const { isOpen, onOpen, onClose } = usePostModal();
+
+  console.log("open", isOpen);
+
   return (
     <>
-    <Box
-      bg="canvas.primary"
-      height="100%"
-      width="100%"
-      display="flex"
-      flexDirection="column"
-      color="white"
-    // opacity='0.99'
-    >
-      <LayoutBox height='100%' display="flex" width="100%" padding="0 2.5rem">
-        <LeftContent 
-        users={users}
-        posts={popularPosts}
-        />
+      <div className="h-full w-full flex flex-col text-white">
+        <div className="h-full w-full grid grid-cols-3 lg:grid-cols-4">
+          <div className="col-span-1">
+            <LeftContent users={users} posts={popularPosts} />
+          </div>
 
-        <MyBox
-          display="grid"
-          gridTemplateColumns="2fr 1fr"
-          // gridGap={3}
-          margin="0 1rem 0"
-          height="100%"
-          width="100%"
-        >
-          <MainContent currentUser={currentUser} />
-          <RightContent popularPosts={popularPosts} />
-        </MyBox>
-      </LayoutBox>
-    </Box>
+          <div className="col-span-2">
+            {isOpen ? (
+              <NewEditor
+                onChange={() => {}}
+                initialContent={content}
+                editable
+              />
+            ) : (
+              <MainContent currentUser={currentUser} />
+            )}
+          </div>
+          <div className="col-span-1 hidden lg:flex">
+            <RightContent popularPosts={popularPosts} />
+          </div>
+        </div>
+      </div>
     </>
   );
 };
@@ -65,12 +78,5 @@ const MyBox = styled(Box)`
     grid-template-columns: 1fr;
     margin: 0;
     padding: 0;
-  }
-`;
-
-const LayoutBox = styled(Box)`
-  @media (max-width: 768px) {
-    margin: 0;
-    padding: 10px;
   }
 `;

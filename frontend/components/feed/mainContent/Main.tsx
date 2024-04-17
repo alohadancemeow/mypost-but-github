@@ -1,9 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
-import styled from "styled-components";
-
-import { Box } from "@primer/react";
+import { useCallback } from "react";
 
 import LoadMore from "./LoadMore";
 import PostItem from "./PostItem";
@@ -18,43 +15,38 @@ import { PostPopulated } from "@/types";
 import Skeleton from "./Skeleton";
 import { User } from "@clerk/nextjs/dist/types/server";
 
-
 type Props = {
   currentUser?: User | null;
 };
 
 const MainContent = ({ currentUser }: Props) => {
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } =
+    useInfiniteQuery({
+      queryKey: ["posts-query"],
+      queryFn: async ({ pageParam = 1 }) => {
+        const query = `/api/posts?limit=3&page=${pageParam}`;
 
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } = useInfiniteQuery({
-    queryKey: ['posts-query'],
-    queryFn: async ({ pageParam = 1 }) => {
-      const query = `/api/posts?limit=3&page=${pageParam}`
+        const { data } = await axios.get(query);
+        return data as PostPopulated[];
+      },
+      getNextPageParam: (lastPage, allPages) => {
+        if (!lastPage || lastPage.length === 0) {
+          return null;
+        }
+        return allPages.length + 1;
+      },
+      initialData: { pages: [], pageParams: [1] },
+    });
 
-      const { data } = await axios.get(query)
-      return data as PostPopulated[]
-    },
-    getNextPageParam: (lastPage, allPages) => {
-      if (!lastPage || lastPage.length === 0) {
-        return null
-      }
-      return allPages.length + 1
-
-    },
-    initialData: { pages: [], pageParams: [1] },
-  })
-
-  const posts = data?.pages.flatMap((page) => page) ?? []
+  const posts = data?.pages.flatMap((page) => page) ?? [];
   // console.log(posts, 'posts');
 
   // handle load more
-  const loadNextPost = useCallback(
-    async () => {
-      if (hasNextPage && !isFetchingNextPage) {
-        await fetchNextPage()
-      }
-    },
-    [hasNextPage, isFetchingNextPage]
-  );
+  const loadNextPost = useCallback(async () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      await fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage]);
 
   // if (posts.length === 0) return <>load post...</>;
 
@@ -62,19 +54,13 @@ const MainContent = ({ currentUser }: Props) => {
     <div
       style={{
         position: "-webkit-sticky",
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between'
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
       }}
     >
-      <MyBox
-        p={4}
-        marginTop={25}
-        bg="canvas.primary"
-        // border="1px solid red"
-        borderRadius="8px"
-      >
+      <div className="rounded-sm p-10">
         <PostBanner currentUser={currentUser} />
         <HeadUnderLine />
 
@@ -89,21 +75,10 @@ const MainContent = ({ currentUser }: Props) => {
           isFetchingNextPage={isFetchingNextPage}
           hasNextPage={hasNextPage}
         />
-      </MyBox>
+      </div>
       <Footer />
     </div>
   );
 };
 
 export default MainContent;
-
-// responsive
-const MyBox = styled(Box)`
-  @media (max-width: 768px) {
-    /* border: none; */
-  }
-  @media (max-width: 544px) {
-    padding: 10px;
-    margin: 0;
-  }
-`;

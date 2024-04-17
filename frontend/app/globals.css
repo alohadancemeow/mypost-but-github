@@ -89,7 +89,7 @@ body,
   text-transform: none;
   background-color: #22272e;
 }
- 
+
 .cl-formButtonPrimary:hover,
 .cl-formButtonPrimary:focus,
 .cl-formButtonPrimary:active {
@@ -101,7 +101,7 @@ body,
 }
 
 .cl-internal-a1vcu4 {
-  color: #006EED;
+  color: #006eed;
 }
 .cl-internal-a1vcu4:hover {
   color: blue;

@@ -1,14 +1,11 @@
 "use client";
 
-import React from "react";
 import styled from "styled-components";
 import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";
-import { NumberIcon } from "@primer/octicons-react";
 
 import { useFormatDate } from "@/hooks/useFormatDate";
 import { PostPopulated } from "@/types";
-
-import EditorOutput from "@/components/editor/EditorOutput";
+import { ArrowUpNarrowWide } from "lucide-react";
 
 type Props = {
   popularPosts?: PostPopulated[] | null;
@@ -20,26 +17,11 @@ const RightContent = ({ popularPosts: posts }: Props) => {
   if (!posts) return <>Loading...</>;
 
   return (
-    <MyBox
-      // p={25}
-      //  border="1px solid red"
-
-      style={{
-        padding: "40px 10px 0px",
-      }}
-    >
-      <Box
-        display="flex"
-        alignItems={"center"}
-        justifyContent="flex-start"
-        // marginBottom={3}
-        paddingTop={16}
-      >
-        <StyledOcticon icon={NumberIcon} size={24} sx={{ mr: "10px" }} />
-        <Heading sx={{ fontSize: "14px", lineHeight: "20px" }}>
-          Popular Posts
-        </Heading>
-      </Box>
+    <div className="h-full w-full p-10">
+      <div className="flex items-center justify-start gap-3 font-semibold">
+        <ArrowUpNarrowWide />
+        <div className="text-sm">Popular Posts</div>
+      </div>
 
       <Box marginBottom={4} marginTop={4}>
         {posts.map((post, index) => (
@@ -89,13 +71,14 @@ const RightContent = ({ popularPosts: posts }: Props) => {
                 </span>{" "}
               </Text>
               <MyDesc fontSize="12px" color="#ADBAC7">
-                <EditorOutput content={post.body} />
+                {/* <EditorOutput content={post.body} /> */}
+                #TODO: EditorOutput
               </MyDesc>
             </Box>
           </Box>
         ))}
       </Box>
-    </MyBox>
+    </div>
   );
 };
 
