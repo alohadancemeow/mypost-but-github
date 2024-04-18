@@ -1,6 +1,6 @@
 "use client";
 
-import { SignInButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { User } from "@clerk/nextjs/dist/types/server";
 import { BookOpenText } from "lucide-react";
 import usePostModal from "@/hooks/usePostModal";
@@ -20,21 +20,21 @@ const PostBanner = ({ currentUser }: Props) => {
         Hope with further education, people can expand their horizons.
       </p>
 
-      {currentUser && (
+      <SignedIn>
         <button
           className="w-[125px] h-[32px] rounded-sm gap-5 bg-[#006EED] hover:bg-sky-700"
           onClick={() => postModal.onOpen()}
         >
           Create a post
         </button>
-      )}
-      {!currentUser && (
+      </SignedIn>
+      <SignedOut>
         <SignInButton mode="modal">
           <button className="w-[125px] h-[32px] rounded-sm gap-5 bg-[#006EED] hover:bg-sky-700">
             Create a post
           </button>
         </SignInButton>
-      )}
+      </SignedOut>
     </div>
   );
 };

@@ -13,7 +13,7 @@ datasource db {
 model Post {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     title     String
-    body      Json?
+    body      String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
