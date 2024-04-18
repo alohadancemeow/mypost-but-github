@@ -1,9 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import styled from "styled-components";
-
-import { Box } from "@primer/react";
+import dynamic from "next/dynamic";
 
 import LeftContent from "./LeftContent";
 import MainContent from "./mainContent/Main";
@@ -12,7 +10,6 @@ import RightContent from "./RightContent";
 import { User } from "@clerk/nextjs/dist/types/server";
 import { PostPopulated } from "@/types";
 import usePostModal from "@/hooks/usePostModal";
-import dynamic from "next/dynamic";
 
 type Props = {
   currentUser?: User | null;
@@ -25,16 +22,13 @@ const content = "";
 const Feed = ({ currentUser, users, popularPosts }: Props) => {
   const NewEditor = useMemo(
     () =>
-      dynamic(
-        () => import("@/components/feed/mainContent/new-editor/new-editor"),
-        { ssr: false }
-      ),
+      dynamic(() => import("@/components/feed/editor/new-editor"), {
+        ssr: false,
+      }),
     []
   );
 
-  const { isOpen, onOpen, onClose } = usePostModal();
-
-  console.log("open", isOpen);
+  const { isOpen } = usePostModal();
 
   return (
     <>
@@ -43,7 +37,6 @@ const Feed = ({ currentUser, users, popularPosts }: Props) => {
           <div className="col-span-1">
             <LeftContent users={users} posts={popularPosts} />
           </div>
-
           <div className="col-span-2">
             {isOpen ? (
               <NewEditor
@@ -65,17 +58,3 @@ const Feed = ({ currentUser, users, popularPosts }: Props) => {
 };
 
 export default Feed;
-
-// responsive
-const MyBox = styled(Box)`
-  @media (max-width: 1200px) {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-  @media (max-width: 768px) {
-    display: grid;
-    grid-template-columns: 1fr;
-    margin: 0;
-    padding: 0;
-  }
-`;

@@ -10,7 +10,7 @@ import Tag from "./Tag";
 import { PostPopulated } from "@/types";
 
 import { useFormatDate } from "@/hooks/useFormatDate";
-import CommentSection from "./CommentSection";
+import CommentSection from "./comments/CommentSection";
 import { User } from "@clerk/nextjs/dist/types/server";
 
 export type ReactionButtonType = {

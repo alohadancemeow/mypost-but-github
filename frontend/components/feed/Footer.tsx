@@ -1,49 +1,18 @@
-"use client";
-
-import { Box, Text, UnderlineNav } from "@primer/react";
-import { RocketIcon } from "@primer/octicons-react";
+import { Rocket } from "lucide-react";
 
 const Footer = () => {
   return (
-    <Box
-      sx={{
-        // margin: "0 10px",
-        color: "#57606A",
-        // border: "1px solid red",
-      }}
-    >
-      {/* <UnderlineNav aria-label="Main" /> */}
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        // paddingLeft={30}
-        marginBottom={24}
-      >
-        <Text
-          as="p"
-          sx={{
-            fontWeight: "bold",
-            color: "#57606A",
-            padding: "10px 0 0",
-            fontSize: "12px",
-          }}
-        >
-          <RocketIcon size={20} fill="#57606A" /> {"  "}
-          {`© ${new Date().getFullYear()} Mypost but Github`}
-        </Text>
-        <Text
-          sx={{
-            color: "#57606A",
-            fontSize: "12px",
-            padding: "0",
-          }}
-        >
+    <div>
+      <div className="flex flex-col items-center justify-center mb-6">
+        <div className="flex gap-2 items-center text-[#57606A] pt-2 ">
+          <Rocket />
+          <div className="font-bold text-lg">{`© ${new Date().getFullYear()} Mypost but Github`}</div>
+        </div>
+        <div className="text-sm text-[#57606A]">
           Made with 💙 by alohadancemeow x FailureMan
-        </Text>
-      </Box>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };
 

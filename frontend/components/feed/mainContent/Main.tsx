@@ -4,7 +4,7 @@ import { useCallback } from "react";
 
 import LoadMore from "./LoadMore";
 import PostItem from "./PostItem";
-import HeadUnderLine from "./HeadUnderLine";
+import Tabs from "./Tabs";
 import PostBanner from "./PostBanner";
 
 import Footer from "../Footer";
@@ -62,7 +62,7 @@ const MainContent = ({ currentUser }: Props) => {
     >
       <div className="rounded-sm p-10">
         <PostBanner currentUser={currentUser} />
-        <HeadUnderLine />
+        <Tabs />
 
         {posts.length === 0 && <Skeleton />}
 

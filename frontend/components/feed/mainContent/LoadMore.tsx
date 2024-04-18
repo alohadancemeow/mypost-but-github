@@ -1,7 +1,7 @@
 "use client";
 
-import { RocketIcon } from "@primer/octicons-react";
-import { Box, StyledOcticon, Text } from "@primer/react";
+import { cn } from "@/lib/utils";
+import { Rocket } from "lucide-react";
 
 type Props = {
   isFetchingNextPage?: boolean;
@@ -9,41 +9,24 @@ type Props = {
   loadNextPost: () => Promise<void>;
 };
 
-const LoadMore = ({  loadNextPost, hasNextPage,isFetchingNextPage }: Props) => {
+const LoadMore = ({ loadNextPost, hasNextPage, isFetchingNextPage }: Props) => {
   return (
-    <Box
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      margin="50px 0"
-      padding="10px"
-      border="1px solid #444C56"
-      sx={{
-        cursor: `${isFetchingNextPage ? "not-allowed" : "pointer"}`,
-        ":hover": {
-          opacity: 0.7,
-        },
-      }}
+    <div
+      className={cn(
+        `flex items-center border justify-center p-3 my-12  border-[#444C56]`,
+        isFetchingNextPage ? "cursor-not-allowed" : "cursor-pointer"
+      )}
       onClick={loadNextPost}
     >
-      {!isFetchingNextPage && (
-        <StyledOcticon icon={RocketIcon} size={18} sx={{ mr: "8px" }} />
-      )}
-      <Text
-        sx={{
-          fontSize: "14px",
-          lineHeight: "20px",
-          fontWeight: "600",
-          color: "#006EED",
-        }}
-      >
+      {!isFetchingNextPage && <Rocket size={20} className="mr-2" />}
+      <div className="text-sm font-semibold text-[#006EED] hover:text-sky-700">
         {isFetchingNextPage
           ? "Loading..."
           : hasNextPage
-          ? "More"
-          : "Mo more post"}
-      </Text>
-    </Box>
+            ? "More"
+            : "No more post"}
+      </div>
+    </div>
   );
 };
 

@@ -1,71 +1,42 @@
-import React from "react";
-import styled from "styled-components";
+"use client";
 
-import { BookIcon } from "@primer/octicons-react";
-import { Box, Text } from "@primer/react";
-
-import { useRouter } from "next/navigation";
 import { SignInButton } from "@clerk/nextjs";
 import { User } from "@clerk/nextjs/dist/types/server";
+import { BookOpenText } from "lucide-react";
+import usePostModal from "@/hooks/usePostModal";
 
 type Props = {
   currentUser?: User | null;
 };
 
 const PostBanner = ({ currentUser }: Props) => {
+  const postModal = usePostModal();
+
   return (
-    <MyBox
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      flexDirection="column"
-      height="250px"
-      border="1px solid #444C56"
-      sx={{
-        borderRadius: "4px",
-        // gap: "5px",
-        // margin: '20px'
-      }}
-    >
-      <BookIcon size={32} />
-      <MyTitle fontSize={24} margin="16px 0 5px">
-        Post your idea
-      </MyTitle>
-      <Text fontSize={14} fontWeight={400} color="#57606A">
+    <div className="flex items-center rounded-sm justify-center flex-col py-10 border border-[#444C56]">
+      <BookOpenText size={40} />
+      <div className="text-2xl mt-4 mx-1">Post your idea</div>
+      <p className="m-3 text-center pb-5">
         Hope with further education, people can expand their horizons.
-      </Text>
+      </p>
 
       {currentUser && (
         <button
-          className="w-[125px] h-[32px] rounded-sm gap-5 bg-[#006EED]"
-          onClick={() => {}}
+          className="w-[125px] h-[32px] rounded-sm gap-5 bg-[#006EED] hover:bg-sky-700"
+          onClick={() => postModal.onOpen()}
         >
           Create a post
         </button>
       )}
       {!currentUser && (
         <SignInButton mode="modal">
-          <button className="w-[125px] h-[32px] rounded-sm gap-5 bg-[#006EED]">
+          <button className="w-[125px] h-[32px] rounded-sm gap-5 bg-[#006EED] hover:bg-sky-700">
             Create a post
           </button>
         </SignInButton>
       )}
-    </MyBox>
+    </div>
   );
 };
 
 export default PostBanner;
-
-// responsive
-const MyBox = styled(Box)`
-  @media (max-width: 820px) {
-    padding: 15px;
-    margin-top: 15px;
-  }
-`;
-
-const MyTitle = styled(Text)`
-  @media (max-width: 544px) {
-    font-size: 20px;
-  }
-`;
