@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import styled from "styled-components";
 
 import { Box } from "@primer/react";
@@ -11,8 +12,6 @@ import RightContent from "./RightContent";
 import { User } from "@clerk/nextjs/dist/types/server";
 import { PostPopulated } from "@/types";
 import usePostModal from "@/hooks/usePostModal";
-// import NewEditor from "./mainContent/new-editor/new-editor";
-import { useMemo } from "react";
 import dynamic from "next/dynamic";
 
 type Props = {
