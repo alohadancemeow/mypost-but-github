@@ -24,12 +24,12 @@ import { PostValidator } from "@/types";
 import { z } from "zod";
 import { toast } from "sonner";
 
-const content = `Hello, **world!**`;
+const content = `<p class="bn-inline-content">Hello, <strong>world!</strong></p><p class="bn-inline-content"></p>`;
 
 type Props = {};
 
 const PostDrawer = (props: Props) => {
-  const [markdown, setMarkdown] = useState<string>("");
+  const [html, setHTML] = useState<string>("");
   const [title, setTitle] = useState<string>("Untitled");
   const [selectedTag, setSelectedtag] = useState<Tag | null>(null);
   const { isOpen, onClose } = usePostModal();
@@ -45,19 +45,19 @@ const PostDrawer = (props: Props) => {
   );
 
   /**
-   * Converts the editor's contents from Block objects to Markdown
+   * Converts the editor's contents from Block objects to HTML
    * and store to state.
    */
   const onChange = async (editor: BlockNoteEditor) => {
-    const markdown = await editor.blocksToMarkdownLossy(editor.document);
-    setMarkdown(markdown);
+    const html = await editor.blocksToHTMLLossy(editor.document);
+    setHTML(html);
   };
 
   const onCreatePost = async () => {
     if (!userId) return;
     const postData: z.infer<typeof PostValidator> = {
       title: title,
-      body: markdown,
+      body: html,
       tag: selectedTag?.value ?? TagOptions[0]!.value,
     };
 
@@ -70,7 +70,7 @@ const PostDrawer = (props: Props) => {
           duration: 1500,
         });
 
-        setMarkdown("");
+        setHTML("");
         setTitle("Untitled");
         setSelectedtag(null);
       }

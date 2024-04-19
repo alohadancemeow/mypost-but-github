@@ -1,4 +1,4 @@
-import  prisma  from "@/lib/prismadb";
+import { db as prisma } from "@/lib/prismadb";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -34,16 +34,16 @@ export async function GET(request: Request) {
           include: {
             post: {
               select: {
-                userId: true
-              }
-            }
-          }
-        }
+                userId: true,
+              },
+            },
+          },
+        },
       },
     });
 
-    revalidateTag('posts')
-    revalidatePath('/')
+    revalidateTag("posts");
+    revalidatePath("/");
 
     return NextResponse.json(posts);
   } catch (error) {

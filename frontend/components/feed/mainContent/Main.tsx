@@ -65,11 +65,8 @@ const MainContent = ({ currentUser }: Props) => {
         <Tabs />
 
         {posts.length === 0 && <Skeleton />}
+        {posts && posts?.map((post) => <PostItem key={post.id} post={post} />)}
 
-        {posts &&
-          posts?.map((post) => (
-            <PostItem key={post.id} currentUser={currentUser} post={post} />
-          ))}
         <LoadMore
           loadNextPost={loadNextPost}
           isFetchingNextPage={isFetchingNextPage}

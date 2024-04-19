@@ -33,7 +33,7 @@ const Editor = ({ onChange, editable, initialContent }: Props) => {
     async function loadInitialHTML() {
       if (!initialContent) return null;
 
-      const blocks = await editor.tryParseMarkdownToBlocks(initialContent);
+      const blocks = await editor.tryParseHTMLToBlocks(initialContent);
       editor.replaceBlocks(editor.document, blocks);
     }
     loadInitialHTML();
