@@ -17,16 +17,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-import { TagOptions } from "@/data/tags";
+import { TagOptions, Tag } from "@/data/tags";
 
-type Status = {
-  value: string;
-  label: string;
+type Props = {
+  selectedTag: Tag | null;
+  setSelectedtag: React.Dispatch<React.SetStateAction<Tag | null>>;
 };
 
-export function NewTag() {
+const NewTag = ({ selectedTag, setSelectedtag }: Props) => {
   const [open, setOpen] = React.useState(false);
-  const [selectedTag, setSelectedtag] = React.useState<Status | null>(null);
 
   return (
     <div className="flex items-center space-x-4">
@@ -47,6 +46,7 @@ export function NewTag() {
                   <CommandItem
                     key={tag.value}
                     value={tag.value}
+                    defaultValue={TagOptions[0]?.value}
                     onSelect={(value) => {
                       setSelectedtag(
                         TagOptions.find(
@@ -66,4 +66,6 @@ export function NewTag() {
       </Popover>
     </div>
   );
-}
+};
+
+export default NewTag;

@@ -1,4 +1,4 @@
-import  prisma  from "../lib/prismadb";
+import  {db as prisma}  from "../lib/prismadb";
 
 const getComments = async (postId: string) => {
   try {

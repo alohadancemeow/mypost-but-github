@@ -14,9 +14,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 import usePostModal from "@/hooks/usePostModal";
 import Toolbar from "./feed/mainContent/Toolbar";
+import NewTag from "./new-tag";
 
 import { BlockNoteEditor } from "@blocknote/core";
-import { NewTag } from "./new-tag";
+import { Tag, TagOptions } from "@/data/tags";
+import { useAuth } from "@clerk/nextjs";
+import axios from "axios";
+import { PostValidator } from "@/types";
+import { z } from "zod";
+import { toast } from "sonner";
 
 const content = `Hello, **world!**`;
 
@@ -25,7 +31,10 @@ type Props = {};
 const PostDrawer = (props: Props) => {
   const [markdown, setMarkdown] = useState<string>("");
   const [title, setTitle] = useState<string>("Untitled");
+  const [selectedTag, setSelectedtag] = useState<Tag | null>(null);
   const { isOpen, onClose } = usePostModal();
+
+  const { userId } = useAuth();
 
   const Editor = useMemo(
     () =>
@@ -44,7 +53,38 @@ const PostDrawer = (props: Props) => {
     setMarkdown(markdown);
   };
 
-  const onCreatePost = async () => {};
+  const onCreatePost = async () => {
+    if (!userId) return;
+    const postData: z.infer<typeof PostValidator> = {
+      title: title,
+      body: markdown,
+      tag: selectedTag?.value ?? TagOptions[0]!.value,
+    };
+
+    try {
+      const response = await axios.post("/api/post", postData);
+
+      if (response.data) {
+        toast("Post has been created 🎉", {
+          // description: `${response.data}`,
+          duration: 1500,
+        });
+
+        setMarkdown("");
+        setTitle("Untitled");
+        setSelectedtag(null);
+      }
+    } catch (error: any) {
+      console.log(error, "error");
+
+      toast(`${error.message} ‼️`, {
+        // description: `${response.data}`,
+        duration: 1500,
+      });
+    } finally {
+      onClose();
+    }
+  };
 
   return (
     <Drawer open={isOpen}>
@@ -60,8 +100,14 @@ const PostDrawer = (props: Props) => {
           </ScrollArea>
           <DrawerFooter>
             <div className="flex gap-3 justify-center items-center">
-              <NewTag />
-              <Button className="bg-blue-700 hover:bg-blue-900">
+              <NewTag
+                selectedTag={selectedTag}
+                setSelectedtag={setSelectedtag}
+              />
+              <Button
+                className="bg-blue-700 hover:bg-blue-900"
+                onClick={onCreatePost}
+              >
                 Create post
               </Button>
               <DrawerClose asChild>

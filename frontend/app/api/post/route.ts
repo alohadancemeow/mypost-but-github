@@ -1,29 +1,28 @@
-import getCurrentUser from "@/actions/getCurrentUser";
-import  prisma  from "@/lib/prismadb";
+import { db as prisma } from "@/lib/prismadb";
 import { PostValidator } from "@/types";
+import { auth } from "@clerk/nextjs";
+import { Post } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function POST(request: Request) {
-  const currentUser = await getCurrentUser();
-
-  if (!currentUser) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  const { userId } = auth();
 
   try {
-    const body = await request.json();
-    // console.log(body, "body");
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
 
-    const { title, tags, content } = PostValidator.parse(body);
+    const reqBody = await request.json();
+
+    const { title, tag, body } = PostValidator.parse(reqBody);
 
     const post = await prisma.post.create({
       data: {
+        userId,
         title,
-        userId: currentUser.id,
-        body: content,
-        tags: tags,
-        shares: 0,
+        body,
+        tag: tag ?? "",
       },
     });
 

@@ -4,11 +4,11 @@ import { z } from "zod";
 // post response
 export const postPopulated = Prisma.validator<Prisma.PostInclude>()({
   comments: {
-   select: {
-    userId: true,
-    id: true,
-    body: true
-   }
+    select: {
+      userId: true,
+      id: true,
+      body: true,
+    },
   },
 });
 
@@ -22,13 +22,11 @@ export const commentPopulated = Prisma.validator<Prisma.CommentInclude>()({
     select: {
       comments: {
         select: {
-          id:true,
+          id: true,
           body: true,
-          userId: true
-        }
-      }
-     
-      
+          userId: true,
+        },
+      },
     },
   },
 });
@@ -45,8 +43,8 @@ export const UserValidator = z.object({
 
 export const PostValidator = z.object({
   title: z.string(),
-  content: z.any(),
-  tags: z.array(z.string()),
+  body: z.string(),
+  tag: z.string(),
 });
 
 export const CommentValidator = z.object({
@@ -54,11 +52,10 @@ export const CommentValidator = z.object({
   body: z.string(),
 });
 
-
 // # Response type
 // export type UserWithPost = User & {
 //   posts: Post[];
 // };
 
 export type FormData = z.infer<typeof PostValidator>;
-export type CommentInput = z.infer<typeof CommentValidator>
+export type CommentInput = z.infer<typeof CommentValidator>;

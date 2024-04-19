@@ -9,17 +9,16 @@ type Props = {
   setTitle: React.Dispatch<SetStateAction<string>>;
 };
 
-const Toolbar = ({ title, preview }: Props) => {
+const Toolbar = ({ title, preview, setTitle }: Props) => {
   const inputRef = useRef<ElementRef<"textarea">>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(title);
 
   const enableInput = () => {
     if (preview) return;
 
     setIsEditing(true);
     setTimeout(() => {
-      setValue(title);
+      setTitle(title);
       inputRef.current?.focus();
     }, 0);
   };
@@ -34,11 +33,7 @@ const Toolbar = ({ title, preview }: Props) => {
   };
 
   const onInput = (value: string) => {
-    setValue(value);
-    // update({
-    //   id: initialData._id,
-    //   title: value || "Untitled",
-    // });
+    setTitle(value);
   };
 
   return (
@@ -48,7 +43,7 @@ const Toolbar = ({ title, preview }: Props) => {
           ref={inputRef}
           onBlur={disableInput}
           onKeyDown={onKeyDown}
-          value={value}
+          value={title}
           onChange={(e) => onInput(e.target.value)}
           className="text-5xl  bg-transparent font-bold break-words outline-none text-[#CFCFCF] resize-none"
         />

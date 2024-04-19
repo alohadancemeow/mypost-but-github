@@ -1,8 +1,8 @@
-import  prisma  from "@/lib/prismadb";
+import { db as prisma } from "@/lib/prismadb";
 
 const getPosts = async () => {
   try {
-    const posts = await prisma.post.findMany({ });
+    const posts = await prisma.post.findMany({});
 
     return posts;
   } catch (error) {
