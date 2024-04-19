@@ -16,6 +16,7 @@ import usePostModal from "@/hooks/usePostModal";
 import Toolbar from "./feed/mainContent/Toolbar";
 
 import { BlockNoteEditor } from "@blocknote/core";
+import { NewTag } from "./new-tag";
 
 const content = `Hello, **world!**`;
 
@@ -43,7 +44,7 @@ const PostDrawer = (props: Props) => {
     setMarkdown(markdown);
   };
 
-  const onCreatePost = () => {};
+  const onCreatePost = async () => {};
 
   return (
     <Drawer open={isOpen}>
@@ -59,6 +60,7 @@ const PostDrawer = (props: Props) => {
           </ScrollArea>
           <DrawerFooter>
             <div className="flex gap-3 justify-center items-center">
+              <NewTag />
               <Button className="bg-blue-700 hover:bg-blue-900">
                 Create post
               </Button>
