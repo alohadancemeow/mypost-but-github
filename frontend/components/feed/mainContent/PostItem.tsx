@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import ReactionButton from "./ReactionButton";
@@ -8,10 +9,10 @@ import Popup from "./Popup";
 import Tag from "./Tag";
 
 import { PostPopulated } from "@/types";
+import { User } from "@clerk/nextjs/dist/types/server";
 
 import { useFormatDate } from "@/hooks/useFormatDate";
 import CommentSection from "./comments/CommentSection";
-import { useAuth, useUser } from "@clerk/nextjs";
 
 export type ReactionButtonType = {
   comment: boolean;
@@ -19,7 +20,6 @@ export type ReactionButtonType = {
 };
 
 type Props = {
-  // currentUser?: User | null;
   post: PostPopulated;
 };
 
@@ -29,29 +29,42 @@ const PostItem = ({ post }: Props) => {
     share: false,
   });
 
-  const { user } = useUser();
+  const [user, setUser] = useState<User>();
 
   // make a new parser
   const parser = new DOMParser();
   if (!post.body) return null;
   const document = parser.parseFromString(post.body!, "text/html");
 
-  console.log(document, "doc");
-
   const { dateFormate } = useFormatDate();
+
+  // fetching post creator
+  const fetchUser = async () => {
+    axios.get(`/api/user/${post.userId}`).then((res) => {
+      if (res.data) {
+        setUser(res.data);
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, [post]);
 
   return (
     <div className="flex flex-col h-fit mt-10">
       <div className="flex items-center justify-start mx-1 mb-4">
         <div>
           <Avatar className="w-[30px] h-[30px]">
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage
+              src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
+            />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </div>
         <div className="flex ml-4">
           <div>
-            {post.userId}
+            {`${user?.firstName} ${user?.lastName}`}
             <span className="text-[#ADBAC7] px-1">posted</span> {post.title}{" "}
             <span className="text-[#ADBAC7] px-3">
               {`· ${dateFormate(new Date(post.createdAt))}`}

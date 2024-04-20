@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { useCallback } from "react";
 
 import LoadMore from "./LoadMore";
@@ -9,17 +10,13 @@ import PostBanner from "./PostBanner";
 
 import Footer from "../Footer";
 
-import axios from "axios";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { PostPopulated } from "@/types";
 import Skeleton from "./Skeleton";
-import { User } from "@clerk/nextjs/dist/types/server";
 
-type Props = {
-  currentUser?: User | null;
-};
+type Props = {};
 
-const MainContent = ({ currentUser }: Props) => {
+const MainContent = (props: Props) => {
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, refetch } =
     useInfiniteQuery({
       queryKey: ["posts-query"],
@@ -61,7 +58,7 @@ const MainContent = ({ currentUser }: Props) => {
       }}
     >
       <div className="rounded-sm p-10">
-        <PostBanner currentUser={currentUser} />
+        <PostBanner />
         <Tabs />
 
         {posts.length === 0 && <Skeleton />}

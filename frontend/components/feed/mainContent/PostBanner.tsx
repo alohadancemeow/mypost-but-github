@@ -1,15 +1,12 @@
 "use client";
 
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { User } from "@clerk/nextjs/dist/types/server";
 import { BookOpenText } from "lucide-react";
 import usePostModal from "@/hooks/usePostModal";
 
-type Props = {
-  currentUser?: User | null;
-};
+type Props = {};
 
-const PostBanner = ({ currentUser }: Props) => {
+const PostBanner = (props: Props) => {
   const postModal = usePostModal();
 
   return (
