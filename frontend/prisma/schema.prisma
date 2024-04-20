@@ -20,9 +20,9 @@ model Post {
     userId String
 
     comments Comment[]
-    tag     String?
-    shares   Int?      @default(0)
-    likedIds String[] 
+    tag      String?
+    saveIds  String[]
+    likedIds String[]
 }
 
 model Comment {

@@ -1,15 +1,15 @@
-import getCurrentUser from "@/actions/getCurrentUser";
 import { db as prisma } from "@/lib/prismadb";
+import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
-// like
+// save
 export async function POST(
   request: Request,
   { params }: { params: { postId: string } }
 ) {
-  const currentUser = await getCurrentUser();
+  const { userId } = auth();
 
-  if (!currentUser) {
+  if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
@@ -33,8 +33,8 @@ export async function POST(
         id: postId,
       },
       data: {
-        likedIds: {
-          push: currentUser.id,
+        saveIds: {
+          push: userId,
         },
       },
     });
@@ -49,14 +49,14 @@ export async function POST(
   }
 }
 
-// unlike
+// unsave
 export async function DELETE(
   request: Request,
   { params }: { params: { postId: string } }
 ) {
-  const currentUser = await getCurrentUser();
+  const { userId } = auth();
 
-  if (!currentUser) {
+  if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
@@ -84,48 +84,7 @@ export async function DELETE(
         id: postId,
       },
       data: {
-        likedIds: updatedLikedIds.filter((userId) => userId !== currentUser.id),
-      },
-    });
-
-    return NextResponse.json(updatedPost);
-  } catch (error) {
-    return new Response("Something went wrong. Please try later", {
-      status: 500,
-    });
-  }
-}
-
-// # share
-export async function PATCH(
-  request: Request,
-  { params }: { params: { postId: string } }
-) {
-  const { postId } = params;
-
-  if (!postId || typeof postId !== "string") {
-    throw new Error("Invalid ID");
-  }
-
-  try {
-    const post = await prisma.post.findUnique({
-      where: {
-        id: postId,
-      },
-    });
-
-    if (!post) {
-      throw new Error("Invalid ID");
-    }
-
-    const updatedPost = await prisma.post.update({
-      where: {
-        id: postId,
-      },
-      data: {
-        shares: {
-          increment: 1,
-        },
+        saveIds: updatedLikedIds.filter((id) => id !== userId),
       },
     });
 

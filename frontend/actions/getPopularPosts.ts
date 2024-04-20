@@ -14,7 +14,7 @@ const getPopularPosts = async () => {
     },
     orderBy: [
       { likedIds: "desc" },
-      { shares: "desc" },
+      // { saveIds: "desc" },
       {
         comments: {
           _count: "desc",

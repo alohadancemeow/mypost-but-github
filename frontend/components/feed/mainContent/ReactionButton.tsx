@@ -1,212 +1,124 @@
 "use client";
 
-import React, { useCallback } from "react";
-import styled from "styled-components";
-import {
-  CommentDiscussionIcon,
-  HeartFillIcon,
-  HeartIcon,
-  ShareAndroidIcon,
-} from "@primer/octicons-react";
-import { Box, StyledOcticon, Text } from "@primer/react";
-
 import { ReactionButtonType } from "./PostItem";
 import { PostPopulated } from "@/types";
-import useAuthModal from "@/hooks/useAuthModal";
 
-import useShare from "@/hooks/useShare";
 import useLike from "@/hooks/useLike";
-import { User } from "@clerk/nextjs/dist/types/server";
+import useSavePost from "@/hooks/useSavePost";
+
+import { Bookmark, Heart, MessagesSquare } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 
 type Props = {
   selected: ReactionButtonType;
   setSelected: React.Dispatch<React.SetStateAction<ReactionButtonType>>;
   post: PostPopulated;
-  currentUser?: User | null;
 };
 
-const ReactionButton = ({
-  selected,
-  setSelected,
-  post,
-  currentUser,
-}: Props) => {
-  const authModal = useAuthModal();
-  const { hasLiked, toggleLike } = useLike({ post, currentUser });
-  const { share } = useShare({ post });
-
-  // Handle share
-  const handleShare = useCallback(
-    async (e: any) => {
-      e.stopPropagation();
-
-      setSelected({ ...selected, share: !selected.share });
-
-      if (!selected.share) {
-        share();
-      }
-    },
-    [setSelected, share, selected.share]
-  );
-
-  // Handle like - unlike
-  const handleLike = useCallback(
-    async (e: any) => {
-      e.stopPropagation();
-
-      if (!currentUser) {
-        return authModal.onOpen();
-      }
-
-      toggleLike();
-    },
-    [authModal, currentUser, toggleLike]
-  );
+const ReactionButton = ({ selected, setSelected, post }: Props) => {
+  const { hasLiked, toggleLike } = useLike({ post });
+  const { hasSaved, toggleSave } = useSavePost({ post });
 
   return (
-    <Box margin="22px 4px 0" display="flex">
-      <Box
-        display="flex"
-        alignItems="center"
-        marginRight={10}
-        as="button"
-        sx={{
-          bg: "transparent",
-          border: "none",
-          color: "white",
-          cursor: "pointer",
-          ":hover": {
-            opacity: 0.7,
-          },
-        }}
-        onClick={handleLike}
-      >
-        {hasLiked ? (
-          <>
-            <StyledOcticon
-              icon={HeartFillIcon}
-              size={18}
-              sx={{ mr: "8px", color: "canvas.hightlight" }}
-            />
-            <Text
-              sx={{
-                fontSize: "14px",
-                lineHeight: "20px",
-                fontWeight: "600",
-              }}
-            >
-              Liked{" "}
-              <MyText>
-                {post.likedIds.length === 0 ? "" : `· ${post.likedIds.length}`}
-              </MyText>
-            </Text>
-          </>
-        ) : (
-          <>
-            <StyledOcticon icon={HeartIcon} size={18} sx={{ mr: "8px" }} />
-            <Text
-              sx={{
-                fontSize: "14px",
-                lineHeight: "20px",
-                fontWeight: "600",
-              }}
-            >
-              Like{" "}
-              <MyText>
-                {" "}
-                {post.likedIds.length === 0 ? "" : `· ${post.likedIds.length}`}
-              </MyText>
-            </Text>
-          </>
-        )}
-      </Box>
-      <Box
-        display="flex"
-        alignItems="center"
-        marginRight={10}
-        as="button"
-        sx={{
-          bg: "transparent",
-          border: "none",
-          color: "white",
-          cursor: "pointer",
-          ":hover": {
-            opacity: 0.7,
-          },
-        }}
+    <div className="mt-5 gap-3 flex">
+      {/* LIKE */}
+      <div className="flex items-center cursor-pointer bg-transparent hover:opacity-70">
+        <SignedIn>
+          <div onClick={toggleLike}>
+            {hasLiked ? (
+              <div className="flex gap-2 items-center">
+                <Heart size={18} fill="#006EED" />
+                <div className="font-semibold text-sm flex gap-1">
+                  <p>Liked</p>
+                  <div className="hidden md:block">
+                    {post.likedIds.length === 0
+                      ? ""
+                      : `· ${post.likedIds.length}`}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex gap-2 items-center">
+                  <Heart size={18} />
+                  <div className="font-semibold text-sm flex gap-1">
+                    <p>Like</p>
+                    <div className="hidden md:block">
+                      {post.likedIds.length === 0
+                        ? ""
+                        : `· ${post.likedIds.length}`}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </SignedIn>
+
+        <SignedOut>
+          <SignInButton mode="modal">
+            <div className="flex gap-2 items-center">
+              <Heart size={18} />
+              <div className="font-semibold text-sm flex gap-1">
+                <p>Like</p>
+                <div className="hidden md:block">
+                  {post.likedIds.length === 0
+                    ? ""
+                    : `· ${post.likedIds.length}`}
+                </div>
+              </div>
+            </div>
+          </SignInButton>
+        </SignedOut>
+      </div>
+
+      {/* COMMENT */}
+      <div
+        className="flex items-center gap-1 bg-transparent cursor-pointer hover:opacity-70 border-none"
         onClick={() => setSelected({ ...selected, comment: !selected.comment })}
       >
         {selected && selected.comment ? (
-          <StyledOcticon
-            icon={CommentDiscussionIcon}
-            size={18}
-            sx={{ mr: "8px", color: "canvas.hightlight" }}
-          />
+          <MessagesSquare size={18} fill="#006EED" />
         ) : (
-          <StyledOcticon
-            icon={CommentDiscussionIcon}
-            size={18}
-            sx={{ mr: "8px" }}
-          />
+          <MessagesSquare size={18} />
         )}
-        <Text
-          sx={{
-            fontSize: "14px",
-            lineHeight: "20px",
-            fontWeight: "600",
-          }}
-        >
-          Comment{" "}
-          <MyText>
+        <div className="text-sm font-semibold flex gap-1">
+          <p>Comment</p>
+          <div className="hidden md:block">
             {post.comments.length === 0 ? "" : `· ${post.comments.length}`}
-          </MyText>
-        </Text>
-      </Box>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent={"center"}
-        as="button"
-        sx={{
-          bg: "transparent",
-          border: "none",
-          color: "white",
-          cursor: "pointer",
-          ":hover": {
-            opacity: 0.7,
-          },
-        }}
-        onClick={handleShare}
-      >
-        {selected && selected.share ? (
-          <StyledOcticon
-            icon={ShareAndroidIcon}
-            size={16}
-            sx={{ mr: "8px", color: "canvas.hightlight" }}
-          />
-        ) : (
-          <StyledOcticon icon={ShareAndroidIcon} size={16} sx={{ mr: "8px" }} />
-        )}
-        <Text
-          sx={{
-            fontSize: "14px",
-            lineHeight: "20px",
-            fontWeight: "600",
-          }}
-        >
-          Share {""}
-          {post && post.shares !== 0 && <MyText>{`· ${post.shares}`}</MyText>}
-        </Text>
-      </Box>
-    </Box>
+          </div>
+        </div>
+      </div>
+
+      {/* BOOKMARK */}
+      <div className="flex gap-1 items-center hover:opacity-70 justify-center bg-transparent cursor-pointer">
+        <SignedIn>
+          <div onClick={toggleSave}>
+            {hasSaved ? (
+              <div className="text-sm font-semibold flex gap-1">
+                <Bookmark size={18} fill="#006EED" />
+                <p>Saved</p>
+              </div>
+            ) : (
+              <div className="text-sm font-semibold flex gap-1">
+                <Bookmark size={18} />
+                <p>Save</p>
+              </div>
+            )}
+          </div>
+        </SignedIn>
+
+        <SignedOut>
+          <SignInButton mode="modal">
+            <div className="text-sm font-semibold flex gap-1">
+              <Bookmark size={18} />
+              <p>Save</p>
+            </div>
+          </SignInButton>
+        </SignedOut>
+      </div>
+    </div>
   );
 };
 
 export default ReactionButton;
-
-// responsive
-const MyText = styled(Text)`
-  @media (max-width: 544px) {
-    display: none;
-  }
-`;

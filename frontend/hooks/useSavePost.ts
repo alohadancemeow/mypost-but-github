@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
-import { like, unlike } from "@/actions/serverActions";
+// import { like, unlike } from "@/actions/serverActions";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PostPopulated } from "../types";
@@ -13,29 +13,29 @@ type Props = {
   post: PostPopulated;
 };
 
-const useLike = ({ post }: Props) => {
+const useSavePost = ({ post }: Props) => {
   const router = useRouter();
   const { user } = useUser();
 
   // Get access to query client instance
   const queryClient = useQueryClient();
 
-  // like
-  const { mutate: likeMutation } = useMutation({
+  // save
+  const { mutate: saveMutation } = useMutation({
     mutationFn: async () => {
-      await axios.post(`/api/post/${post.id}/like`);
+      await axios.post(`/api/post/${post.id}/save`);
     },
     onMutate: async (newData: PostPopulated) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({
-        queryKey: ["like-post", newData.id],
+        queryKey: ["save-post", newData.id],
       });
 
       // Snapshot the previous value
-      const previousData = queryClient.getQueryData(["like-post", newData.id]);
+      const previousData = queryClient.getQueryData(["save-post", newData.id]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(["like-post", newData.id], newData);
+      queryClient.setQueryData(["save-post", newData.id], newData);
 
       // Return a context with the previous and new todo
       return { previousData, newData };
@@ -44,33 +44,33 @@ const useLike = ({ post }: Props) => {
     // If the mutation fails, use the context we returned above
     onError: (err, newData, context) => {
       queryClient.setQueryData(
-        ["like-post", context?.newData.id],
+        ["save-post", context?.newData.id],
         context?.previousData
       );
     },
 
     // Always refetch after error or success:
     onSuccess: (newData: any) => {
-      queryClient.invalidateQueries({ queryKey: ["like-post", newData?.id] });
+      queryClient.invalidateQueries({ queryKey: ["save-post", newData?.id] });
     },
   });
 
-  // unlike
-  const { mutate: unlikeMutation } = useMutation({
+  // unsave
+  const { mutate: unsaveMutation } = useMutation({
     mutationFn: async () => {
-      await axios.delete(`/api/post/${post.id}/like`);
+      await axios.delete(`/api/post/${post.id}/save`);
     },
     onMutate: async (newData: PostPopulated) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({
-        queryKey: ["like-post", newData.id],
+        queryKey: ["save-post", newData.id],
       });
 
       // Snapshot the previous value
-      const previousData = queryClient.getQueryData(["like-post", newData.id]);
+      const previousData = queryClient.getQueryData(["save-post", newData.id]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(["like-post", newData.id], newData);
+      queryClient.setQueryData(["save-post", newData.id], newData);
 
       // Return a context with the previous and new todo
       return { previousData, newData };
@@ -79,35 +79,35 @@ const useLike = ({ post }: Props) => {
     // If the mutation fails, use the context we returned above
     onError: (err, newData, context) => {
       queryClient.setQueryData(
-        ["like-post", context?.newData.id],
+        ["save-post", context?.newData.id],
         context?.previousData
       );
     },
 
     // Always refetch after error or success:
     onSuccess: (newData: any) => {
-      queryClient.invalidateQueries({ queryKey: ["like-post", newData?.id] });
+      queryClient.invalidateQueries({ queryKey: ["save-post", newData?.id] });
     },
   });
 
-  const hasLiked = useMemo(() => {
-    const list = post?.likedIds || [];
+  const hasSaved = useMemo(() => {
+    const list = post?.saveIds || [];
 
     return list.includes(user?.id!);
   }, [post, user]);
 
-  const toggleLike = useCallback(async () => {
+  const toggleSave = useCallback(async () => {
     try {
       let request: () => void;
 
-      if (hasLiked) {
-        request = () => unlikeMutation(post);
+      if (hasSaved) {
+        request = () => unsaveMutation(post);
       } else {
-        request = () => likeMutation(post);
+        request = () => saveMutation(post);
       }
 
+      // await request();
       request();
-      // request();
 
       router.refresh();
     } catch (error) {
@@ -117,12 +117,12 @@ const useLike = ({ post }: Props) => {
 
       toast.error("Something went wrong");
     }
-  }, [user, hasLiked, post.id]);
+  }, [user, hasSaved, post.id]);
 
   return {
-    hasLiked,
-    toggleLike,
+    hasSaved,
+    toggleSave,
   };
 };
 
-export default useLike;
+export default useSavePost;

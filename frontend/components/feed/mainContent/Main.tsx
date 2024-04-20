@@ -33,6 +33,7 @@ const MainContent = (props: Props) => {
         return allPages.length + 1;
       },
       initialData: { pages: [], pageParams: [1] },
+      refetchInterval: 1000, // Refetch every 1 second
     });
 
   const posts = data?.pages.flatMap((page) => page) ?? [];
@@ -44,8 +45,6 @@ const MainContent = (props: Props) => {
       await fetchNextPage();
     }
   }, [hasNextPage, isFetchingNextPage]);
-
-  // if (posts.length === 0) return <>load post...</>;
 
   return (
     <div
@@ -61,8 +60,10 @@ const MainContent = (props: Props) => {
         <PostBanner />
         <Tabs />
 
-        {posts.length === 0 && <Skeleton />}
-        {posts && posts?.map((post) => <PostItem key={post.id} post={post} />)}
+        {!posts.length && <Skeleton />}
+        {posts.map((post) => (
+          <PostItem key={post.id} post={post} />
+        ))}
 
         <LoadMore
           loadNextPost={loadNextPost}
