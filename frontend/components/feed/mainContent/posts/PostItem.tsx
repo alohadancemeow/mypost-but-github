@@ -1,22 +1,20 @@
 "use client";
 
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import ReactionButton from "./ReactionButton";
-import Popup from "./Popup";
-import Tag from "./Tag";
+import Popup from "../Popup";
+import Tag from "../Tag";
 
 import { PostPopulated } from "@/types";
-import { User } from "@clerk/nextjs/dist/types/server";
 
-import { useFormatDate } from "@/hooks/useFormatDate";
-import CommentSection from "./comments/CommentSection";
+import { useFormatDate } from "@/hooks/use-format-date";
+import CommentSection from "../comments/CommentSection";
+import { useGetUser } from "@/hooks/use-get-user";
 
 export type ReactionButtonType = {
   comment: boolean;
-  share: boolean;
 };
 
 type Props = {
@@ -26,10 +24,7 @@ type Props = {
 const PostItem = ({ post }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: false,
-    share: false,
   });
-
-  const [user, setUser] = useState<User>();
 
   // make a new parser
   const parser = new DOMParser();
@@ -37,19 +32,7 @@ const PostItem = ({ post }: Props) => {
   const document = parser.parseFromString(post.body!, "text/html");
 
   const { dateFormate } = useFormatDate();
-
-  // fetching post creator
-  const fetchUser = async () => {
-    axios.get(`/api/user/${post.userId}`).then((res) => {
-      if (res.data) {
-        setUser(res.data);
-      }
-    });
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, [post]);
+  const { data: user, isFetching } = useGetUser({ userId: post.userId });
 
   return (
     <div className="flex flex-col h-fit mt-10">

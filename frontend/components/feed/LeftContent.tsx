@@ -4,18 +4,18 @@ import { useState } from "react";
 
 import { User } from "@clerk/nextjs/dist/types/server";
 import usePostCount from "@/hooks/use-post-count";
-import { PostPopulated } from "@/types";
 import { useRouter } from "next/navigation";
 import { Users } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PostPopulated } from "@/types";
 
 type Props = {
   users?: User[] | null;
   posts: PostPopulated[];
 };
 
-const LeftContent = ({ posts, users }: Props) => {
+const LeftContent = ({ users, posts }: Props) => {
   const [username, setUsername] = useState<string>("");
 
   const router = useRouter();

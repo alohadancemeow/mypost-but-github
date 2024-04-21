@@ -13,7 +13,7 @@ type Props = {
   popularPosts: PostPopulated[];
 };
 
-const Feed = ({ currentUser, users, popularPosts }: Props) => {
+const Feed = ({ users, popularPosts }: Props) => {
   return (
     <div className="h-full w-full flex flex-col text-white">
       <div className="h-full w-full grid grid-cols-3 lg:grid-cols-4">
@@ -21,7 +21,7 @@ const Feed = ({ currentUser, users, popularPosts }: Props) => {
           <LeftContent users={users} posts={popularPosts} />
         </div>
         <div className="col-span-2">
-          <MainContent currentUser={currentUser} />
+          <MainContent />
         </div>
         <div className="col-span-1 hidden lg:flex">
           <RightContent popularPosts={popularPosts} />

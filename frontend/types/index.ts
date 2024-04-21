@@ -3,13 +3,7 @@ import { z } from "zod";
 
 // post response
 export const postPopulated = Prisma.validator<Prisma.PostInclude>()({
-  comments: {
-    select: {
-      userId: true,
-      id: true,
-      body: true,
-    },
-  },
+  comments: true,
 });
 
 export type PostPopulated = Prisma.PostGetPayload<{

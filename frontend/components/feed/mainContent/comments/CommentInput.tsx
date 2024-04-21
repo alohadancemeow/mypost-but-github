@@ -1,20 +1,22 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
-import { Avatar, Box, TextInput } from "@primer/react";
+import { useCallback, useState } from "react";
+import useCreateComment from "@/hooks/use-create-commnet";
 
-import useCreateComment from "@/hooks/useCreateComment";
-import { User } from "@clerk/nextjs/dist/types/server";
+import { useUser } from "@clerk/nextjs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
 
 type Props = {
-  currentUser?: User | null;
   postId: string;
 };
 
-const CommentInput = ({ currentUser, postId }: Props) => {
+const CommentInput = ({ postId }: Props) => {
   const [commentBody, setCommentBody] = useState<string>("");
 
   const { createComment } = useCreateComment();
+
+  const { user } = useUser();
 
   // # Handle create comment
   const onCreateComment = useCallback(
@@ -28,28 +30,19 @@ const CommentInput = ({ currentUser, postId }: Props) => {
   );
 
   return (
-    <Box
-      display="flex"
-      alignItems={"center"}
-      justifyContent="flex-start"
-      margin="20px 25px"
-    >
-      <Box>
-        <Avatar
-          src={`${
-            // currentUser?.image ?? 
-            "https://github.com/octocat.png"}`}
-          size={24}
-          alt="@octocat"
-        />
-      </Box>
-      <TextInput
-        contrast
+    <div className="flex items-center justify-start my-3 mx-6">
+      <div>
+        <Avatar className="w-[25px] h-[25px]">
+          <AvatarImage
+            src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
+          />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      </div>
+      <Input
         aria-label="text"
         placeholder={
-          currentUser?.id === undefined
-            ? `Sign in to comment`
-            : "Type here..."
+          user?.id === undefined ? `Sign in to comment` : "Type here..."
         }
         type="text"
         value={commentBody}
@@ -57,17 +50,10 @@ const CommentInput = ({ currentUser, postId }: Props) => {
         onKeyUp={(e) => {
           onCreateComment(e);
         }}
-        disabled={currentUser?.id === undefined}
-        sx={{
-          bg: "transparent",
-          border: "1px solid #444C56",
-          width: "100%",
-          height: "38px",
-          borderRadius: "3px",
-          marginInlineStart: "15px",
-        }}
+        disabled={user?.id === undefined}
+        className="bg-transparent h-9 w-full rounded-sm ml-3 border border-[#444C56] focus:border-0"
       />
-    </Box>
+    </div>
   );
 };
 

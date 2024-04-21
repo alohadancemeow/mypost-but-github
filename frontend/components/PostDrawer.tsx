@@ -12,7 +12,7 @@ import {
 import { Button } from "./ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-import usePostModal from "@/hooks/usePostModal";
+import usePostModal from "@/hooks/use-post-modal";
 import Toolbar from "./feed/mainContent/Toolbar";
 import NewTag from "./new-tag";
 

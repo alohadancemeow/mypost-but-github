@@ -1,70 +1,40 @@
 "use client";
 
-import { Avatar, Box, Text } from "@primer/react";
-import { CommentPopulated } from "@/types";
-import { useFormatDate } from "@/hooks/useFormatDate";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+import { useFormatDate } from "@/hooks/use-format-date";
+import { Comment } from "@prisma/client";
+import { useGetUser } from "@/hooks/use-get-user";
 
 type Props = {
-  comment: CommentPopulated;
+  comment: Comment;
 };
 
 const CommentItem = ({ comment }: Props) => {
   const { dateFormate } = useFormatDate();
+  const { data: user, isFetching } = useGetUser({ userId: comment.userId });
+
   return (
-    <>
-      <div
-        style={{
-          width: "2px",
-          height: "18px",
-          background: "#444C56",
-          marginInlineStart: "6rem",
-        }}
-      ></div>
-      <Box
-        // marginTop={3}
-        display="flex"
-        alignItems={"center"}
-        justifyContent="flex-start"
-        margin="0 25px"
-        height="fit-content"
-        // width='100%'
-      >
-        <Box>
-          <Avatar
-            src={`${
-              // comment.user ?? 
-              "https://github.com/octocat.png"} `}
-            size={24}
-            alt="@octocat"
-          />
-        </Box>
-        <Box
-          display="flex"
-          flexDirection="column"
-          marginLeft="15px"
-          border="1px solid #444C56"
-          borderRadius="4px"
-          width="100%"
-          padding="5px 15px"
-          sx={{
-            bg: "#30363E",
-            wordWrap: "break-word",
-            wordBreak: "break-all",
-          }}
-        >
-          <Text fontSize="14px" marginBottom="3px">
-            {/* {comment.user?.name}{" "} */}
-            comment name
-            <span style={{ fontSize: "12px", color: "#ADBAC7" }}>
-              · {dateFormate(new Date(comment.createdAt))}
-            </span>{" "}
-          </Text>
-          <Text fontSize="12px" color="#ADBAC7">
-            {comment.body}
-          </Text>
-        </Box>
-      </Box>
-    </>
+    <div className="mx-6">
+      <div className="w-[2px] h-[12px] bg-[#444C56] ms-24" />
+      <div className="flex items-center justify-start h-fit">
+        <div>
+          <Avatar className="w-[25px] h-[25px]">
+            <AvatarImage
+              src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
+            />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </div>
+        <div className="flex bg-[#30363E] w-full py-1 px-3 flex-col ml-4 border border-[#444C56] rounded-sm">
+          <div className="mb-1 flex gap-1 text-[#ADBAC7] text-xs">
+            <div className="">{`${user?.firstName} ${user?.lastName}`}</div>
+            <span>· {dateFormate(new Date(comment.createdAt))}</span>
+          </div>
+          <p className="text-xs  break-words break-all">{comment.body}</p>
+        </div>
+      </div>
+    </div>
   );
 };
 

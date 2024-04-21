@@ -11,8 +11,8 @@ export async function GET(request: Request) {
   try {
     const { limit, page } = z
       .object({
-        limit: z.string(),
-        page: z.string(),
+        limit: z.string().optional(),
+        page: z.string().optional(),
       })
       .parse({
         limit: url.searchParams.get("limit"),
@@ -21,26 +21,44 @@ export async function GET(request: Request) {
 
     // let whereClause = {};
 
-    const posts = await prisma.post.findMany({
-      take: parseInt(limit),
-      // cursor: cursor,
-      // cursor: cursor ? { id: cursor } : undefined,
-      skip: (parseInt(page) - 1) * parseInt(limit),
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        comments: {
-          include: {
-            post: {
-              select: {
-                userId: true,
+    let posts;
+
+    if (!limit || !page) {
+      posts = await prisma.post.findMany({
+        include: {
+          comments: {
+            include: {
+              post: {
+                select: {
+                  userId: true,
+                },
               },
             },
           },
         },
-      },
-    });
+      });
+    } else {
+      posts = await prisma.post.findMany({
+        take: parseInt(limit),
+        // cursor: cursor,
+        // cursor: cursor ? { id: cursor } : undefined,
+        skip: (parseInt(page) - 1) * parseInt(limit),
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          comments: {
+            include: {
+              post: {
+                select: {
+                  userId: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    }
 
     revalidateTag("posts");
     revalidatePath("/");

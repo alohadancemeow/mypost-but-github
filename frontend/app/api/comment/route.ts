@@ -1,17 +1,17 @@
-import getCurrentUser from "@/actions/getCurrentUser";
-import  prisma  from "@/lib/prismadb";
+import { db as prisma } from "@/lib/prismadb";
 import { CommentValidator } from "@/types";
+import { auth } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function POST(request: Request) {
-  const currentUser = await getCurrentUser();
-
-  if (!currentUser) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
+  const { userId } = auth();
 
   try {
+    if (!userId) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
     const commentBody = await request.json();
     const { postId, body } = CommentValidator.parse(commentBody);
 
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
       data: {
         postId,
         body,
-        userId: currentUser.id,
+        userId,
       },
     });
 

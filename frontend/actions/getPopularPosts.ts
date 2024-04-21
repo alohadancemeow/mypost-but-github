@@ -1,16 +1,9 @@
-import {db as prisma}  from "../lib/prismadb";
+import { db as prisma } from "../lib/prismadb";
 
 const getPopularPosts = async () => {
   const posts = await prisma.post.findMany({
-   
     include: {
-      comments: {
-        select: {
-          userId: true,
-          body: true,
-          id: true
-        }
-      }
+      comments: true,
     },
     orderBy: [
       { likedIds: "desc" },

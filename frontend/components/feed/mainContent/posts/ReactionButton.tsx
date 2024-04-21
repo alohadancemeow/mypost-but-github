@@ -3,8 +3,8 @@
 import { ReactionButtonType } from "./PostItem";
 import { PostPopulated } from "@/types";
 
-import useLike from "@/hooks/useLike";
-import useSavePost from "@/hooks/useSavePost";
+import useLike from "@/hooks/use-like-post";
+import useSavePost from "@/hooks/use-save-post";
 
 import { Bookmark, Heart, MessagesSquare } from "lucide-react";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";

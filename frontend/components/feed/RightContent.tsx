@@ -3,7 +3,7 @@
 import styled from "styled-components";
 import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";
 
-import { useFormatDate } from "@/hooks/useFormatDate";
+import { useFormatDate } from "@/hooks/use-format-date";
 import { PostPopulated } from "@/types";
 import { ArrowUpNarrowWide } from "lucide-react";
 

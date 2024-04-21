@@ -1,27 +1,27 @@
-'use client'
+"use client";
 
 import CommentItem from "./CommentItem";
 import CommentInput from "./CommentInput";
+import { Post } from "@prisma/client";
 
-import {  PostPopulated } from "@/types";
-import { User } from "@clerk/nextjs/dist/types/server";
+import { PostPopulated } from "@/types";
 
 type Props = {
-  currentUser?: User | null;
-  post: any;
+  post: PostPopulated;
 };
 
-const CommentSection =  ({  post, currentUser }: Props) => {
+const CommentSection = ({ post }: Props) => {
   return (
     <>
-      <>
-        {post.comments &&
+      <div>
+        {post &&
+          post.comments &&
           post.comments.map((comment) => (
             <CommentItem key={comment.id} comment={comment} />
           ))}
-      </>
+      </div>
 
-      <CommentInput currentUser={currentUser} postId={post.id} />
+      <CommentInput postId={post.id} />
     </>
   );
 };
