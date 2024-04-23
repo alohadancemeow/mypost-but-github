@@ -1,7 +1,7 @@
 "use client";
 
 import styled from "styled-components";
-import { Box, CircleBadge, Heading, StyledOcticon, Text } from "@primer/react";
+import { Box, CircleBadge, Text } from "@primer/react";
 
 import { useFormatDate } from "@/hooks/use-format-date";
 import { PostPopulated } from "@/types";

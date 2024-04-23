@@ -11,7 +11,8 @@ export const useGetPosts = ({ limit }: Props) => {
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, isFetching } =
     useInfiniteQuery({
       queryKey: ["posts-query"],
-      queryFn: async ({ pageParam = 1 }) => {
+      initialPageParam: 1,
+      queryFn: async ({ pageParam }) => {
         const query = `/api/posts?limit=${limit}&page=${pageParam}`;
 
         const { data } = await axios.get(query);
@@ -28,7 +29,7 @@ export const useGetPosts = ({ limit }: Props) => {
     });
 
   const posts = data?.pages.flatMap((page) => page) ?? [];
-  // console.log(posts, 'posts');
+  console.log(posts, "posts");
 
   // handle load more
   const loadNextPost = useCallback(async () => {

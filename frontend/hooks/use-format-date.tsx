@@ -1,5 +1,5 @@
 import { formatRelative } from "date-fns";
-import enUS from "date-fns/locale/en-US";
+import { enUS } from "date-fns/locale/en-US";
 
 const formatRelativeLocale = {
   lastWeek: "eeee 'at' p",

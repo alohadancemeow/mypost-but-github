@@ -19,10 +19,12 @@ import NewTag from "./new-tag";
 import { BlockNoteEditor } from "@blocknote/core";
 import { Tag, TagOptions } from "@/data/tags";
 import { useAuth } from "@clerk/nextjs";
-import axios from "axios";
 import { PostValidator } from "@/types";
 import { z } from "zod";
 import { toast } from "sonner";
+import { createPost } from "@/actions/serverActions";
+
+import { SubmitButton } from "./SubmitButton";
 
 const content = `<p class="bn-inline-content">Hello, <strong>world!</strong></p><p class="bn-inline-content"></p>`;
 
@@ -62,9 +64,9 @@ const PostDrawer = (props: Props) => {
     };
 
     try {
-      const response = await axios.post("/api/post", postData);
+      const post = await createPost(postData);
 
-      if (response.data) {
+      if (post) {
         toast("Post has been created 🎉", {
           // description: `${response.data}`,
           duration: 1500,
@@ -87,39 +89,40 @@ const PostDrawer = (props: Props) => {
   };
 
   return (
-    <Drawer open={isOpen}>
-      <DrawerContent className="bg-[#1F1F1F] border-none">
-        <div className="mx-auto w-full h-full min-h-[850px] flex flex-col">
-          <ScrollArea className="h-[600px]">
-            <div className="h-full">
-              <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
-                <Toolbar title={title} setTitle={setTitle} />
-                <Editor onChange={onChange} initialContent={content} editable />
+    <form action={onCreatePost} method="post">
+      <Drawer open={isOpen}>
+        <DrawerContent className="bg-[#1F1F1F] border-none">
+          <div className="mx-auto w-full h-full min-h-[850px] flex flex-col">
+            <ScrollArea className="h-[600px]">
+              <div className="h-full">
+                <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
+                  <Toolbar title={title} setTitle={setTitle} />
+                  <Editor
+                    onChange={onChange}
+                    initialContent={content}
+                    editable
+                  />
+                </div>
               </div>
-            </div>
-          </ScrollArea>
-          <DrawerFooter>
-            <div className="flex gap-3 justify-center items-center">
-              <NewTag
-                selectedTag={selectedTag}
-                setSelectedtag={setSelectedtag}
-              />
-              <Button
-                className="bg-blue-700 hover:bg-blue-900"
-                onClick={onCreatePost}
-              >
-                Create post
-              </Button>
-              <DrawerClose asChild>
-                <Button variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-              </DrawerClose>
-            </div>
-          </DrawerFooter>
-        </div>
-      </DrawerContent>
-    </Drawer>
+            </ScrollArea>
+            <DrawerFooter>
+              <div className="flex gap-3 justify-center items-center">
+                <NewTag
+                  selectedTag={selectedTag}
+                  setSelectedtag={setSelectedtag}
+                />
+                <SubmitButton />
+                <DrawerClose asChild>
+                  <Button variant="outline" onClick={onClose}>
+                    Cancel
+                  </Button>
+                </DrawerClose>
+              </div>
+            </DrawerFooter>
+          </div>
+        </DrawerContent>
+      </Drawer>
+    </form>
   );
 };
 

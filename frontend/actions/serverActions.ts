@@ -1,75 +1,67 @@
 "use server";
 
-import { FormData, PostValidator } from "../types";
-import axios from "axios";
-import { revalidatePath, revalidateTag } from "next/cache";
-
-import getCurrentUser from "./getCurrentUser";
 import { db as prisma } from "../lib/prismadb";
 import { z } from "zod";
 import { Post } from "@prisma/client";
-import { currentUser, auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+
+import { PostValidator } from "@/types";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export type ResponseData = {
   data: Post;
-  err: string;
+  errors: string;
 };
 
 // create post
-// export const createPost = async (payload: FormData) => {
-//   try {
-//     // const currentUser = await getCurrentUser();
-//     // const user = await currentUser()
-//     const { user: currentUser, userId } = auth();
+export const createPost = async (postData: {
+  title: string;
+  tag: string;
+  body: string;
+}) => {
+  const { userId } = auth();
 
-//     if (!currentUser) {
-//       // return new Error("Unauthorized");
-//       return { err: "Unauthorized" } as ResponseData;
-//     }
+  try {
+    if (!userId) {
+      return new Response("Unauthorized", { status: 401 });
+    }
 
-//     const { title, tags, content } = PostValidator.parse(payload);
+    const { title, tag, body } = PostValidator.parse(postData);
 
-//     const post = await prisma.post.create({
-//       data: {
-//         title,
-//         userId,
-//         body: content,
-//         tags: tags,
-//         shares: 0,
-//       },
-//     });
+    const post = await prisma.post.create({
+      data: {
+        userId,
+        title,
+        body,
+        tag: tag ?? "",
+      },
+    });
 
-//     revalidateTag("posts");
-//     // revalidatePath('/')
+    revalidatePath("/");
 
-//     return { data: post } as ResponseData;
-//   } catch (error) {
-//     console.log(error);
+    return post;
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return new Response(error.message, { status: 400 });
+    }
 
-//     if (error instanceof z.ZodError) {
-//       // return new Response(error.message, { status: 400 });
-//       return { err: error.message } as ResponseData;
-//     }
-
-//     // return new Response("Could not create post. Please try later", {
-//     //   status: 500,
-//     // });
-
-//     return { err: "Could not create post. Please try later" } as ResponseData;
-//   }
-// };
+    return new Response("Could not create post. Please try later", {
+      status: 500,
+    });
+  }
+};
 
 // like post
 export const like = async (postId: string) => {
-  try {
-    const { userId } = auth();
+  const { userId } = auth();
 
+  try {
     if (!userId) {
-      throw new Error("Unauthorized");
+      return new Response("Unauthorized", { status: 401 });
     }
 
     if (!postId || typeof postId !== "string") {
-      throw new Error("Invalid ID");
+      return new Response("Invalid ID", { status: 400 });
     }
 
     const post = await prisma.post.findUnique({
@@ -78,7 +70,7 @@ export const like = async (postId: string) => {
       },
     });
 
-    if (!post) throw new Error("Invalid ID");
+    if (!post) return new Response("Post not found", { status: 404 });
 
     await prisma.post.update({
       where: {
@@ -91,23 +83,24 @@ export const like = async (postId: string) => {
       },
     });
 
-    revalidateTag("posts");
+    revalidatePath("/");
   } catch (error) {
     console.log(error);
+    return new Response("[LIKE]: Internal server error", { status: 500 });
   }
 };
 
 // unlike
 export const unlike = async (postId: string) => {
-  try {
-    const { userId } = auth();
+  const { userId } = auth();
 
+  try {
     if (!userId) {
-      throw new Error("Unauthorized");
+      return new Response("Unauthorized", { status: 401 });
     }
 
     if (!postId || typeof postId !== "string") {
-      throw new Error("Invalid ID");
+      return new Response("Invalid ID", { status: 400 });
     }
 
     const post = await prisma.post.findUnique({
@@ -116,7 +109,7 @@ export const unlike = async (postId: string) => {
       },
     });
 
-    if (!post) throw new Error("Invalid ID");
+    if (!post) return new Response("Post not found", { status: 404 });
 
     let updatedLikedIds = [...(post.likedIds || [])];
 
@@ -129,8 +122,89 @@ export const unlike = async (postId: string) => {
       },
     });
 
-    revalidateTag("posts");
+    revalidatePath("/");
   } catch (error) {
     console.log(error);
+    return new Response("[UNLIKE]: Internal server error", { status: 500 });
+  }
+};
+
+// Save post
+export const save = async (postId: string) => {
+  const { userId } = auth();
+
+  try {
+    if (!userId) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    if (!postId || typeof postId !== "string") {
+      return new Response("Invalid ID", { status: 400 });
+    }
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) return new Response("Post not found", { status: 404 });
+
+    await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        saveIds: {
+          push: userId,
+        },
+      },
+    });
+
+    revalidatePath("/");
+  } catch (error) {
+    console.log(error);
+    return new Response("[SAVE]: Internal server error", { status: 500 });
+  }
+
+  //   TODO: Notification here
+};
+
+// unsave
+export const unsave = async (postId: string) => {
+  const { userId } = auth();
+
+  try {
+    if (!userId) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    if (!postId || typeof postId !== "string") {
+      return new Response("Invalid ID", { status: 400 });
+    }
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) return new Response("Post not found", { status: 404 });
+
+    let updatedLikedIds = [...(post.likedIds || [])];
+
+    await prisma.post.update({
+      where: {
+        id: postId,
+      },
+      data: {
+        saveIds: updatedLikedIds.filter((id) => id !== userId),
+      },
+    });
+
+    revalidatePath("/");
+  } catch (error) {
+    console.log(error);
+    return new Response("[UNSAVE]: Internal server error", { status: 500 });
   }
 };

@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { Box, Heading, Popover, Text } from "@primer/react";
 import { BsFacebook, BsTwitter } from "react-icons/bs";
-import { ReactionButtonType } from "./PostItem";
+import { ReactionButtonType } from "../mainContent/posts/PostItem";
 import { XCircleFillIcon } from "@primer/octicons-react";
 
 import { FacebookShareButton, TwitterShareButton } from "react-share";
@@ -20,7 +20,7 @@ const Popup = ({ selected, setSelected }: Props) => {
   return (
     <MyPopover
       relative
-      open={selected.share}
+      // open={selected.share}
       caret="bottom"
       sx={{
         position: "absolute",
@@ -43,7 +43,7 @@ const Popup = ({ selected, setSelected }: Props) => {
             style={{
               cursor: "pointer",
             }}
-            onClick={() => setSelected({ ...selected, share: !selected.share })}
+            // onClick={() => setSelected({ ...selected, share: !selected.share })}
           >
             <XCircleFillIcon size={24} />
           </span>
