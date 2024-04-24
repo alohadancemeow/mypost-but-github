@@ -1,7 +1,7 @@
 import { db as prisma } from "@/lib/prismadb";
 import { PostValidator } from "@/types";
-import { auth } from "@clerk/nextjs";
-import { Post } from "@prisma/client";
+import { auth } from "@clerk/nextjs/server";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -25,6 +25,9 @@ export async function POST(request: Request) {
         tag: tag ?? "",
       },
     });
+
+    revalidateTag("posts");
+    revalidatePath("/");
 
     return NextResponse.json(post);
   } catch (error) {

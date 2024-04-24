@@ -25,11 +25,11 @@ export const useGetPosts = ({ limit }: Props) => {
         return allPages.length + 1;
       },
       initialData: { pages: [], pageParams: [1] },
-      refetchInterval: 1000, // Refetch every 1 second
+      // refetchInterval: 1000, // Refetch every 1 second
     });
 
   const posts = data?.pages.flatMap((page) => page) ?? [];
-  console.log(posts, "posts");
+  // console.log(posts, "posts");
 
   // handle load more
   const loadNextPost = useCallback(async () => {

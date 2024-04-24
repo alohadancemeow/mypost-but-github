@@ -20,7 +20,7 @@ const ModalProvider = (props: Props) => {
     <>
       {/* <AuthModal /> */}
       {/* <PostModal /> */}
-      <PostDrawer />
+      {/* <PostDrawer /> */}
     </>
   );
 };

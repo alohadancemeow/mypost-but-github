@@ -1,6 +1,6 @@
 "use server";
 
-import { db as prisma } from "../lib/prismadb";
+import { db as prisma } from "@/lib/prismadb";
 import { z } from "zod";
 import { Post } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
@@ -8,10 +8,13 @@ import { auth } from "@clerk/nextjs/server";
 import { PostValidator } from "@/types";
 import { revalidatePath, revalidateTag } from "next/cache";
 
-export type ResponseData = {
-  data: Post;
-  errors: string;
-};
+// export type ResponseData = {
+//   data: Post;
+//   errors: {
+//     status: number;
+//     message: string;
+//   };
+// };
 
 // create post
 export const createPost = async (postData: {
@@ -37,6 +40,7 @@ export const createPost = async (postData: {
       },
     });
 
+    revalidateTag("posts");
     revalidatePath("/");
 
     return post;

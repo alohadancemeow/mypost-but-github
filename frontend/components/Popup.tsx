@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import { Box, Heading, Popover, Text } from "@primer/react";
 import { BsFacebook, BsTwitter } from "react-icons/bs";
-import { ReactionButtonType } from "../mainContent/posts/PostItem";
+import { ReactionButtonType } from "./posts/PostItem";
 import { XCircleFillIcon } from "@primer/octicons-react";
 
 import { FacebookShareButton, TwitterShareButton } from "react-share";

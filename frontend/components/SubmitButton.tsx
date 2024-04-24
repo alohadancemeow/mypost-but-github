@@ -12,6 +12,7 @@ export function SubmitButton() {
       className="bg-blue-700 hover:bg-blue-900"
       disabled={pending}
       type="submit"
+      onClick={() => console.log("create post clicked")}
     >
       {`${pending ? <RotateCcw className="mr-2 h-4 w-4 animate-spin" /> : "Create post"}`}
     </Button>

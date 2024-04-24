@@ -1,10 +1,10 @@
-import { currentUser } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export default async function getCurrentUser() {
   try {
-    const user = await currentUser();
+    const { userId } = auth();
 
-    return user;
+    return userId;
   } catch (error: any) {
     return null;
   }

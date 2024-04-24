@@ -2,6 +2,7 @@
 
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { BookOpenText } from "lucide-react";
+
 import usePostModal from "@/hooks/use-post-modal";
 
 type Props = {};
