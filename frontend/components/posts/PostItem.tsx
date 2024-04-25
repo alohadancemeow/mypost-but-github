@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import ReactionButton from "./ReactionButton";
-import Popup from "../Popup";
 import Tag from "../Tag";
+import ReactionButton from "./ReactionButton";
 import CommentSection from "../comments/CommentSection";
+import OptionMenu from "../OptionMenu";
 
 import { PostPopulated } from "@/types";
 
@@ -78,7 +78,10 @@ const PostItem = ({ post, isRanked, index }: Props) => {
       </div>
       <div className="rounded-sm w-full h-fit bg-[#30363E] border border-[#444C56]">
         <div className="flex flex-col mx-8 my-5">
-          <div className="text-sm font-semibold mb-[2px]">{post.title}</div>
+          <div className="flex justify-between items-center">
+            <div className="text-sm font-semibold mb-[2px]">{post.title}</div>
+            <OptionMenu post={post} />
+          </div>
           <div>{document}</div>
           <div className="mt-7">
             <Tag text={post.tag ?? ""} />
@@ -88,9 +91,9 @@ const PostItem = ({ post, isRanked, index }: Props) => {
             setSelected={setSelected}
             post={post}
           />
-          <Popup selected={selected} setSelected={setSelected} />
         </div>
       </div>
+
       {selected && selected.comment && <CommentSection post={post} />}
     </div>
   );

@@ -6,7 +6,6 @@ import MainContent from "@/components/contents/Main";
 import RightContent from "@/components/contents/RightContent";
 import PostBanner from "@/components/PostBanner";
 import Feed from "@/components/Feed";
-import PostDrawer from "@/components/PostDrawer";
 import getPosts from "@/actions/get-posts";
 
 type Props = {};

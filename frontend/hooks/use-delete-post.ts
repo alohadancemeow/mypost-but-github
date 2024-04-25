@@ -1,19 +1,13 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { CommentInput } from "@/types";
-import { Post } from "@prisma/client";
-
-const useCreateComment = (post: Post) => {
-  const router = useRouter();
-
+const useDeletePost = () => {
   // Get access to query client instance
   const queryClient = useQueryClient();
 
-  const { mutateAsync: createComment, isPending } = useMutation({
-    mutationFn: async (payload: CommentInput) => {
-      return await axios.post(`/api/post/${post.id}/comment`, { ...payload });
+  const { mutateAsync: deletePost, isPending } = useMutation({
+    mutationFn: async (postId: string) => {
+      return await axios.delete(`/api/post/${postId}`);
     },
     onMutate: async (newData: any) => {
       // Cancel any outgoing refetches
@@ -47,7 +41,7 @@ const useCreateComment = (post: Post) => {
     },
   });
 
-  return { createComment, isPending };
+  return { deletePost, isPending };
 };
 
-export default useCreateComment;
+export default useDeletePost;
