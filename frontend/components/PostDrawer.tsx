@@ -19,8 +19,6 @@ import NewTag from "./new-tag";
 import { BlockNoteEditor } from "@blocknote/core";
 import { Tag, TagOptions } from "@/data/tags";
 import { useAuth } from "@clerk/nextjs";
-import { PostValidator } from "@/types";
-import { z } from "zod";
 import { toast } from "sonner";
 
 import Toolbar from "./Toolbar";
@@ -34,7 +32,6 @@ const content = `<p class="bn-inline-content">Hello, <strong>world!</strong></p>
 type Props = {};
 
 const PostDrawer = (props: Props) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [html, setHTML] = useState<string>("");
   const [title, setTitle] = useState<string>("Untitled");
   const [selectedTag, setSelectedtag] = useState<Tag | null>(null);
@@ -62,8 +59,6 @@ const PostDrawer = (props: Props) => {
   };
 
   const onCreatePost = async () => {
-    setIsLoading(true);
-
     if (!userId) return;
 
     // const postData: z.infer<typeof PostValidator> = {
@@ -98,7 +93,6 @@ const PostDrawer = (props: Props) => {
         duration: 1500,
       });
     } finally {
-      setIsLoading(false);
       onClose();
     }
   };

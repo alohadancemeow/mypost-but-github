@@ -7,22 +7,23 @@ import { useUser } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 
+import { Post } from "@prisma/client";
+
 type Props = {
-  postId: string;
+  post: Post;
 };
 
-const CommentInput = ({ postId }: Props) => {
+const CommentInput = ({ post }: Props) => {
   const [commentBody, setCommentBody] = useState<string>("");
 
-  const { createComment } = useCreateComment();
-
+  const { createComment, isPending } = useCreateComment(post);
   const { user } = useUser();
 
   // # Handle create comment
   const onCreateComment = useCallback(
     async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        await createComment({ postId, body: commentBody });
+        await createComment({ body: commentBody });
         setCommentBody("");
       }
     },
@@ -50,7 +51,7 @@ const CommentInput = ({ postId }: Props) => {
         onKeyUp={(e) => {
           onCreateComment(e);
         }}
-        disabled={user?.id === undefined}
+        disabled={isPending}
         className="bg-transparent h-9 w-full rounded-sm ml-3 border border-[#444C56] focus:border-0"
       />
     </div>

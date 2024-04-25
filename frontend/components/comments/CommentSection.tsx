@@ -21,7 +21,7 @@ const CommentSection = ({ post }: Props) => {
           ))}
       </div>
 
-      <CommentInput postId={post.id} />
+      <CommentInput post={post} />
     </>
   );
 };

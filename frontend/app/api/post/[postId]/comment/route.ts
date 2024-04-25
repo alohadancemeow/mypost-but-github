@@ -1,11 +1,15 @@
 import { db as prisma } from "@/lib/prismadb";
 import { CommentValidator } from "@/types";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request,
+  { params }: { params: { postId: string } }
+) {
   const { userId } = auth();
+  const { postId } = params;
 
   try {
     if (!userId) {
@@ -13,7 +17,7 @@ export async function POST(request: Request) {
     }
 
     const commentBody = await request.json();
-    const { postId, body } = CommentValidator.parse(commentBody);
+    const { body } = CommentValidator.parse(commentBody);
 
     const existingPost = await prisma.post.findUnique({
       where: {
@@ -22,7 +26,7 @@ export async function POST(request: Request) {
     });
 
     if (!existingPost) {
-      throw new Error("Invalid ID");
+      return new NextResponse("Post not found", { status: 404 });
     }
 
     const comment = await prisma.comment.create({

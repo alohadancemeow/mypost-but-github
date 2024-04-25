@@ -3,68 +3,76 @@ import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "react-hot-toast";
-import { CommentInput } from "../types";
+import { CommentInput } from "@/types";
+import { Post } from "@prisma/client";
 
-
-const useCreateComment = () => {
+const useCreateComment = (post: Post) => {
   const router = useRouter();
 
   // Get access to query client instance
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
-  const { mutateAsync: createCommentMutation } = useMutation({
+  const { mutateAsync: createComment, isPending } = useMutation({
     mutationFn: async (payload: CommentInput) => {
-      return await axios.post(`/api/comment`, { ...payload })
+      return await axios.post(`/api/post/${post.id}/comment`, { ...payload });
     },
     onMutate: async (newData: any) => {
-
       // Cancel any outgoing refetches
-      await queryClient.cancelQueries({ queryKey: ['posts-query', newData.id] })
+      await queryClient.cancelQueries({
+        queryKey: ["posts-query", newData.id],
+      });
 
       // Snapshot the previous value
-      const previousData = queryClient.getQueryData(['posts-query', newData.id])
+      const previousData = queryClient.getQueryData([
+        "posts-query",
+        newData.id,
+      ]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(['posts-query', newData.id], newData)
+      queryClient.setQueryData(["posts-query", newData.id], newData);
 
       // Return a context with the previous and new todo
-      return { previousData, newData }
+      return { previousData, newData };
     },
 
     // If the mutation fails, use the context we returned above
     onError: (err, newData, context) => {
-      queryClient.setQueryData(['posts-query', context?.newData.id], context?.previousData)
+      queryClient.setQueryData(
+        ["posts-query", context?.newData.id],
+        context?.previousData
+      );
     },
 
     onSuccess: (newData: any) => {
-      queryClient.invalidateQueries({ queryKey: ['posts-query', newData?.id] })
-    }
-  })
+      queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+    },
+  });
 
+  // const createComment = useCallback(
+  //   async (payload: CommentInput) => {
+  //     if (!payload) return null;
 
-  const createComment = useCallback(async (payload: CommentInput) => {
-    if (!payload) return null
+  //     try {
+  //       const data = await createCommentMutation(payload);
 
-    try {
-      const data = await createCommentMutation(payload)
+  //       if (data.status === 200) {
+  //         router.refresh();
+  //         toast.success("comment created!");
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
 
-      if (data.status === 200) {
-        router.refresh();
-        toast.success("comment created!");
-      }
-    } catch (error) {
-      console.log(error);
+  //       if (error instanceof AxiosError) {
+  //         return toast.error(error.message);
+  //       }
 
-      if (error instanceof AxiosError) {
-        return toast.error(error.message);
-      }
+  //       toast.error("Something went wrong");
+  //     }
+  //   },
+  //   [createCommentMutation]
+  // );
 
-      toast.error("Something went wrong");
-    }
-
-  }, [createCommentMutation]);
-
-  return { createComment };
+  return { createComment, isPending };
 };
 
 export default useCreateComment;

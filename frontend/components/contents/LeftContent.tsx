@@ -3,16 +3,16 @@
 import { useState } from "react";
 
 import { User } from "@clerk/nextjs/dist/types/server";
-import usePostCount from "@/hooks/use-post-count";
 import { useRouter } from "next/navigation";
 import { Users } from "lucide-react";
+import usePostCount from "@/hooks/use-post-count";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PostPopulated } from "@/types";
+import { Post } from "@prisma/client";
 
 type Props = {
   users?: User[] | null;
-  posts: PostPopulated[];
+  posts: Post[];
 };
 
 const LeftContent = ({ users, posts }: Props) => {

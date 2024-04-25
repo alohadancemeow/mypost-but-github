@@ -28,14 +28,17 @@ const useLike = ({ post }: Props) => {
     onMutate: async (newData: PostPopulated) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({
-        queryKey: ["like-post", newData.id],
+        queryKey: ["posts-query", newData.id],
       });
 
       // Snapshot the previous value
-      const previousData = queryClient.getQueryData(["like-post", newData.id]);
+      const previousData = queryClient.getQueryData([
+        "posts-query",
+        newData.id,
+      ]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(["like-post", newData.id], newData);
+      queryClient.setQueryData(["posts-query", newData.id], newData);
 
       // Return a context with the previous and new todo
       return { previousData, newData };
@@ -44,14 +47,14 @@ const useLike = ({ post }: Props) => {
     // If the mutation fails, use the context we returned above
     onError: (err, newData, context) => {
       queryClient.setQueryData(
-        ["like-post", context?.newData.id],
+        ["posts-query", context?.newData.id],
         context?.previousData
       );
     },
 
     // Always refetch after error or success:
     onSuccess: (newData: any) => {
-      queryClient.invalidateQueries({ queryKey: ["like-post", newData?.id] });
+      queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
     },
   });
 
@@ -63,14 +66,17 @@ const useLike = ({ post }: Props) => {
     onMutate: async (newData: PostPopulated) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({
-        queryKey: ["like-post", newData.id],
+        queryKey: ["posts-query", newData.id],
       });
 
       // Snapshot the previous value
-      const previousData = queryClient.getQueryData(["like-post", newData.id]);
+      const previousData = queryClient.getQueryData([
+        "posts-query",
+        newData.id,
+      ]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(["like-post", newData.id], newData);
+      queryClient.setQueryData(["posts-query", newData.id], newData);
 
       // Return a context with the previous and new todo
       return { previousData, newData };
@@ -79,14 +85,14 @@ const useLike = ({ post }: Props) => {
     // If the mutation fails, use the context we returned above
     onError: (err, newData, context) => {
       queryClient.setQueryData(
-        ["like-post", context?.newData.id],
+        ["posts-query", context?.newData.id],
         context?.previousData
       );
     },
 
     // Always refetch after error or success:
     onSuccess: (newData: any) => {
-      queryClient.invalidateQueries({ queryKey: ["like-post", newData?.id] });
+      queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
     },
   });
 

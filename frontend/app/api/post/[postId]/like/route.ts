@@ -1,5 +1,5 @@
 import { db as prisma } from "@/lib/prismadb";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 // like
@@ -16,7 +16,7 @@ export async function POST(
   const { postId } = params;
 
   if (!postId || typeof postId !== "string") {
-    throw new Error("Invalid ID");
+    return new NextResponse("Invalid ID", { status: 400 });
   }
 
   try {
@@ -26,7 +26,7 @@ export async function POST(
       },
     });
 
-    if (!post) throw new Error("Invalid ID");
+    if (!post) return new NextResponse("Post not found", { status: 404 });
 
     const updatedPost = await prisma.post.update({
       where: {
@@ -63,7 +63,7 @@ export async function DELETE(
   const { postId } = params;
 
   if (!postId || typeof postId !== "string") {
-    throw new Error("Invalid ID");
+    return new NextResponse("Invalid ID", { status: 400 });
   }
 
   try {
@@ -73,9 +73,7 @@ export async function DELETE(
       },
     });
 
-    if (!post) {
-      throw new Error("Invalid ID");
-    }
+    if (!post) return new NextResponse("Post not found", { status: 404 });
 
     let updatedLikedIds = [...(post.likedIds || [])];
 
