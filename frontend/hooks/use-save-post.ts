@@ -1,6 +1,4 @@
 import { useCallback, useMemo } from "react";
-import { toast } from "react-hot-toast";
-
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 // import { like, unlike } from "@/actions/serverActions";
@@ -118,10 +116,10 @@ const useSavePost = ({ post }: Props) => {
       router.refresh();
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data);
+        console.log(error.message);
       }
 
-      toast.error("Something went wrong");
+      console.log("Something went wrong");
     }
   }, [user, hasSaved, post.id]);
 

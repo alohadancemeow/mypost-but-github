@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import PostDrawer from "@/components/PostDrawer";
-import React, { useEffect, useState } from "react";
 
 type Props = {};
 
@@ -18,9 +18,7 @@ const ModalProvider = (props: Props) => {
 
   return (
     <>
-      {/* <AuthModal /> */}
-      {/* <PostModal /> */}
-      {/* <PostDrawer /> */}
+      <PostDrawer />
     </>
   );
 };

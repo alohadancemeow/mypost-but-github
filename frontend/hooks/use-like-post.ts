@@ -1,9 +1,8 @@
 import { useCallback, useMemo } from "react";
-import { toast } from "react-hot-toast";
 
-import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
-import { like, unlike } from "@/actions/serverActions";
+import { useRouter } from "next/navigation";
+// import { like, unlike } from "@/actions/serverActions";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PostPopulated } from "../types";
@@ -118,10 +117,10 @@ const useLike = ({ post }: Props) => {
       router.refresh();
     } catch (error) {
       if (error instanceof AxiosError) {
-        toast.error(error.response?.data);
+        console.log(error.message);
       }
 
-      toast.error("Something went wrong");
+      console.log("Something went wrong");
     }
   }, [user, hasLiked, post.id]);
 

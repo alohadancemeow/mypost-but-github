@@ -28,7 +28,6 @@ const page = async (props: Props) => {
         <MainContent>
           <PostBanner />
           <Feed />
-          <PostDrawer />
         </MainContent>
       </div>
       <div className="col-span-1 hidden lg:flex">

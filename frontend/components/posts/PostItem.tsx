@@ -76,7 +76,7 @@ const PostItem = ({ post, isRanked, index }: Props) => {
           </div>
         </div>
       </div>
-      <div className="relative rounded-sm w-full h-fit bg-[#30363E] border border-[#444C56]">
+      <div className="rounded-sm w-full h-fit bg-[#30363E] border border-[#444C56]">
         <div className="flex flex-col mx-8 my-5">
           <div className="text-sm font-semibold mb-[2px]">{post.title}</div>
           <div>{document}</div>

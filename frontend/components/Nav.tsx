@@ -40,12 +40,12 @@ const Nav = (props: Props) => {
         </SignedIn>
         <SignedOut>
           <SignInButton mode="modal">
-            <button
+            <div
               className="w-[130px] h-[32px] rounded-sm"
-              onClick={() => {}}
+              // onClick={() => {}}
             >
               Join Us ✌️🎉
-            </button>
+            </div>
           </SignInButton>
         </SignedOut>
       </div>
