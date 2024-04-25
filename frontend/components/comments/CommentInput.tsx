@@ -30,8 +30,10 @@ const CommentInput = ({ post }: Props) => {
     [createComment, setCommentBody, commentBody]
   );
 
+  const disabledInput = isPending || !user?.id;
+
   return (
-    <div className="flex items-center justify-start my-3 mx-6">
+    <div className="flex items-center justify-start my-3 mx-6 ">
       <div>
         <Avatar className="w-[25px] h-[25px]">
           <AvatarImage
@@ -51,8 +53,8 @@ const CommentInput = ({ post }: Props) => {
         onKeyUp={(e) => {
           onCreateComment(e);
         }}
-        disabled={isPending}
-        className="bg-transparent h-9 w-full rounded-sm ml-3 border border-[#444C56] focus:border-0"
+        disabled={disabledInput}
+        className="bg-transparent h-9 w-full rounded-sm ml-4 border border-[#444C56] focus:border-0"
       />
     </div>
   );

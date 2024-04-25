@@ -4,7 +4,7 @@ import "./globals.css";
 import Providers from "@/providers";
 
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark, neobrutalism } from "@clerk/themes";
+import { dark } from "@clerk/themes";
 
 import Nav from "@/components/Nav";
 
@@ -23,7 +23,7 @@ const RootLayout = async ({ children }: Props) => {
   return (
     <ClerkProvider
       appearance={{
-        baseTheme: neobrutalism,
+        baseTheme: dark,
       }}
     >
       <html lang="en" suppressHydrationWarning>
