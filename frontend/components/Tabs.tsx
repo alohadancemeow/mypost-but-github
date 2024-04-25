@@ -5,15 +5,8 @@ import { Separator } from "@/components/ui/separator";
 
 const Tabs = () => {
   return (
-    <div
-      className="mt-8"
-      style={{
-        position: "sticky",
-        top: "0",
-        zIndex: "1",
-      }}
-    >
-      <div className="flex gap-5 my-4">
+    <div className="mt-8">
+      <div className="flex gap-5 my-4 ">
         <div className="flex items-center justify-center">
           <div className="text-sm font-semibold mr-2">Feed</div>
 

@@ -7,6 +7,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 
 import Nav from "@/components/Nav";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +28,7 @@ const RootLayout = async ({ children }: Props) => {
       }}
     >
       <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
+        <body className={cn(inter.className, "relative")}>
           <Providers>
             <Nav />
             {children}

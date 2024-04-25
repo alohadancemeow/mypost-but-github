@@ -32,23 +32,8 @@ const LeftContent = ({ users, posts }: Props) => {
   const isLoading = false;
 
   return (
-    <div
-      style={{
-        position: "-webkit-sticky",
-        borderRight: "1px solid #444C56",
-        // height: '100vh',
-        // padding: "40px 25px 25px",
-      }}
-      className="h-full w-full p-10"
-    >
-      <div
-      // className="p-3"
-
-      // sx={{
-      //   position: "sticky",
-      //   top: "20px",
-      // }}
-      >
+    <div className="h-full w-full p-10 ">
+      <div className="sticky top-10 z-50">
         <div className="flex items-center justify-start mb-3 gap-3">
           <Users size={20} />
           <div className="text-sm font-semibold">All post creators</div>

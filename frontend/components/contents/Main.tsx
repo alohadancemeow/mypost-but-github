@@ -7,15 +7,7 @@ type Props = {
 
 const MainContent = ({ children }: Props) => {
   return (
-    <div
-      style={{
-        position: "-webkit-sticky",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
+    <div className="flex h-full w-full flex-col justify-between">
       <div className="rounded-sm p-10">{children}</div>
       <Footer />
     </div>

@@ -6,12 +6,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ReactionButton from "./ReactionButton";
 import Popup from "../Popup";
 import Tag from "../Tag";
+import CommentSection from "../comments/CommentSection";
 
 import { PostPopulated } from "@/types";
 
 import { useFormatDate } from "@/hooks/use-format-date";
-import CommentSection from "../comments/CommentSection";
 import { useGetUser } from "@/hooks/use-get-user";
+import { useParseContent } from "@/hooks/use-parse-content";
 
 export type ReactionButtonType = {
   comment: boolean;
@@ -19,20 +20,40 @@ export type ReactionButtonType = {
 
 type Props = {
   post: PostPopulated;
+  isRanked?: boolean;
+  index?: number;
 };
 
-const PostItem = ({ post }: Props) => {
+const PostItem = ({ post, isRanked, index }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: false,
   });
 
-  // make a new parser
-  const parser = new DOMParser();
-  if (!post.body) return null;
-  const document = parser.parseFromString(post.body!, "text/html");
-
   const { dateFormate } = useFormatDate();
   const { data: user, isFetching } = useGetUser({ userId: post.userId });
+  const document = useParseContent(post.body!);
+
+  if (isRanked)
+    return (
+      <div
+        className="mt-2 items-center justify-start flex"
+        onClick={() => console.log("card clicked", post.id)}
+      >
+        <div>
+          <div className="h-[30px] bg-transparent items-center flex justify-center w-[30px] rounded-full border border-white">
+            <p className="text-[#006EED]">{index ? index + 1 : 1}</p>
+          </div>
+        </div>
+        <div className="flex flex-col ml-4 hover:opacity-70 cursor-pointer border rounded-sm w-full py-2 px-4 border-[#444C56]">
+          <div className="flex gap-1">
+            <p>{post.title}</p>
+          </div>
+          <div className="text-xs text-[#ADBAC7] line-clamp-2 text-ellipsis">
+            {document}
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div className="flex flex-col h-fit mt-10">
@@ -58,9 +79,7 @@ const PostItem = ({ post }: Props) => {
       <div className="relative rounded-sm w-full h-fit bg-[#30363E] border border-[#444C56]">
         <div className="flex flex-col mx-8 my-5">
           <div className="text-sm font-semibold mb-[2px]">{post.title}</div>
-
-          {document?.body?.firstChild?.textContent ?? ""}
-
+          <div>{document}</div>
           <div className="mt-7">
             <Tag text={post.tag ?? ""} />
           </div>
