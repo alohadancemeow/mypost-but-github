@@ -31,7 +31,7 @@ const PostItem = ({ post, isRanked, index }: Props) => {
 
   const { dateFormate } = useFormatDate();
   const { data: user, isFetching } = useGetUser({ userId: post.userId });
-  const document = useParseContent(post.body!);
+  const postBody  = useParseContent(post.body!);
 
   if (isRanked)
     return (
@@ -44,12 +44,12 @@ const PostItem = ({ post, isRanked, index }: Props) => {
             <p className="text-[#006EED]">{index ? index + 1 : 1}</p>
           </div>
         </div>
-        <div className="flex flex-col ml-4 hover:opacity-70 cursor-pointer border rounded-sm w-full py-2 px-4 border-[#444C56]">
+        <div className="flex flex-col ml-4 hover:opacity-70 cursor-pointer border rounded-sm min-w-[200px] w-full py-2 px-4 border-[#444C56]">
           <div className="flex gap-1">
             <p>{post.title}</p>
           </div>
           <div className="text-xs text-[#ADBAC7] line-clamp-2 text-ellipsis">
-            {document}
+            <div dangerouslySetInnerHTML={{ __html: postBody! }} />
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@ const PostItem = ({ post, isRanked, index }: Props) => {
             <div className="text-sm font-semibold mb-[2px]">{post.title}</div>
             <OptionMenu post={post} />
           </div>
-          <div>{document}</div>
+          <div dangerouslySetInnerHTML={{ __html: postBody! }} />
           <div className="mt-7">
             <Tag text={post.tag ?? ""} />
           </div>

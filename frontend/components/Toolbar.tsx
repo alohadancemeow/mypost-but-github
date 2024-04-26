@@ -44,6 +44,7 @@ const Toolbar = ({ title, preview, setTitle }: Props) => {
           onBlur={disableInput}
           onKeyDown={onKeyDown}
           value={title}
+          placeholder="Enter your title..."
           onChange={(e) => onInput(e.target.value)}
           className="text-5xl  bg-transparent font-bold break-words outline-none text-[#CFCFCF] resize-none"
         />

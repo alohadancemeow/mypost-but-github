@@ -3,12 +3,7 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerFooter,
-} from "@/components/ui/drawer";
+import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Button } from "./ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -26,6 +21,7 @@ import Toolbar from "./Toolbar";
 import { RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useCreatePost from "@/hooks/use-create-post";
+import { useGetUserList } from "@/hooks/use-get-user-list";
 
 const content = `<p class="bn-inline-content">Hello, <strong>world!</strong></p><p class="bn-inline-content"></p>`;
 
@@ -40,10 +36,11 @@ const PostDrawer = (props: Props) => {
   const router = useRouter();
   const { userId } = useAuth();
   const { createPost, isPending } = useCreatePost();
+  const { usernames, isFetching } = useGetUserList();
 
   const Editor = useMemo(
     () =>
-      dynamic(() => import("@/components/Editor"), {
+      dynamic(() => import("@/components/editor/Editor"), {
         ssr: false,
       }),
     []
@@ -61,21 +58,15 @@ const PostDrawer = (props: Props) => {
   const onCreatePost = async () => {
     if (!userId) return;
 
-    // const postData: z.infer<typeof PostValidator> = {
-    //   title: title,
-    //   body: html,
-    //   tag: selectedTag?.value ?? TagOptions[0]!.value,
-    // };
-
     try {
       const post = await createPost({
-        title,
+        title: title ?? "Untitled",
         body: html,
         tag: selectedTag?.value ?? TagOptions[0]!.value,
       });
 
       if (post) {
-        toast("Post has been created 🎉", {
+        toast.success("Post has been created 🎉", {
           // description: `${response.data}`,
           duration: 1500,
         });
@@ -88,7 +79,7 @@ const PostDrawer = (props: Props) => {
     } catch (error: any) {
       console.log(error, "error");
 
-      toast(`${error.message} ‼️`, {
+      toast.error(`${error.message} ‼️`, {
         // description: `${response.data}`,
         duration: 1500,
       });
@@ -103,40 +94,42 @@ const PostDrawer = (props: Props) => {
         <div className="mx-auto w-full h-full min-h-[850px] flex flex-col">
           <ScrollArea className="h-[600px]">
             <div className="h-full">
+              <div className="gap-3 flex justify-end my-4 mx-8">
+                <Button size="sm" variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  className="bg-blue-700 hover:bg-blue-900"
+                  disabled={isPending}
+                  type="submit"
+                  onClick={onCreatePost}
+                >
+                  {isPending ? (
+                    <>
+                      <RotateCcw className="mr-2 h-4 w-4 animate-spin" />
+                      <div>Create post</div>
+                    </>
+                  ) : (
+                    <div>Create post</div>
+                  )}
+                </Button>
+              </div>
               <div className="mx-auto md:max-w-3xl lg:max-w-4xl">
                 <Toolbar title={title} setTitle={setTitle} />
-                <Editor onChange={onChange} initialContent={content} editable />
+                <NewTag
+                  selectedTag={selectedTag}
+                  setSelectedtag={setSelectedtag}
+                />
+                <Editor
+                  onChange={onChange}
+                  initialContent={content}
+                  editable
+                  users={usernames}
+                />
               </div>
             </div>
           </ScrollArea>
-          <DrawerFooter>
-            <div className="flex gap-3 justify-center items-center">
-              <NewTag
-                selectedTag={selectedTag}
-                setSelectedtag={setSelectedtag}
-              />
-              <Button
-                className="bg-blue-700 hover:bg-blue-900"
-                disabled={isPending}
-                type="submit"
-                onClick={onCreatePost}
-              >
-                {isPending ? (
-                  <>
-                    <RotateCcw className="mr-2 h-4 w-4 animate-spin" />
-                    <div>Create post</div>
-                  </>
-                ) : (
-                  <div>Create post</div>
-                )}
-              </Button>
-              <DrawerClose asChild>
-                <Button variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-              </DrawerClose>
-            </div>
-          </DrawerFooter>
         </div>
       </DrawerContent>
     </Drawer>

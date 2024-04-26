@@ -81,6 +81,15 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+  ul {
+    @apply list-disc ms-5;
+  }
+  ol {
+    @apply list-decimal ms-5;
+  }
+  table {
+    @apply table-auto;
+  }
 }
 
 /* Clerk signin color */

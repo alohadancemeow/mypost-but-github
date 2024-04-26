@@ -28,11 +28,15 @@ const NewTag = ({ selectedTag, setSelectedtag }: Props) => {
   const [open, setOpen] = React.useState(false);
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-4 my-8 ms-[54px]">
       <p className="text-sm text-muted-foreground">Add tag</p>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-[150px] justify-start">
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-[150px] justify-start"
+          >
             {selectedTag ? <>{selectedTag.label}</> : <>+ Tag</>}
           </Button>
         </PopoverTrigger>

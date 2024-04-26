@@ -21,7 +21,7 @@ const Providers = ({ children }: Props) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <Toaster />
+      <Toaster position="bottom-left" />
       <ModalProvider />
     </QueryClientProvider>
   );

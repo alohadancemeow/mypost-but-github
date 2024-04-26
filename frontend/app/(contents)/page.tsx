@@ -1,5 +1,5 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import getPopularPosts from "@/actions/getPopularPosts";
+import getPopularPosts from "@/actions/get-popular-posts";
 
 import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";

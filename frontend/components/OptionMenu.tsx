@@ -30,18 +30,18 @@ const OptionMenu = ({ post }: Props) => {
 
   const onCopy = () => {
     navigator.clipboard.writeText(`${window.location.href}/post/${post.id}`);
-    toast("Link copied 🎉", {
+    toast.success("Link copied 🎉", {
       duration: 1500,
     });
   };
 
   const onDelete = async () => {
-    await deletePost(post.id).then((res) => {
-      if (res.status === 200) {
-        toast("Post deleted ‼️", {
-          duration: 1500,
-        });
-      }
+    toast.promise(async () => await deletePost(post.id), {
+      loading: "Deleting...",
+      success: () => {
+        return `Post deleted ‼️`;
+      },
+      error: "Error",
     });
   };
 
