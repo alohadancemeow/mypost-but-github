@@ -17,19 +17,19 @@ const page = async (props: Props) => {
 
   return (
     <>
-      <div className="col-span-1">
+      <div className="col-span-1 hidden sm:block xl:ms-8">
         <LeftContent
           users={JSON.parse(JSON.stringify(users.data))}
           posts={posts}
         />
       </div>
-      <div className="col-span-2">
+      <div className="col-span-3 sm:col-span-2">
         <MainContent>
           <PostBanner />
           <Feed />
         </MainContent>
       </div>
-      <div className="col-span-1 hidden lg:flex">
+      <div className="col-span-1 hidden lg:flex lg:mx-auto ">
         <RightContent popularPosts={popularPosts} />
       </div>
     </>

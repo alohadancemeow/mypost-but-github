@@ -19,18 +19,18 @@ const Nav = (props: Props) => {
   const router = useRouter();
 
   return (
-    <div className="h-[65px] border-b-[#444C56] border-b-[1px] flex justify-between items-center">
+    <div className="h-[65px] border-b-[#444C56] border-b-[1px] flex justify-between items-center px-10 xl:px-20">
       <div
-        className="text-lg text-white cursor-pointer flex items-center gap-2 pl-16"
+        className="text-lg text-white cursor-pointer flex items-center gap-2"
         onClick={() => router.push("/")}
       >
         <Rocket size={24} />
         <div className="text-lg font-semibold">Mypost but Github</div>
       </div>
 
-      <div className="flex items-center text-white gap-3 pr-16">
+      <div className="flex items-center text-white gap-3 ">
         {user && (
-          <div className="text-sm font-medium">
+          <div className="text-sm font-medium hidden sm:block">
             {`${user.fullName ?? user.primaryEmailAddress}`}
           </div>
         )}

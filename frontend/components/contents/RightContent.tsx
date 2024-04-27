@@ -12,7 +12,7 @@ const RightContent = ({ popularPosts: posts }: Props) => {
   if (!posts) return <>Loading...</>;
 
   return (
-    <div className="h-full w-full p-10">
+    <div className="h-full w-full p-10 lg:max-w-sm">
       <div className=" sticky top-10 z-50">
         <div className="flex items-center justify-start gap-3 font-semibold">
           <ArrowUpNarrowWide />
