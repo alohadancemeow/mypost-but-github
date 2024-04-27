@@ -7,9 +7,11 @@ import LoadMore from "./LoadMore";
 
 import { useGetPosts } from "@/hooks/use-get-posts";
 
-type Props = {};
+type Props = {
+  isProfile?: boolean;
+};
 
-const Feed = (props: Props) => {
+const Feed = ({ isProfile }: Props) => {
   const { posts, hasNextPage, isFetchingNextPage, loadNextPost, isFetching } =
     useGetPosts({
       limit: 3,
@@ -17,11 +19,9 @@ const Feed = (props: Props) => {
 
   return (
     <div>
-      <Tabs />
-
       {!posts.length && <Skeleton />}
       {posts.map((post) => (
-        <PostItem key={post.id} post={post} />
+        <PostItem key={post.id} post={post} isProfile={isProfile} />
       ))}
 
       <LoadMore

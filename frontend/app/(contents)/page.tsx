@@ -4,9 +4,10 @@ import getPopularPosts from "@/actions/get-popular-posts";
 import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";
 import RightContent from "@/components/contents/RightContent";
-import PostBanner from "@/components/PostBanner";
+import Banner from "@/components/Banner";
 import Feed from "@/components/Feed";
 import getPosts from "@/actions/get-posts";
+import Tabs from "@/components/Tabs";
 
 type Props = {};
 
@@ -25,7 +26,8 @@ const page = async (props: Props) => {
       </div>
       <div className="col-span-3 sm:col-span-2">
         <MainContent>
-          <PostBanner />
+          <Banner />
+          <Tabs firstTab="Feed" secondTab="Following" />
           <Feed />
         </MainContent>
       </div>

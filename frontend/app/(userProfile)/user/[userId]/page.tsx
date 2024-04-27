@@ -1,11 +1,40 @@
-import React from 'react'
+import getPosts from "@/actions/get-posts";
+import LeftContent from "@/components/contents/LeftContent";
+import MainContent from "@/components/contents/Main";
+import Feed from "@/components/Feed";
+import Banner from "@/components/Banner";
+import Tabs from "@/components/Tabs";
 
-type Props = {}
+import { clerkClient } from "@clerk/nextjs/server";
 
-const UserProfile = (props: Props) => {
+type Props = {
+  params: {
+    userId: string;
+  };
+};
+
+const UserProfile = async ({ params }: Props) => {
+  const posts = await getPosts();
+  const user = await clerkClient.users.getUser(params.userId);
+
   return (
-    <div className='h-full border-red-900'>UserProfile</div>
-  )
-}
+    <>
+      <div className="col-span-1 hidden sm:block xl:ms-8">
+        <LeftContent
+          posts={posts}
+          isProfile
+          user={JSON.parse(JSON.stringify(user))}
+        />
+      </div>
+      <div className="col-span-3 sm:col-span-2 lg:pl-10 lg:col-span-3 max-w-4xl">
+        <MainContent>
+          <Banner isProfile />
+          <Tabs firstTab="Posts" secondTab="Saved" isProfile />
+          <Feed isProfile />
+        </MainContent>
+      </div>
+    </>
+  );
+};
 
-export default UserProfile
+export default UserProfile;

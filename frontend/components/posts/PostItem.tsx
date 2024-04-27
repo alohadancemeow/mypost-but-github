@@ -22,16 +22,17 @@ type Props = {
   post: PostPopulated;
   isRanked?: boolean;
   index?: number;
+  isProfile?: boolean;
 };
 
-const PostItem = ({ post, isRanked, index }: Props) => {
+const PostItem = ({ post, isRanked, index, isProfile }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: false,
   });
 
   const { dateFormate } = useFormatDate();
   const { data: user, isFetching } = useGetUser({ userId: post.userId });
-  const postBody  = useParseContent(post.body!);
+  const postBody = useParseContent(post.body!);
 
   if (isRanked)
     return (
@@ -58,23 +59,32 @@ const PostItem = ({ post, isRanked, index }: Props) => {
   return (
     <div className="flex flex-col h-fit mt-10">
       <div className="flex items-center justify-start mx-1 mb-4">
-        <div>
-          <Avatar className="w-[30px] h-[30px]">
-            <AvatarImage
-              src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
-            />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-        </div>
-        <div className="flex ml-4">
-          <div>
-            {`${user?.firstName} ${user?.lastName}`}
-            <span className="text-[#ADBAC7] px-1">posted</span> {post.title}{" "}
-            <span className="text-[#ADBAC7] px-3">
-              {`· ${dateFormate(new Date(post.createdAt))}`}
-            </span>
-          </div>
-        </div>
+        {isProfile && (
+          <span className="text-[#ADBAC7]">
+            {dateFormate(new Date(post.createdAt))}
+          </span>
+        )}
+        {!isProfile && (
+          <>
+            <div>
+              <Avatar className="w-[30px] h-[30px]">
+                <AvatarImage
+                  src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
+                />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </div>
+            <div className="flex ml-4">
+              <div>
+                {`${user?.firstName} ${user?.lastName}`}
+                <span className="text-[#ADBAC7] px-1">posted</span> {post.title}{" "}
+                <span className="text-[#ADBAC7] px-3">
+                  {`· ${dateFormate(new Date(post.createdAt))}`}
+                </span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <div className="rounded-sm w-full h-fit bg-[#30363E] border border-[#444C56]">
         <div className="flex flex-col mx-8 my-5">
