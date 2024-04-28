@@ -37,7 +37,13 @@ const useDeletePost = () => {
     },
 
     onSuccess: (newData: any) => {
-      queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+      // queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.every((key) =>
+            ["posts-query", "saved-posts"].includes(String(key))
+          ),
+      });
     },
   });
 

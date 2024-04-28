@@ -1,13 +1,10 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { CommentInput } from "@/types";
 import { Post } from "@prisma/client";
 
 const useCreateComment = (post: Post) => {
-  const router = useRouter();
-
   // Get access to query client instance
   const queryClient = useQueryClient();
 
@@ -43,7 +40,13 @@ const useCreateComment = (post: Post) => {
     },
 
     onSuccess: (newData: any) => {
-      queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+      // queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.every((key) =>
+            ["posts-query", "saved-posts"].includes(String(key))
+          ),
+      });
     },
   });
 

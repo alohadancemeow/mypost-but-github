@@ -4,7 +4,7 @@ import axios, { AxiosError } from "axios";
 // import { like, unlike } from "@/actions/serverActions";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PostPopulated } from "../types";
+import { PostPopulated } from "@/types";
 import { useUser } from "@clerk/nextjs";
 
 type Props = {
@@ -52,7 +52,13 @@ const useSavePost = ({ post }: Props) => {
 
     // Always refetch after error or success:
     onSuccess: (newData: any) => {
-      queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+      // queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.every((key) =>
+            ["posts-query", "saved-posts"].includes(String(key))
+          ),
+      });
     },
   });
 
@@ -90,7 +96,13 @@ const useSavePost = ({ post }: Props) => {
 
     // Always refetch after error or success:
     onSuccess: (newData: any) => {
-      queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+      // queryClient.invalidateQueries({ queryKey: ["posts-query", newData?.id] });
+      queryClient.invalidateQueries({
+        predicate: (query) =>
+          query.queryKey.every((key) =>
+            ["posts-query", "saved-posts"].includes(String(key))
+          ),
+      });
     },
   });
 
@@ -130,3 +142,8 @@ const useSavePost = ({ post }: Props) => {
 };
 
 export default useSavePost;
+
+/**
+ * issue: invalidate multiple queries?
+ * https://www.reddit.com/r/reactjs/comments/17u2nll/tanstack_react_query_invalidatequeries/
+ */

@@ -3,18 +3,36 @@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
+import { cn } from "@/lib/utils";
+import { useAuth } from "@clerk/nextjs";
+import useSavedTab from "@/hooks/use-saved-tab";
+
 type Props = {
   firstTab: string;
-  secondTab: string;
+  secondTab?: string;
   isProfile?: boolean;
+  owner?: string;
 };
 
-const Tabs = ({ firstTab, secondTab, isProfile }: Props) => {
+const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
+  const { userId } = useAuth();
+  const { isSelected, onCancel, onSelect } = useSavedTab();
+
   return (
     <div className="mt-8">
-      <div className="flex gap-5 my-4 ">
-        <div className="flex items-center justify-center">
-          <div className="text-sm font-semibold mr-2">{firstTab}</div>
+      <div className="flex gap-5 my-4">
+        <div
+          className="flex items-center justify-center cursor-pointer"
+          onClick={onCancel}
+        >
+          <div
+            className={cn(
+              "text-sm font-semibold mr-2",
+              isSelected && "text-gray-500"
+            )}
+          >
+            {firstTab}
+          </div>
 
           {!isProfile && (
             <Badge
@@ -25,19 +43,31 @@ const Tabs = ({ firstTab, secondTab, isProfile }: Props) => {
             </Badge>
           )}
         </div>
-        <div>
-          <div className="flex items-center justify-center">
-            <div className="text-sm font-semibold mr-2">{secondTab}</div>
-            {isProfile && (
-              <Badge
-                variant="destructive"
-                className=" bg-[#006EED] hover:bg-[#0b65cc]"
+        {secondTab && owner === userId && (
+          <div>
+            <div
+              className="flex items-center justify-center cursor-pointer"
+              onClick={onSelect}
+            >
+              <div
+                className={cn(
+                  "text-sm font-semibold mr-2",
+                  !isSelected && "text-gray-500"
+                )}
               >
-                For me
-              </Badge>
-            )}
+                {secondTab}
+              </div>
+              {isProfile && (
+                <Badge
+                  variant="destructive"
+                  className=" bg-[#006EED] hover:bg-[#0b65cc]"
+                >
+                  For me
+                </Badge>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <Separator className="bg-[#444C56]" />
     </div>

@@ -17,6 +17,7 @@ import { useAuth } from "@clerk/nextjs";
 import { Post } from "@prisma/client";
 import { toast } from "sonner";
 import useDeletePost from "@/hooks/use-delete-post";
+import { useRouter } from "next/navigation";
 
 type Props = {
   post: Post;
@@ -25,6 +26,7 @@ type Props = {
 const OptionMenu = ({ post }: Props) => {
   const optionModal = useOptionModal();
   const { userId } = useAuth();
+  const router = useRouter();
 
   const { deletePost, isPending } = useDeletePost();
 
@@ -39,6 +41,7 @@ const OptionMenu = ({ post }: Props) => {
     toast.promise(async () => await deletePost(post.id), {
       loading: "Deleting...",
       success: () => {
+        router.refresh();
         return `Post deleted ‼️`;
       },
       error: "Error",

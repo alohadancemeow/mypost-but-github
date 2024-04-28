@@ -27,7 +27,7 @@ const page = async (props: Props) => {
       <div className="col-span-3 sm:col-span-2">
         <MainContent>
           <Banner />
-          <Tabs firstTab="Feed" secondTab="Following" />
+          <Tabs firstTab="Feed" />
           <Feed />
         </MainContent>
       </div>

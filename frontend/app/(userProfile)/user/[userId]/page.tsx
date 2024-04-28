@@ -29,8 +29,13 @@ const UserProfile = async ({ params }: Props) => {
       <div className="col-span-3 sm:col-span-2 lg:pl-10 lg:col-span-3 max-w-4xl">
         <MainContent>
           <Banner isProfile />
-          <Tabs firstTab="Posts" secondTab="Saved" isProfile />
-          <Feed isProfile />
+          <Tabs
+            firstTab="Posts"
+            secondTab="Saved"
+            isProfile
+            owner={params.userId}
+          />
+          <Feed isProfile userId={params.userId} />
         </MainContent>
       </div>
     </>
