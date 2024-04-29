@@ -12,6 +12,7 @@ import { useFormatDate } from "@/hooks/use-format-date";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Post } from "@prisma/client";
 import { Separator } from "../ui/separator";
+import useGetSavedCount from "@/hooks/use-get-saved-count";
 
 type Props = {
   user?: User;
@@ -26,6 +27,7 @@ const LeftContent = ({ users, posts, isProfile, user }: Props) => {
   const router = useRouter();
   const { dateFormate } = useFormatDate();
   const { userPostCount } = usePostCount({ posts });
+  const { savedCount } = useGetSavedCount();
 
   const filteredUser =
     users?.filter((user) =>
@@ -63,7 +65,7 @@ const LeftContent = ({ users, posts, isProfile, user }: Props) => {
                 <div className="text-gray-500">Posts</div>
                 <span>·</span>
                 <BookmarkCheck size={16} />
-                <div>{userPostCount[user?.id!] || 0}</div>
+                <div>{savedCount[user?.id!] || 0}</div>
                 <div className="text-gray-500">Saved</div>
               </div>
             </div>

@@ -3,23 +3,26 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+const schema = z.object({
+  limit: z.string(),
+  page: z.string(),
+});
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
 
   // console.log("url", url);
 
   try {
-    const { limit, page } = z
-      .object({
-        limit: z.string().optional(),
-        page: z.string().optional(),
-      })
-      .parse({
-        limit: url.searchParams.get("limit"),
-        page: url.searchParams.get("page"),
-      });
+    // const { limit, page } = schema.parse({
+    //   limit: url.searchParams.get("limit"),
+    //   page: url.searchParams.get("page"),
+    // });
 
     // let whereClause = {};
+
+    const limit = url.searchParams.get("limit");
+    const page = url.searchParams.get("page");
 
     let posts;
 
@@ -37,12 +40,14 @@ export async function GET(request: Request) {
           },
         },
       });
-    } else {
+    }
+
+    if (limit && page) {
       posts = await prisma.post.findMany({
         take: parseInt(limit),
         // cursor: cursor,
         // cursor: cursor ? { id: cursor } : undefined,
-        skip: (parseInt(page) - 1) * parseInt(limit),
+        skip: (parseInt(page) - 1) * parseInt(limit!),
         orderBy: {
           createdAt: "desc",
         },

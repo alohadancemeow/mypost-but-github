@@ -56,7 +56,7 @@ const useSavePost = ({ post }: Props) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey.every((key) =>
-            ["posts-query", "saved-posts"].includes(String(key))
+            ["posts-query", "saved-posts", "saved-count"].includes(String(key))
           ),
       });
     },
@@ -100,7 +100,7 @@ const useSavePost = ({ post }: Props) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey.every((key) =>
-            ["posts-query", "saved-posts"].includes(String(key))
+            ["posts-query", "saved-posts", "saved-count"].includes(String(key))
           ),
       });
     },
