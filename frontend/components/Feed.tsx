@@ -1,6 +1,5 @@
 "use client";
 
-import Tabs from "./Tabs";
 import Skeleton from "./Skeleton";
 import PostItem from "./posts/PostItem";
 import LoadMore from "./LoadMore";

@@ -21,9 +21,10 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   post: Post;
+  isPost?: boolean;
 };
 
-const OptionMenu = ({ post }: Props) => {
+const OptionMenu = ({ post, isPost }: Props) => {
   const optionModal = useOptionModal();
   const { userId } = useAuth();
   const router = useRouter();
@@ -31,7 +32,11 @@ const OptionMenu = ({ post }: Props) => {
   const { deletePost, isPending } = useDeletePost();
 
   const onCopy = () => {
-    navigator.clipboard.writeText(`${window.location.href}/post/${post.id}`);
+    const text = isPost
+      ? `${window.location.href}`
+      : `${window.location.href}post/${post.id}`;
+
+    navigator.clipboard.writeText(text);
     toast.success("Link copied 🎉", {
       duration: 1500,
     });
@@ -52,7 +57,7 @@ const OptionMenu = ({ post }: Props) => {
     <DropdownMenu onOpenChange={optionModal.onClose}>
       <DropdownMenuTrigger asChild>
         <EllipsisVertical
-          className="cursor-pointer"
+          className="cursor-pointer z-10"
           size={15}
           onClick={() => optionModal.onOpen()}
         />

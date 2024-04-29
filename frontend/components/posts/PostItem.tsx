@@ -13,6 +13,8 @@ import { PostPopulated } from "@/types";
 import { useFormatDate } from "@/hooks/use-format-date";
 import { useGetUser } from "@/hooks/use-get-user";
 import { useParseContent } from "@/hooks/use-parse-content";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export type ReactionButtonType = {
   comment: boolean;
@@ -23,13 +25,15 @@ type Props = {
   isRanked?: boolean;
   index?: number;
   isProfile?: boolean;
+  isPost?: boolean;
 };
 
-const PostItem = ({ post, isRanked, index, isProfile }: Props) => {
+const PostItem = ({ post, isRanked, index, isProfile, isPost }: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: false,
   });
 
+  const router = useRouter();
   const { dateFormate } = useFormatDate();
   const { data: user, isFetching } = useGetUser({ userId: post.userId });
   const postBody = useParseContent(post.body!);
@@ -38,7 +42,7 @@ const PostItem = ({ post, isRanked, index, isProfile }: Props) => {
     return (
       <div
         className="mt-2 items-center justify-start flex"
-        onClick={() => console.log("card clicked", post.id)}
+        onClick={() => router.push(`/post/${post.id}`)}
       >
         <div>
           <div className="h-[30px] bg-transparent items-center flex justify-center w-[30px] rounded-full border border-white">
@@ -88,13 +92,18 @@ const PostItem = ({ post, isRanked, index, isProfile }: Props) => {
       </div>
       <div className="rounded-sm w-full h-fit bg-[#30363E] border border-[#444C56]">
         <div className="flex flex-col mx-8 my-5">
-          <div className="flex justify-between items-center">
-            <div className="text-sm font-semibold mb-[2px]">{post.title}</div>
-            <OptionMenu post={post} />
-          </div>
-          <div dangerouslySetInnerHTML={{ __html: postBody! }} />
-          <div className="mt-7">
-            <Tag text={post.tag ?? ""} />
+          <div
+            className={cn(!isPost && "cursor-pointer")}
+            onClick={() => (!isPost ? router.push(`/post/${post.id}`) : null)}
+          >
+            <div className="flex justify-between items-center">
+              <div className="text-sm font-semibold mb-[2px]">{post.title}</div>
+              <OptionMenu post={post} isPost={isPost} />
+            </div>
+            <div dangerouslySetInnerHTML={{ __html: postBody! }} />
+            <div className="mt-7">
+              <Tag text={post.tag ?? ""} />
+            </div>
           </div>
           <ReactionButton
             selected={selected}
