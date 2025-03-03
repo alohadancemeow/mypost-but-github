@@ -1,3 +1,5 @@
+![mypost-but-github](https://socialify.git.ci/alohadancemeow/mypost-but-github/image?forks=1&issues=1&language=1&name=1&owner=1&pulls=1&stargazers=1&theme=Light)
+
 # mypost-but-github ✌️
 A mini social media inspired by GitHub + Pantip, For learning frontend+backend 🚀
 
