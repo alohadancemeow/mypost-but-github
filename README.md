@@ -31,3 +31,7 @@ NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
 
 ### ✏️ Outline:
 ![image](/frontend/public/post-home-02.png)
+
+🔗 Figma: https://www.figma.com/community/file/1204382715237931183/mypost-but-github
+
+
