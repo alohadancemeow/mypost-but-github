@@ -41,7 +41,7 @@ const Nav = (props: Props) => {
         <SignedOut>
           <SignInButton mode="modal">
             <div
-              className="w-[130px] h-[32px] rounded-sm"
+              className="w-[130px] h-[32px] rounded-sm cursor-pointer"
               // onClick={() => {}}
             >
               Join Us ✌️🎉
