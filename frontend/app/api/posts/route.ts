@@ -65,7 +65,7 @@ export async function GET(request: Request) {
       });
     }
 
-    revalidateTag("posts");
+    // revalidateTag("posts");
     revalidatePath("/");
 
     return NextResponse.json(posts);

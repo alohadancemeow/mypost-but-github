@@ -1,8 +1,10 @@
+"use client";
+
 import axios from "axios";
 import { useCallback } from "react";
 import { PostPopulated } from "@/types";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import useSavedTab from "./use-saved-tab";
+import useSavedTab from "../store/use-saved-tab";
 
 type Props = {
   limit?: number;

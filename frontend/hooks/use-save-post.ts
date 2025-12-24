@@ -1,4 +1,6 @@
-import { useCallback, useMemo } from "react";
+"use client";
+
+import { useCallback } from "react";
 import { useRouter } from "next/navigation";
 import axios, { AxiosError } from "axios";
 // import { like, unlike } from "@/actions/serverActions";
@@ -13,10 +15,13 @@ type Props = {
 
 const useSavePost = ({ post }: Props) => {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
 
   // Get access to query client instance
   const queryClient = useQueryClient();
+
+  // Check if user is loaded
+  if (!isLoaded) return { isLoading: true };
 
   // save
   const { mutate: saveMutation } = useMutation({
@@ -106,17 +111,17 @@ const useSavePost = ({ post }: Props) => {
     },
   });
 
-  const hasSaved = useMemo(() => {
+  const hasSaved = () => {
     const list = post?.saveIds || [];
 
     return list.includes(user?.id!);
-  }, [post, user]);
+  };
 
   const toggleSave = useCallback(async () => {
     try {
       let request: () => void;
 
-      if (hasSaved) {
+      if (hasSaved()) {
         request = () => unsaveMutation(post);
       } else {
         request = () => saveMutation(post);

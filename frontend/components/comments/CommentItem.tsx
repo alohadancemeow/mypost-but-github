@@ -1,7 +1,6 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { useFormatDate } from "@/hooks/use-format-date";
 import { Comment } from "@prisma/client";
 import { useGetUser } from "@/hooks/use-get-user";
@@ -16,12 +15,12 @@ const CommentItem = ({ comment }: Props) => {
 
   return (
     <div className="mx-6">
-      <div className="w-[2px] h-[12px] bg-[#444C56] ms-24" />
+      <div className="w-0.5 h-3 bg-[#444C56] ms-24" />
       <div className="flex items-center justify-start h-fit">
         <div>
-          <Avatar className="w-[25px] h-[25px]">
+          <Avatar className="w-6.25 h-6.25">
             <AvatarImage
-              src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
+              src={user?.imageUrl ?? "https://github.com/shadcn.png"}
             />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
@@ -31,7 +30,7 @@ const CommentItem = ({ comment }: Props) => {
             <div className="">{`${user?.firstName} ${user?.lastName}`}</div>
             <span>· {dateFormate(new Date(comment.createdAt))}</span>
           </div>
-          <p className="text-xs  break-words break-all">{comment.body}</p>
+          <p className="text-xs wrap-break-word break-all">{comment.body}</p>
         </div>
       </div>
     </div>

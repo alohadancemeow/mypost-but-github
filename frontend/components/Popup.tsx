@@ -2,8 +2,8 @@
 
 import { ReactionButtonType } from "./posts/PostItem";
 
-import { FacebookShareButton, TwitterShareButton } from "react-share";
-import { siteMetadata } from "@/site/siteMetadata";
+// import { FacebookShareButton, TwitterShareButton } from "react-share";
+// import { siteMetadata } from "@/site/siteMetadata";
 
 type Props = {
   selected: ReactionButtonType;

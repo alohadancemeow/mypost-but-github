@@ -22,7 +22,7 @@ export const createPost = async (postData: {
   tag: string;
   body: string;
 }) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   try {
     if (!userId) {
@@ -40,7 +40,7 @@ export const createPost = async (postData: {
       },
     });
 
-    revalidateTag("posts");
+    // revalidateTag("posts");
     revalidatePath("/");
 
     return post;
@@ -57,7 +57,7 @@ export const createPost = async (postData: {
 
 // like post
 export const like = async (postId: string) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   try {
     if (!userId) {
@@ -96,7 +96,7 @@ export const like = async (postId: string) => {
 
 // unlike
 export const unlike = async (postId: string) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   try {
     if (!userId) {
@@ -135,7 +135,7 @@ export const unlike = async (postId: string) => {
 
 // Save post
 export const save = async (postId: string) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   try {
     if (!userId) {
@@ -176,7 +176,7 @@ export const save = async (postId: string) => {
 
 // unsave
 export const unsave = async (postId: string) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   try {
     if (!userId) {

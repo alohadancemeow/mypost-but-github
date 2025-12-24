@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useMemo } from "react";
 
 import axios, { AxiosError } from "axios";
@@ -14,10 +16,13 @@ type Props = {
 
 const useLike = ({ post }: Props) => {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
 
   // Get access to query client instance
   const queryClient = useQueryClient();
+
+  // Check if user is loaded
+  if (!isLoaded) return { isLoading: true };
 
   // like
   const { mutate: likeMutation } = useMutation({
@@ -107,17 +112,16 @@ const useLike = ({ post }: Props) => {
     },
   });
 
-  const hasLiked = useMemo(() => {
+  const hasLiked = () => {
     const list = post?.likedIds || [];
-
     return list.includes(user?.id!);
-  }, [post, user]);
+  }
 
   const toggleLike = useCallback(async () => {
     try {
       let request: () => void;
 
-      if (hasLiked) {
+      if (hasLiked()) {
         request = () => unlikeMutation(post);
       } else {
         request = () => likeMutation(post);

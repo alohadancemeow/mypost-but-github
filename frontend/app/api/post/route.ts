@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function POST(request: Request) {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   try {
     if (!userId) {
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       },
     });
 
-    revalidateTag("posts");
+    // revalidateTag("posts");
     revalidatePath("/");
 
     return NextResponse.json(post);

@@ -8,7 +8,7 @@ export async function DELETE(
   request: Request,
   { params }: { params: { postId: string } }
 ) {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   try {
     if (!userId) {
@@ -35,7 +35,7 @@ export async function DELETE(
       },
     });
 
-    revalidateTag("posts");
+    // revalidateTag("posts");
     revalidatePath("/");
 
     return NextResponse.json(deletedPost);

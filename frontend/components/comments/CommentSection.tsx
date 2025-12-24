@@ -1,10 +1,10 @@
 "use client";
 
 import CommentItem from "./CommentItem";
-import CommentInput from "./CommentInput";
 import { Post } from "@prisma/client";
 
 import { PostPopulated } from "@/types";
+import CommentInput from "./CommentInput";
 
 type Props = {
   post: PostPopulated;

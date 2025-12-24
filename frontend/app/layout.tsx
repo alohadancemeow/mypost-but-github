@@ -1,13 +1,12 @@
 import { Inter } from "next/font/google";
-
 import "./globals.css";
+
 import Providers from "@/providers";
+import Nav from "@/components/Nav";
+import { cn } from "@/lib/utils";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-
-import Nav from "@/components/Nav";
-import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,23 +19,19 @@ type Props = {
   children: React.ReactNode;
 };
 
-const RootLayout = async ({ children }: Props) => {
+export default function RootLayout({ children }: Props) {
   return (
-    <ClerkProvider
-      appearance={{
-        baseTheme: dark,
-      }}
-    >
-      <html lang="en" suppressHydrationWarning>
-        <body className={cn(inter.className, "relative")}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn(inter.className, "relative")}>
+        <ClerkProvider
+          appearance={{ baseTheme: dark }}
+        >
           <Providers>
             <Nav />
             {children}
           </Providers>
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
-};
-
-export default RootLayout;
+}

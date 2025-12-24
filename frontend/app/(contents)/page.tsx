@@ -1,6 +1,5 @@
-import { clerkClient } from "@clerk/nextjs/server";
 import getPopularPosts from "@/actions/get-popular-posts";
-
+import { clerkClient } from '@clerk/nextjs/server';
 import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";
 import RightContent from "@/components/contents/RightContent";
@@ -12,7 +11,8 @@ import Tabs from "@/components/Tabs";
 type Props = {};
 
 const page = async (props: Props) => {
-  const users = await clerkClient.users.getUserList();
+  const client = await clerkClient();
+  const users = await client.users.getUserList();
   const popularPosts = await getPopularPosts();
   const posts = await getPosts();
 

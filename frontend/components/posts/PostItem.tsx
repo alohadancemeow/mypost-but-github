@@ -45,11 +45,11 @@ const PostItem = ({ post, isRanked, index, isProfile, isPost }: Props) => {
         onClick={() => router.push(`/post/${post.id}`)}
       >
         <div>
-          <div className="h-[30px] bg-transparent items-center flex justify-center w-[30px] rounded-full border border-white">
+          <div className="h-7.5 bg-transparent items-center flex justify-center w-7.5 rounded-full border border-white">
             <p className="text-[#006EED]">{index ? index + 1 : 1}</p>
           </div>
         </div>
-        <div className="flex flex-col ml-4 hover:opacity-70 cursor-pointer border rounded-sm min-w-[200px] w-full py-2 px-4 border-[#444C56]">
+        <div className="flex flex-col ml-4 hover:opacity-70 cursor-pointer border rounded-sm min-w-50 w-full py-2 px-4 border-[#444C56]">
           <div className="flex gap-1">
             <p>{post.title}</p>
           </div>
@@ -71,9 +71,9 @@ const PostItem = ({ post, isRanked, index, isProfile, isPost }: Props) => {
         {!isProfile && (
           <>
             <div>
-              <Avatar className="w-[30px] h-[30px]">
+              <Avatar className="w-7.5 h-7.5">
                 <AvatarImage
-                  src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
+                  src={`${user?.imageUrl}` || "https://github.com/shadcn.png"}
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
@@ -97,7 +97,7 @@ const PostItem = ({ post, isRanked, index, isProfile, isPost }: Props) => {
             onClick={() => (!isPost ? router.push(`/post/${post.id}`) : null)}
           >
             <div className="flex justify-between items-center">
-              <div className="text-sm font-semibold mb-[2px]">{post.title}</div>
+              <div className="text-sm font-semibold mb-0.5">{post.title}</div>
               <OptionMenu post={post} isPost={isPost} />
             </div>
             <div dangerouslySetInnerHTML={{ __html: postBody! }} />

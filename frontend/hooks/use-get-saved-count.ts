@@ -1,8 +1,10 @@
+"use client";
+
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { PostPopulated } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import useSavedTab from "./use-saved-tab";
+import useSavedTab from "../store/use-saved-tab";
 
 const fetchPost = async () => {
   const res = await axios.get(`/api/posts`);

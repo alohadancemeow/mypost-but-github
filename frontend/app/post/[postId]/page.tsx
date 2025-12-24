@@ -16,7 +16,8 @@ type Props = {
 };
 
 const PostPage = async ({ params }: Props) => {
-  const users = await clerkClient.users.getUserList();
+  const client = await clerkClient();
+  const users = await client.users.getUserList();
   const popularPosts = await getPopularPosts();
   const posts = await getPosts();
   const post = (await getPostById(params.postId)) as PostPopulated;

@@ -5,7 +5,8 @@ export async function GET(
   request: Request,
   { params }: { params: { userId: string } }
 ) {
-  const user = await clerkClient.users.getUser(params.userId);
+  const client = await clerkClient();
+  const user = await client.users.getUser(params.userId);
 
   return NextResponse.json(user);
 }

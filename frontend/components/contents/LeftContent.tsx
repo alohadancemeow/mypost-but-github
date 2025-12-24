@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-import { User } from "@clerk/nextjs/dist/types/server";
 import { useRouter } from "next/navigation";
 import { BookmarkCheck, LibraryBig, Users } from "lucide-react";
 
@@ -15,10 +14,19 @@ import { Separator } from "../ui/separator";
 import useGetSavedCount from "@/hooks/use-get-saved-count";
 
 type Props = {
-  user?: User;
-  users?: User[] | null;
+  user?: ClerkUser;
+  users?: ClerkUser[] | null;
   posts: Post[];
   isProfile?: boolean;
+};
+
+type ClerkUser = {
+  id: string;
+  firstName: string | null;
+  lastName: string | null;
+  imageUrl: string;
+  emailAddresses: Array<{ emailAddress: string }>;
+  createdAt: string | number;
 };
 
 const LeftContent = ({ users, posts, isProfile, user }: Props) => {
@@ -45,9 +53,9 @@ const LeftContent = ({ users, posts, isProfile, user }: Props) => {
         {isProfile && (
           <div className="flex flex-col gap-5">
             <div>
-              <Avatar className="w-[290px] h-[290px]">
+              <Avatar className="w-72.5 h-72.5">
                 <AvatarImage
-                  src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
+                  src={user?.imageUrl || "https://github.com/shadcn.png"}
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>

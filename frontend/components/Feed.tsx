@@ -5,7 +5,7 @@ import PostItem from "./posts/PostItem";
 import LoadMore from "./LoadMore";
 
 import { useGetPosts } from "@/hooks/use-get-posts";
-import useSavedTab from "@/hooks/use-saved-tab";
+import useSavedTab from "@/store/use-saved-tab";
 
 type Props = {
   isProfile?: boolean;

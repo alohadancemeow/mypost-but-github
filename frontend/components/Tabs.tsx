@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
-import useSavedTab from "@/hooks/use-saved-tab";
+import useSavedTab from "@/store/use-saved-tab";
 
 type Props = {
   firstTab: string;
@@ -15,8 +15,10 @@ type Props = {
 };
 
 const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
-  const { userId } = useAuth();
+  const { userId, isLoaded } = useAuth();
   const { isSelected, onCancel, onSelect } = useSavedTab();
+
+  if (!isLoaded) return null;
 
   return (
     <div className="mt-8">

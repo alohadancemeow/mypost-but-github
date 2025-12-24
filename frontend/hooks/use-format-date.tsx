@@ -1,3 +1,5 @@
+"use client";
+
 import { formatRelative } from "date-fns";
 import { enUS } from "date-fns/locale/en-US";
 

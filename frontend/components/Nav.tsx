@@ -15,11 +15,13 @@ import { useRouter } from "next/navigation";
 type Props = {};
 
 const Nav = (props: Props) => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const router = useRouter();
 
+  if (!isLoaded) return null;
+
   return (
-    <div className="h-[65px] border-b-[#444C56] border-b-[1px] flex justify-between items-center px-10 xl:px-20">
+    <div className="h-16.25 border-b-[#444C56] border-b flex justify-between items-center px-10 xl:px-20">
       <div
         className="text-lg text-white cursor-pointer flex items-center gap-2"
         onClick={() => router.push("/")}
@@ -41,8 +43,8 @@ const Nav = (props: Props) => {
         <SignedOut>
           <SignInButton mode="modal">
             <div
-              className="w-[130px] h-[32px] rounded-sm"
-              // onClick={() => {}}
+              className="w-32.5 h-8 rounded-sm"
+            // onClick={() => {}}
             >
               Join Us ✌️🎉
             </div>

@@ -15,7 +15,9 @@ type Props = {
 
 const UserProfile = async ({ params }: Props) => {
   const posts = await getPosts();
-  const user = await clerkClient.users.getUser(params.userId);
+
+  const client = await clerkClient();
+  const user = await client.users.getUser(params.userId);
 
   return (
     <>

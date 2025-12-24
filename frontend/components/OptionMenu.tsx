@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import useOptionModal from "@/hooks/use-option-modal";
+import useOptionModal from "@/store/use-option-modal";
 import { useAuth } from "@clerk/nextjs";
 import { Post } from "@prisma/client";
 import { toast } from "sonner";
@@ -26,10 +26,12 @@ type Props = {
 
 const OptionMenu = ({ post, isPost }: Props) => {
   const optionModal = useOptionModal();
-  const { userId } = useAuth();
+  const { userId, isLoaded } = useAuth();
   const router = useRouter();
 
   const { deletePost, isPending } = useDeletePost();
+
+  if (!isLoaded) return null;
 
   const onCopy = () => {
     const text = isPost

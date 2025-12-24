@@ -17,7 +17,10 @@ const CommentInput = ({ post }: Props) => {
   const [commentBody, setCommentBody] = useState<string>("");
 
   const { createComment, isPending } = useCreateComment(post);
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
+
+  // Check if user is loaded
+  if (!isLoaded) return { isLoading: true };
 
   // # Handle create comment
   const onCreateComment = useCallback(
@@ -35,9 +38,9 @@ const CommentInput = ({ post }: Props) => {
   return (
     <div className="flex items-center justify-start my-3 mx-6 ">
       <div>
-        <Avatar className="w-[25px] h-[25px]">
+        <Avatar className="w-6.25 h-6.25">
           <AvatarImage
-            src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
+            src={`${user?.imageUrl}` || "https://github.com/shadcn.png"}
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
