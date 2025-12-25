@@ -1,17 +1,13 @@
 'use client';
 
-import React from "react";
-import Footer from "../Footer";
-
 type Props = {
   children: React.ReactNode;
 };
 
 const MainContent = ({ children }: Props) => {
   return (
-    <div className="flex h-full w-full flex-col justify-between">
-      <div className="rounded-sm p-10">{children}</div>
-      <Footer />
+    <div className="h-full w-full px-5 md:px-0">
+      <div className="rounded-sm">{children}</div>
     </div>
   );
 };

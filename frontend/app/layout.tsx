@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,8 +28,11 @@ export default function RootLayout({ children }: Props) {
           appearance={{ baseTheme: dark }}
         >
           <Providers>
-            <Nav />
-            {children}
+            <div className="max-w-4xl mx-auto">
+              <Nav />
+              {children}
+              <Footer />
+            </div>
           </Providers>
         </ClerkProvider>
       </body>
