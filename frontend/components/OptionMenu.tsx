@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, EllipsisVertical, Trash2 } from "lucide-react";
+import { Copy, EllipsisVertical, MoreHorizontal, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,7 +58,7 @@ const OptionMenu = ({ post, isPost }: Props) => {
   return (
     <DropdownMenu onOpenChange={optionModal.onClose}>
       <DropdownMenuTrigger asChild>
-        <EllipsisVertical
+        <MoreHorizontal
           className="cursor-pointer z-10"
           size={15}
           onClick={() => optionModal.onOpen()}

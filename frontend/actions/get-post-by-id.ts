@@ -2,7 +2,7 @@ import { db as prisma } from "@/lib/prismadb";
 
 const getPostById = async (postId: string) => {
   try {
-    const post = await prisma.post.findUnique({
+    const post = await prisma.post.findFirst({
       where: {
         id: postId,
       },

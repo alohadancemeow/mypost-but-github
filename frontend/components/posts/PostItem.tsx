@@ -15,6 +15,7 @@ import { useGetUser } from "@/hooks/use-get-user";
 import { useParseContent } from "@/hooks/use-parse-content";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
 
 export type ReactionButtonType = {
   comment: boolean;
@@ -26,12 +27,24 @@ type Props = {
   index?: number;
   isProfile?: boolean;
   isPost?: boolean;
+  isSuggestion?: boolean;
+  className?: string;
 };
 
-const PostItem = ({ post, isRanked, index, isProfile, isPost }: Props) => {
+const PostItem = ({
+  post,
+  isRanked,
+  index,
+  isProfile,
+  isPost,
+  isSuggestion,
+  className,
+}: Props) => {
   const [selected, setSelected] = useState<ReactionButtonType>({
-    comment: false,
+    comment: Boolean(!isSuggestion && isPost),
   });
+
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const router = useRouter();
   const { dateFormate } = useFormatDate();
@@ -61,55 +74,97 @@ const PostItem = ({ post, isRanked, index, isProfile, isPost }: Props) => {
     );
 
   return (
-    <div className="flex flex-col h-fit mt-10">
+    <div className={cn("flex flex-col h-fit mt-10", className)}>
       <div className="flex items-center justify-start mx-1 mb-4">
         {isProfile && (
           <span className="text-[#ADBAC7]">
             {dateFormate(new Date(post.createdAt))}
           </span>
         )}
-        {!isProfile && (
-          <>
-            <div>
-              <Avatar className="w-7.5 h-7.5">
-                <AvatarImage
-                  src={`${user?.imageUrl}` || "https://github.com/shadcn.png"}
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="flex ml-4">
+        {!isProfile && !isSuggestion && (
+          <div className="flex justify-between w-full">
+            <div className="flex items-center gap-2">
               <div>
-                {`${user?.firstName} ${user?.lastName}`}
-                <span className="text-[#ADBAC7] px-1">posted</span> {post.title}{" "}
-                <span className="text-[#ADBAC7] px-3">
-                  {`· ${dateFormate(new Date(post.createdAt))}`}
-                </span>
+                <Avatar className="w-7.5 h-7.5">
+                  <AvatarImage
+                    src={`${user?.imageUrl}` || "https://github.com/shadcn.png"}
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="flex flex-col">
+                <div className="text-sm">
+                  {`${user?.firstName} ${user?.lastName}`}
+                  <span className="text-[#ADBAC7] px-1">posted</span> {post.title}{" "}
+                </div>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <span>{formatDistanceToNow(new Date(post.createdAt))} ago</span>
+                </div>
+              </div>
+
+              {/* follow button */}
+              <div className="self-start text-sm text-muted-foreground">
+                <button
+                  className={cn(
+                    "px-2 py-0.5 text-xs cursor-pointer text-[#8B949E] bg-[#161B22] border border-[#30363D] rounded-sm"
+                  )}
+                  onClick={() => setIsFollowing(!isFollowing)}
+                >
+                  {isFollowing ? "Following" : "Follow"}
+                </button>
               </div>
             </div>
-          </>
+
+            {/* author action */}
+            <OptionMenu post={post} isPost={isPost} />
+
+          </div>
         )}
       </div>
       <div className="rounded-sm w-full h-fit bg-[#30363E] border border-[#444C56]">
-        <div className="flex flex-col mx-8 my-5">
+        <div
+          className={cn(
+            "flex flex-col",
+            isSuggestion ? "h-22 px-4 py-2" : "mx-8 my-5"
+          )}
+        >
           <div
-            className={cn(!isPost && "cursor-pointer")}
+            className={cn(
+              !isPost && "cursor-pointer",
+              isSuggestion && "flex h-full flex-col"
+            )}
             onClick={() => (!isPost ? router.push(`/post/${post.id}`) : null)}
           >
             <div className="flex justify-between items-center">
-              <div className="text-sm font-semibold mb-0.5">{post.title}</div>
-              <OptionMenu post={post} isPost={isPost} />
+              <div
+                className={cn(
+                  "text-sm font-semibold mb-0.5",
+                  isSuggestion && "line-clamp-2"
+                )}
+              >
+                {post.title}
+              </div>
             </div>
-            <div dangerouslySetInnerHTML={{ __html: postBody! }} />
-            <div className="mt-7">
-              <Tag text={post.tag ?? ""} />
-            </div>
+            <div
+              className={cn(
+                isSuggestion && "text-xs text-[#ADBAC7] line-clamp-2 mt-2"
+              )}
+              dangerouslySetInnerHTML={{ __html: postBody! }}
+            />
+            {!isSuggestion && (
+              <div className={"mt-7"}>
+                <Tag text={post.tag ?? ""} />
+              </div>
+            )}
           </div>
-          <ReactionButton
-            selected={selected}
-            setSelected={setSelected}
-            post={post}
-          />
+
+          {!isSuggestion && (
+            <ReactionButton
+              selected={selected}
+              setSelected={setSelected}
+              post={post}
+            />
+          )}
         </div>
       </div>
 

@@ -1,43 +1,57 @@
 import getPopularPosts from "@/actions/get-popular-posts";
 import { clerkClient } from "@clerk/nextjs/server";
-import getPosts from "@/actions/get-posts";
-
 import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";
 import RightContent from "@/components/contents/RightContent";
 import PostItem from "@/components/posts/PostItem";
 import getPostById from "@/actions/get-post-by-id";
 import { PostPopulated } from "@/types";
+import Link from "next/link";
 
-type Props = {
-  params: {
-    postId: string;
-  };
-};
-
-const PostPage = async ({ params }: Props) => {
-  const client = await clerkClient();
-  const users = await client.users.getUserList();
-  const popularPosts = await getPopularPosts();
-  const posts = await getPosts();
-  const post = (await getPostById(params.postId)) as PostPopulated;
+const PostPage = async ({
+  params,
+}: {
+  params: Promise<{ postId: string }>
+}) => {
+  // const client = await clerkClient();
+  // const users = await client.users.getUserList();
+  const { postId } = await params;
+  const post = (await getPostById(postId)) as PostPopulated;
+  const posts = await getPopularPosts();
+  const relatedPosts = posts.filter((p) => p.id !== postId).slice(0, 3);
 
   return (
     <>
-      <div className="col-span-1 hidden sm:block xl:ms-8">
-        <LeftContent
-          users={JSON.parse(JSON.stringify(users.data))}
-          posts={posts}
-        />
+      <div className="h-full w-full px-5 md:px-0 rounded-sm">
+        <div className="flex items-center gap-2 text-sm text-[#8B949E]">
+          <Link href="/" className="hover:text-[#ADBAC7]">Home</Link>
+          <div>/</div>
+          <div className="text-[#ADBAC7] font-medium">{post.title}</div>
+        </div>
+        <PostItem post={post} isPost />
       </div>
-      <div className="col-span-3 sm:col-span-2">
-        <MainContent>
-          <PostItem post={post} isPost />
-        </MainContent>
+
+      {/* post suggestion */}
+      <div className="mt-16 px-5 md:px-0 ">
+        <div className=" pb-1 font-medium text-sm mb-2 border-b border-[#30363D]">
+          Related Posts
+        </div>
+        <div className="">
+          {relatedPosts.map((p) => (
+            <PostItem
+              key={p.id}
+              post={p as PostPopulated}
+              isSuggestion
+              className="mt-0"
+            />
+          ))}
+        </div>
       </div>
-      <div className="col-span-1 hidden lg:flex lg:mx-auto ">
+
+      {/* </div> */}
+      {/* <div className="col-span-1 hidden lg:flex lg:mx-auto ">
         <RightContent popularPosts={popularPosts} />
-      </div>
+      </div> */}
     </>
   );
 };

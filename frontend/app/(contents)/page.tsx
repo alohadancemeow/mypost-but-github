@@ -12,10 +12,10 @@ import WhoToFollow from "@/components/WhoToFollow";
 type Props = {};
 
 const page = async (props: Props) => {
-  const client = await clerkClient();
-  const users = await client.users.getUserList();
-  const popularPosts = await getPopularPosts();
-  const posts = await getPosts();
+  // const client = await clerkClient();
+  // const users = await client.users.getUserList();
+  // const popularPosts = await getPopularPosts();
+  // const posts = await getPosts();
 
   return (
     <>

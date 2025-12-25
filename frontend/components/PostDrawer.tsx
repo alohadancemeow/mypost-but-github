@@ -3,7 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 import { Button } from "./ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -19,6 +19,7 @@ import Toolbar from "./Toolbar";
 import { RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import useCreatePost from "@/hooks/use-create-post";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 /* ✅ MOVE THIS HERE */
 const Editor = dynamic(() => import("@/components/editor/Editor"), {
@@ -72,15 +73,21 @@ const PostDrawer = (props: Props) => {
   return (
     <Drawer open={isOpen} onClose={onClose}>
       <DrawerContent className="bg-[#1F1F1F] border-none">
+        <VisuallyHidden>
+          <DrawerHeader>
+            <DrawerTitle>Move Goal</DrawerTitle>
+            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+          </DrawerHeader>
+        </VisuallyHidden>
         <div className="mx-auto w-full h-full flex flex-col">
-          <ScrollArea className="h-150">
+          <ScrollArea className="h-200">
             <div className="mx-8 my-4 flex justify-end gap-3">
-              <Button size="sm" variant="outline" onClick={onClose}>
+              <Button className="cursor-pointer" size="sm" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
               <Button
                 size="sm"
-                className="bg-blue-700 hover:bg-blue-900"
+                className="bg-blue-700 cursor-pointer hover:bg-blue-900"
                 disabled={isPending}
                 onClick={onCreatePost}
               >

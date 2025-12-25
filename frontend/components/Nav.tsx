@@ -18,9 +18,6 @@ const Nav = (props: Props) => {
   const { user, isLoaded } = useUser();
   const router = useRouter();
 
-  console.log(user, 'user');
-
-
   if (!isLoaded) return null;
 
   return (
