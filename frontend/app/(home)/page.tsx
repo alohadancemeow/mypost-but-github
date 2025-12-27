@@ -18,25 +18,12 @@ const page = async (props: Props) => {
   // const posts = await getPosts();
 
   return (
-    <>
-      {/* <div className="col-span-1 hidden sm:block xl:ms-8">
-        <LeftContent
-          users={JSON.parse(JSON.stringify(users.data))}
-          posts={posts}
-        />
-      </div> */}
-      {/* <div className="col-span-3 sm:col-span-2"> */}
-        <MainContent>
-          <Banner />
-          <Tabs firstTab="For You" secondTab="Following" />
-          <Feed />
-          <WhoToFollow />
-        </MainContent>
-      {/* </div> */}
-      {/* <div className="col-span-1 hidden lg:flex lg:mx-auto ">
-        <RightContent popularPosts={popularPosts} />
-      </div> */}
-    </>
+    <MainContent>
+      <Banner />
+      <Tabs firstTab="For You" secondTab="Following" />
+      <Feed />
+      <WhoToFollow />
+    </MainContent>
   );
 };
 

@@ -77,12 +77,16 @@ const PostItem = ({
     <div className={cn("flex flex-col h-fit mt-10", className)}>
       <div className="flex items-center justify-start mx-1 mb-4">
         {isProfile && (
-          <span className="text-[#ADBAC7]">
-            {dateFormate(new Date(post.createdAt))}
+          <span className="text-[#ADBAC7] text-sm">
+            {new Date(post.createdAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })}
           </span>
         )}
         {!isProfile && !isSuggestion && (
-          <div className="flex justify-between w-full">
+          <div className="flex justify-between w-full gap-1">
             <div className="flex items-center gap-2">
               <Link href={`/user/${user?.id}`}>
                 <Avatar className="w-7.5 h-7.5">

@@ -1,8 +1,7 @@
 "use client";
 
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { BookOpenText } from "lucide-react";
-
+import { Sticker } from "lucide-react";
 import usePostModal from "@/store/use-post-modal";
 
 type Props = {
@@ -14,7 +13,7 @@ const Banner = ({ isProfile }: Props) => {
 
   return (
     <div className="w-full flex items-center justify-center flex-col rounded-lg border border-[#30363D] bg-linear-to-b from-[#161B22] to-[#0D1117] px-6 py-10 text-center shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
-      <BookOpenText size={28} className="text-[#1F6FEB]" />
+      <Sticker size={34} className="text-[#1F6FEB]" />
       <div className="text-xl sm:text-2xl font-semibold mt-4 text-white">
         Post your idea
       </div>

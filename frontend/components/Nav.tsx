@@ -1,6 +1,6 @@
 "use client";
 
-import { Rocket, Search } from "lucide-react";
+import { Search, Sticker } from "lucide-react";
 
 import {
   SignedIn,
@@ -27,7 +27,7 @@ const Nav = (props: Props) => {
         className="text-lg text-white cursor-pointer flex items-center gap-2"
         onClick={() => router.push("/")}
       >
-        <Rocket size={20} />
+        <Sticker size={24} />
         <div className="text-md font-semibold hidden md:block">Mypost but Github</div>
       </div>
 

@@ -13,7 +13,7 @@ const LoadMore = ({ loadNextPost, hasNextPage, isFetchingNextPage }: Props) => {
   return (
     <div
       className={cn(
-        `flex items-center border justify-center p-2 my-12  border-[#444C56]`,
+        `flex items-center border justify-center p-2 my-12  border-[#444C56] rounded-sm`,
         isFetchingNextPage ? "cursor-not-allowed" : "cursor-pointer"
       )}
       onClick={loadNextPost}

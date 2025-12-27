@@ -3,7 +3,8 @@
 import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
 import useSavedTab from "@/store/use-saved-tab";
-import { Compass, Users } from "lucide-react";
+import { Compass, SquareKanban, Star, Users } from "lucide-react";
+import { size } from "zod";
 
 type Props = {
   firstTab: string;
@@ -39,7 +40,7 @@ const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
           )}
           onClick={onCancel}
         >
-          {!isProfile && <Compass size={18} className="shrink-0" />}
+          {!isProfile ? <Compass size={18} className="shrink-0" /> : <SquareKanban size={18} className="shrink-0" />}
           <span>{firstTab}</span>
         </button>
 
@@ -56,7 +57,7 @@ const Tabs = ({ firstTab, secondTab, isProfile, owner }: Props) => {
             )}
             onClick={onSelect}
           >
-            {!isProfile && <Users size={18} className="shrink-0" />}
+            {!isProfile ? <Users size={18} className="shrink-0" /> : <Star size={18} className="shrink-0" />}
             <span>{secondTab}</span>
           </button>
         )}
