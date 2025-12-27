@@ -16,6 +16,7 @@ import { useParseContent } from "@/hooks/use-parse-content";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
+import Link from "next/link";
 
 export type ReactionButtonType = {
   comment: boolean;
@@ -43,7 +44,6 @@ const PostItem = ({
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: Boolean(!isSuggestion && isPost),
   });
-
   const [isFollowing, setIsFollowing] = useState(false);
 
   const router = useRouter();
@@ -51,27 +51,27 @@ const PostItem = ({
   const { data: user, isFetching } = useGetUser({ userId: post.userId });
   const postBody = useParseContent(post.body!);
 
-  if (isRanked)
-    return (
-      <div
-        className="mt-2 items-center justify-start flex"
-        onClick={() => router.push(`/post/${post.id}`)}
-      >
-        <div>
-          <div className="h-7.5 bg-transparent items-center flex justify-center w-7.5 rounded-full border border-white">
-            <p className="text-[#006EED]">{index ? index + 1 : 1}</p>
-          </div>
-        </div>
-        <div className="flex flex-col ml-4 hover:opacity-70 cursor-pointer border rounded-sm min-w-50 w-full py-2 px-4 border-[#444C56]">
-          <div className="flex gap-1">
-            <p>{post.title}</p>
-          </div>
-          <div className="text-xs text-[#ADBAC7] line-clamp-2 text-ellipsis">
-            <div dangerouslySetInnerHTML={{ __html: postBody! }} />
-          </div>
-        </div>
-      </div>
-    );
+  // if (isRanked)
+  //   return (
+  //     <div
+  //       className="mt-2 items-center justify-start flex"
+  //       onClick={() => router.push(`/post/${post.id}`)}
+  //     >
+  //       <div>
+  //         <div className="h-7.5 bg-transparent items-center flex justify-center w-7.5 rounded-full border border-white">
+  //           <p className="text-[#006EED]">{index ? index + 1 : 1}</p>
+  //         </div>
+  //       </div>
+  //       <div className="flex flex-col ml-4 hover:opacity-70 cursor-pointer border rounded-sm min-w-50 w-full py-2 px-4 border-[#444C56]">
+  //         <div className="flex gap-1">
+  //           <p>{post.title}</p>
+  //         </div>
+  //         <div className="text-xs text-[#ADBAC7] line-clamp-2 text-ellipsis">
+  //           <div dangerouslySetInnerHTML={{ __html: postBody! }} />
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
 
   return (
     <div className={cn("flex flex-col h-fit mt-10", className)}>
@@ -84,17 +84,17 @@ const PostItem = ({
         {!isProfile && !isSuggestion && (
           <div className="flex justify-between w-full">
             <div className="flex items-center gap-2">
-              <div>
+              <Link href={`/user/${user?.id}`}>
                 <Avatar className="w-7.5 h-7.5">
                   <AvatarImage
                     src={`${user?.imageUrl}` || "https://github.com/shadcn.png"}
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-              </div>
+              </Link>
               <div className="flex flex-col">
                 <div className="text-sm">
-                  {`${user?.firstName} ${user?.lastName}`}
+                  <Link href={`/user/${user?.id}`}>{`${user?.firstName} ${user?.lastName}`}</Link>
                   <span className="text-[#ADBAC7] px-1">posted</span> {post.title}{" "}
                 </div>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">

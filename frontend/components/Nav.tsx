@@ -11,6 +11,7 @@ import {
 } from "@clerk/nextjs";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type Props = {};
 
@@ -46,9 +47,9 @@ const Nav = (props: Props) => {
 
       <div className="flex items-center text-white gap-3 ">
         {user && (
-          <div className="text-sm font-medium hidden sm:block">
+          <Link href={`/user/${user.id}`} className="text-sm font-medium hidden sm:block">
             {`${user.fullName ?? user.primaryEmailAddress}`}
-          </div>
+          </Link>
         )}
 
         <SignedIn>
