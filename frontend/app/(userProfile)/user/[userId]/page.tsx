@@ -6,6 +6,8 @@ import Tabs from "@/components/Tabs";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Mail, Star, UserPlus, Users } from "lucide-react";
+import { Suspense } from "react";
+import Skeleton from "@/components/Skeleton";
 
 type Props = {
   params: Promise<{
@@ -137,7 +139,9 @@ const UserProfile = async ({ params }: Props) => {
           isProfile
           owner={userId}
         />
-        <Feed isProfile userId={userId} />
+        <Suspense fallback={<Skeleton />}>
+          <Feed isProfile userId={userId} />
+        </Suspense>
       </MainContent >
     </>
   );

@@ -8,6 +8,8 @@ import Feed from "@/components/Feed";
 import getPosts from "@/actions/get-posts";
 import Tabs from "@/components/Tabs";
 import WhoToFollow from "@/components/WhoToFollow";
+import { Suspense } from "react";
+import Skeleton from "@/components/Skeleton";
 
 type Props = {};
 
@@ -21,7 +23,9 @@ const page = async (props: Props) => {
     <MainContent>
       <Banner />
       <Tabs firstTab="For You" secondTab="Following" />
-      <Feed />
+      <Suspense fallback={<Skeleton />}>
+        <Feed />
+      </Suspense>
       <WhoToFollow />
     </MainContent>
   );

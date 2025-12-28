@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, EllipsisVertical, MoreHorizontal, Trash2 } from "lucide-react";
+import { Copy, MoreHorizontal, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +16,10 @@ import useOptionModal from "@/store/use-option-modal";
 import { useAuth } from "@clerk/nextjs";
 import { Post } from "@prisma/client";
 import { toast } from "sonner";
-import useDeletePost from "@/hooks/use-delete-post";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { deletePost } from "@/actions/post-actions";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   post: Post;
@@ -28,10 +30,8 @@ const OptionMenu = ({ post, isPost }: Props) => {
   const optionModal = useOptionModal();
   const { userId, isLoaded } = useAuth();
   const router = useRouter();
-
-  const { deletePost, isPending } = useDeletePost();
-
-  if (!isLoaded) return null;
+  const queryClient = useQueryClient();
+  const [isPending, startTransition] = useTransition()
 
   const onCopy = () => {
     const text = isPost
@@ -44,16 +44,39 @@ const OptionMenu = ({ post, isPost }: Props) => {
     });
   };
 
-  const onDelete = async () => {
-    toast.promise(async () => await deletePost(post.id), {
+  const onDeletePost = async () => {
+    if (isPending) return;
+
+    const promise = deletePost(post.id);
+
+    toast.promise(promise, {
       loading: "Deleting...",
       success: () => {
-        router.refresh();
         return `Post deleted ‼️`;
       },
       error: "Error",
     });
+
+    try {
+      await promise;
+
+      queryClient.setQueriesData({ queryKey: ["posts-query"] }, (oldData: any) => {
+        if (!oldData?.pages?.length) return oldData;
+        const pages = oldData.pages.map((page: any[]) =>
+          (page ?? []).filter((p) => p?.id !== post.id)
+        );
+        return { ...oldData, pages };
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["posts-query"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-count"] });
+      router.refresh();
+    } catch (error: any) {
+      toast.error(`${error.message} ‼️`, { duration: 1500 });
+    }
   };
+
+  if (!isLoaded) return null;
 
   return (
     <DropdownMenu onOpenChange={optionModal.onClose}>
@@ -69,7 +92,7 @@ const OptionMenu = ({ post, isPost }: Props) => {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {userId === post.userId && (
-            <DropdownMenuItem onClick={onDelete}>
+            <DropdownMenuItem disabled={isPending} onClick={() => startTransition(onDeletePost)}>
               Delete
               <DropdownMenuShortcut>
                 <Trash2 size={15} />

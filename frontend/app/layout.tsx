@@ -20,7 +20,12 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function RootLayout({ children }: Props) {
+async function getCurrentYear() {
+  'use cache'
+  return new Date().getFullYear()
+}
+
+export default async function RootLayout({ children }: Props) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, "relative")} suppressHydrationWarning>
@@ -31,7 +36,7 @@ export default function RootLayout({ children }: Props) {
             <div className="max-w-4xl mx-auto">
               <Nav />
               {children}
-              <Footer />
+              <Footer getCurrentYear={await getCurrentYear()} />
             </div>
           </Providers>
         </ClerkProvider>

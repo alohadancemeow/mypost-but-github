@@ -31,7 +31,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
                 <div className="font-semibold text-sm flex gap-1">
                   <p>Liked</p>
                   <div className="hidden md:block">
-                    {post.likedIds.length === 0
+                    {post?.likedIds?.length === 0
                       ? ""
                       : `· ${post.likedIds.length}`}
                   </div>
@@ -44,7 +44,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
                   <div className="font-semibold text-sm flex gap-1">
                     <p>Like</p>
                     <div className="hidden md:block">
-                      {post.likedIds.length === 0
+                      {post?.likedIds?.length === 0
                         ? ""
                         : `· ${post.likedIds.length}`}
                     </div>
@@ -62,7 +62,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
               <div className="font-semibold text-sm flex gap-1">
                 <p>Like</p>
                 <div className="hidden md:block">
-                  {post.likedIds.length === 0
+                  {post?.likedIds?.length === 0
                     ? ""
                     : `· ${post.likedIds.length}`}
                 </div>
@@ -85,7 +85,7 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
         <div className="text-sm font-semibold flex gap-1">
           <p>Comment</p>
           <div className="hidden md:block">
-            {post.comments.length === 0 ? "" : `· ${post.comments.length}`}
+            {post?.comments && post?.comments?.length === 0 ? "" : `· ${post?.comments?.length}`}
           </div>
         </div>
       </div>

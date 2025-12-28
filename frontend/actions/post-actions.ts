@@ -2,11 +2,10 @@
 
 import { db as prisma } from "@/lib/prismadb";
 import { z } from "zod";
-import { Post } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 
 import { PostValidator } from "@/types";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 // export type ResponseData = {
 //   data: Post;
@@ -26,7 +25,7 @@ export const createPost = async (postData: {
 
   try {
     if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
+      throw new Error("Unauthorized");
     }
 
     const { title, tag, body } = PostValidator.parse(postData);
@@ -40,20 +39,57 @@ export const createPost = async (postData: {
       },
     });
 
-    // revalidateTag("posts");
     revalidatePath("/");
 
     return post;
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return new Response(error.message, { status: 400 });
-    }
-
-    return new Response("Could not create post. Please try later", {
-      status: 500,
-    });
+    if (error instanceof z.ZodError) throw new Error(error.message);
+    throw error;
   }
 };
+
+// delete post
+export const deletePost = async (postId: string) => {
+  const { userId } = await auth();
+
+  try {
+    if (!userId) {
+      throw new Error("Unauthorized");
+    }
+
+    if (!postId || typeof postId !== "string") {
+      throw new Error("Invalid ID");
+    }
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) throw new Error("Post not found");
+
+
+    // check if post belongs to user
+    if (post.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    await prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+
+    revalidatePath("/");
+
+    return true
+  } catch (error) {
+    if (error instanceof z.ZodError) throw new Error(error.message);
+    throw error;
+  }
+}
+
 
 // like post
 export const like = async (postId: string) => {

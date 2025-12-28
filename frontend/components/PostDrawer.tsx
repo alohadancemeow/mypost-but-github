@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import dynamic from "next/dynamic";
 
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
@@ -10,7 +10,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import usePostModal from "@/store/use-post-modal";
 import NewTag from "./new-tag";
 
-import { BlockNoteEditor } from "@blocknote/core";
 import { Tag, TagOptions } from "@/data/tags";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
@@ -18,8 +17,9 @@ import { toast } from "sonner";
 import Toolbar from "./Toolbar";
 import { RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
-import useCreatePost from "@/hooks/use-create-post";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useQueryClient } from "@tanstack/react-query";
+import { createPost } from "@/actions/post-actions";
 
 /* ✅ MOVE THIS HERE */
 const Editor = dynamic(() => import("@/components/editor/Editor"), {
@@ -33,20 +33,15 @@ const PostDrawer = (props: Props) => {
   const [title, setTitle] = useState<string>("Untitled");
   const [selectedTag, setSelectedtag] = useState<Tag | null>(null);
   const { isOpen, onClose } = usePostModal();
+  const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
   const { userId, isLoaded } = useAuth();
-  const { createPost, isPending } = useCreatePost();
-
-  if (!isLoaded) return null;
-
-  const onChange = async (editor: BlockNoteEditor) => {
-    const html = await editor.blocksToHTMLLossy(editor.document);
-    setHTML(html);
-  };
+  const queryClient = useQueryClient();
 
   const onCreatePost = async () => {
     if (!userId) return;
+    if (isPending) return;
 
     try {
       const post = await createPost({
@@ -55,12 +50,23 @@ const PostDrawer = (props: Props) => {
         tag: selectedTag?.value ?? TagOptions[0]!.value,
       });
 
-      if (post) {
+      if (post && typeof post === "object" && "id" in post) {
         toast.success("Post has been created 🎉", { duration: 1500 });
 
         setHTML("");
         setTitle("Untitled");
         setSelectedtag(null);
+
+        queryClient.setQueriesData({ queryKey: ["posts-query"] }, (oldData: any) => {
+          if (!oldData?.pages?.length) return oldData;
+          const pages = [...oldData.pages];
+          const firstPage = Array.isArray(pages[0]) ? pages[0] : [];
+          pages[0] = [post, ...firstPage.filter((p: any) => p?.id !== post.id)];
+          return { ...oldData, pages };
+        });
+
+        queryClient.invalidateQueries({ queryKey: ["posts-query"] });
+        queryClient.invalidateQueries({ queryKey: ["saved-count"] });
         router.refresh();
       }
     } catch (error: any) {
@@ -69,6 +75,8 @@ const PostDrawer = (props: Props) => {
       onClose();
     }
   };
+
+  if (!isLoaded) return null;
 
   return (
     <Drawer open={isOpen} onClose={onClose}>
@@ -89,7 +97,7 @@ const PostDrawer = (props: Props) => {
                 size="sm"
                 className="bg-blue-700 cursor-pointer hover:bg-blue-900"
                 disabled={isPending}
-                onClick={onCreatePost}
+                onClick={() => startTransition(onCreatePost)}
               >
                 {isPending ? (
                   <>
