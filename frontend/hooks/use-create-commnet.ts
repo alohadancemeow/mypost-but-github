@@ -46,7 +46,7 @@ const useCreateComment = (post: Post) => {
       queryClient.invalidateQueries({
         predicate: (query) =>
           query.queryKey.every((key) =>
-            ["posts-query", "saved-posts"].includes(String(key))
+            ["posts-query", "starred-posts"].includes(String(key))
           ),
       });
     },

@@ -36,6 +36,8 @@ export const createPost = async (postData: {
         title,
         body,
         tag: tag ?? "",
+        likedIds: [],
+        starIds: [],
       },
     });
 
@@ -91,17 +93,19 @@ export const deletePost = async (postId: string) => {
 }
 
 
-// like post
-export const like = async (postId: string) => {
+export type ToggleLikeResult = { hasLiked: boolean } | { error: string };
+
+// togglelike post
+export const toggleLike = async (postId: string): Promise<ToggleLikeResult> => {
   const { userId } = await auth();
 
   try {
     if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
+      return { error: "Unauthorized" };
     }
 
     if (!postId || typeof postId !== "string") {
-      return new Response("Invalid ID", { status: 400 });
+      return { error: "Invalid ID" };
     }
 
     const post = await prisma.post.findUnique({
@@ -110,37 +114,45 @@ export const like = async (postId: string) => {
       },
     });
 
-    if (!post) return new Response("Post not found", { status: 404 });
+    if (!post) return { error: "Post not found" };
+
+    const likedIds = post.likedIds ?? [];
+    const currentlyLiked = likedIds.includes(userId);
+
+    const updatedLikedIds = currentlyLiked
+      ? likedIds.filter((id) => id !== userId)
+      : [...likedIds, userId];
 
     await prisma.post.update({
       where: {
         id: postId,
       },
       data: {
-        likedIds: {
-          push: userId,
-        },
+        likedIds: updatedLikedIds,
       },
     });
 
     revalidatePath("/");
+    return { hasLiked: !currentlyLiked };
   } catch (error) {
     console.log(error);
-    return new Response("[LIKE]: Internal server error", { status: 500 });
+    return { error: "Internal server error" };
   }
 };
 
-// unlike
-export const unlike = async (postId: string) => {
+export type ToggleStarResult = { hasStarred: boolean } | { error: string };
+
+// Star post
+export const toggleStar = async (postId: string): Promise<ToggleStarResult> => {
   const { userId } = await auth();
 
   try {
     if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
+      return { error: "Unauthorized" };
     }
 
     if (!postId || typeof postId !== "string") {
-      return new Response("Invalid ID", { status: 400 });
+      return { error: "Invalid ID" };
     }
 
     const post = await prisma.post.findUnique({
@@ -149,102 +161,27 @@ export const unlike = async (postId: string) => {
       },
     });
 
-    if (!post) return new Response("Post not found", { status: 404 });
+    if (!post) return { error: "Post not found" };
 
-    let updatedLikedIds = [...(post.likedIds || [])];
-
-    await prisma.post.update({
-      where: {
-        id: postId,
-      },
-      data: {
-        likedIds: updatedLikedIds.filter((id) => id !== userId),
-      },
-    });
-
-    revalidatePath("/");
-  } catch (error) {
-    console.log(error);
-    return new Response("[UNLIKE]: Internal server error", { status: 500 });
-  }
-};
-
-// Save post
-export const save = async (postId: string) => {
-  const { userId } = await auth();
-
-  try {
-    if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
-    }
-
-    if (!postId || typeof postId !== "string") {
-      return new Response("Invalid ID", { status: 400 });
-    }
-
-    const post = await prisma.post.findUnique({
-      where: {
-        id: postId,
-      },
-    });
-
-    if (!post) return new Response("Post not found", { status: 404 });
+    const starIds = post.starIds ?? [];
+    const currentlyStarred = starIds.includes(userId);
+    const updatedStarIds = currentlyStarred
+      ? starIds.filter((id) => id !== userId)
+      : [...starIds, userId];
 
     await prisma.post.update({
       where: {
         id: postId,
       },
       data: {
-        saveIds: {
-          push: userId,
-        },
+        starIds: updatedStarIds,
       },
     });
 
     revalidatePath("/");
+    return { hasStarred: !currentlyStarred };
   } catch (error) {
     console.log(error);
-    return new Response("[SAVE]: Internal server error", { status: 500 });
-  }
-
-  //   TODO: Notification here
-};
-
-// unsave
-export const unsave = async (postId: string) => {
-  const { userId } = await auth();
-
-  try {
-    if (!userId) {
-      return new Response("Unauthorized", { status: 401 });
-    }
-
-    if (!postId || typeof postId !== "string") {
-      return new Response("Invalid ID", { status: 400 });
-    }
-
-    const post = await prisma.post.findUnique({
-      where: {
-        id: postId,
-      },
-    });
-
-    if (!post) return new Response("Post not found", { status: 404 });
-
-    let updatedLikedIds = [...(post.likedIds || [])];
-
-    await prisma.post.update({
-      where: {
-        id: postId,
-      },
-      data: {
-        saveIds: updatedLikedIds.filter((id) => id !== userId),
-      },
-    });
-
-    revalidatePath("/");
-  } catch (error) {
-    console.log(error);
-    return new Response("[UNSAVE]: Internal server error", { status: 500 });
+    return { error: "Internal server error" };
   }
 };

@@ -1,8 +1,6 @@
 import getPopularPosts from "@/actions/get-popular-posts";
 import { clerkClient } from "@clerk/nextjs/server";
-import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";
-import RightContent from "@/components/contents/RightContent";
 import PostItem from "@/components/posts/PostItem";
 import getPostById from "@/actions/get-post-by-id";
 import { PostPopulated } from "@/types";
@@ -13,8 +11,6 @@ const PostPage = async ({
 }: {
   params: Promise<{ postId: string }>
 }) => {
-  // const client = await clerkClient();
-  // const users = await client.users.getUserList();
   const { postId } = await params;
   const post = (await getPostById(postId)) as PostPopulated;
   const posts = await getPopularPosts();
@@ -47,11 +43,6 @@ const PostPage = async ({
           ))}
         </div>
       </div>
-
-      {/* </div> */}
-      {/* <div className="col-span-1 hidden lg:flex lg:mx-auto ">
-        <RightContent popularPosts={popularPosts} />
-      </div> */}
     </>
   );
 };

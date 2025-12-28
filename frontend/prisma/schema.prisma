@@ -21,7 +21,7 @@ model Post {
 
     comments Comment[]
     tag      String?
-    saveIds  String[]
+    starIds  String[]
     likedIds String[]
 }
 
@@ -36,11 +36,20 @@ model Comment {
     post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
-model Notification {
+model Follower {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    body      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    userId String
+    followingId String @db.ObjectId
+    followerId String @db.ObjectId
 }
+
+// model Notification {
+//     id        String   @id @default(auto()) @map("_id") @db.ObjectId
+//     body      String
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     userId String
+// }

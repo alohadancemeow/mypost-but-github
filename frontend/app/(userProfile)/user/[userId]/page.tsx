@@ -1,4 +1,3 @@
-import getPosts from "@/actions/get-posts";
 import MainContent from "@/components/contents/Main";
 import Feed from "@/components/Feed";
 import Tabs from "@/components/Tabs";
@@ -8,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Mail, Star, UserPlus, Users } from "lucide-react";
 import { Suspense } from "react";
 import Skeleton from "@/components/Skeleton";
+import getUserStars from "@/actions/get-user-stars";
 
 type Props = {
   params: Promise<{
@@ -16,10 +16,12 @@ type Props = {
 };
 
 const UserProfile = async ({ params }: Props) => {
-  const posts = await getPosts();
   const { userId } = await params;
+  const stars = await getUserStars(userId);
+
   const client = await clerkClient();
   const user = await client.users.getUser(userId);
+
   const { userId: currentUserId } = await auth();
   const isOwner = currentUserId === userId;
 
@@ -36,12 +38,6 @@ const UserProfile = async ({ params }: Props) => {
     month: "short",
     year: "numeric",
   });
-
-  const userPosts = posts.filter((p) => p.userId === userId);
-  const starsReceived = userPosts.reduce(
-    (sum, p) => sum + (p.likedIds?.length ?? 0),
-    0
-  );
 
   const followersCountRaw = user.publicMetadata?.followersCount;
   const followingCountRaw = user.publicMetadata?.followingCount;
@@ -96,7 +92,7 @@ const UserProfile = async ({ params }: Props) => {
                       </div>
                       <div className="flex items-center gap-2">
                         <Star size={16} />
-                        <span className="font-semibold text-[#C9D1D9]">{starsReceived}</span>
+                        <span className="font-semibold text-[#C9D1D9]">{stars?.starCount}</span>
                         <span>Stars</span>
                       </div>
                     </div>

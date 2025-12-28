@@ -1,11 +1,9 @@
 import getPopularPosts from "@/actions/get-popular-posts";
 import { clerkClient } from '@clerk/nextjs/server';
-import LeftContent from "@/components/contents/LeftContent";
 import MainContent from "@/components/contents/Main";
-import RightContent from "@/components/contents/RightContent";
 import Banner from "@/components/Banner";
 import Feed from "@/components/Feed";
-import getPosts from "@/actions/get-posts";
+import getPosts from "@/actions/get-user-stars";
 import Tabs from "@/components/Tabs";
 import WhoToFollow from "@/components/WhoToFollow";
 import { Suspense } from "react";

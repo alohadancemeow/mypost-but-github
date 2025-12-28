@@ -23,6 +23,8 @@ export async function POST(request: Request) {
         title,
         body,
         tag: tag ?? "",
+        likedIds: [],
+        starIds: [],
       },
     });
 

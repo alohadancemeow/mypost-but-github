@@ -16,12 +16,12 @@ export const useGetPosts = ({ limit, userId }: Props) => {
 
   const { data, fetchNextPage, isFetchingNextPage, hasNextPage, isFetching } =
     useInfiniteQuery({
-      queryKey: isSelected ? ["posts-query", "saved-posts"] : ["posts-query"],
+      queryKey: isSelected ? ["posts-query", "starred-posts"] : ["posts-query"],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
         const query =
           userId && isSelected
-            ? `/api/posts/${userId}/saves?limit=${limit}&page=${pageParam}`
+            ? `/api/posts/${userId}/starred?limit=${limit}&page=${pageParam}`
             : userId
               ? `/api/posts/${userId}?limit=${limit}&page=${pageParam}`
               : `/api/posts?limit=${limit}&page=${pageParam}`;

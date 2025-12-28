@@ -18,8 +18,8 @@ import Toolbar from "./Toolbar";
 import { RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useQueryClient } from "@tanstack/react-query";
 import { createPost } from "@/actions/post-actions";
+import { useValidateQuery } from "@/hooks/use-revalidate-query";
 
 /* ✅ MOVE THIS HERE */
 const Editor = dynamic(() => import("@/components/editor/Editor"), {
@@ -37,7 +37,7 @@ const PostDrawer = (props: Props) => {
 
   const router = useRouter();
   const { userId, isLoaded } = useAuth();
-  const queryClient = useQueryClient();
+  const { validatePostQueries } = useValidateQuery();
 
   const onCreatePost = async () => {
     if (!userId) return;
@@ -57,16 +57,8 @@ const PostDrawer = (props: Props) => {
         setTitle("Untitled");
         setSelectedtag(null);
 
-        queryClient.setQueriesData({ queryKey: ["posts-query"] }, (oldData: any) => {
-          if (!oldData?.pages?.length) return oldData;
-          const pages = [...oldData.pages];
-          const firstPage = Array.isArray(pages[0]) ? pages[0] : [];
-          pages[0] = [post, ...firstPage.filter((p: any) => p?.id !== post.id)];
-          return { ...oldData, pages };
-        });
-
-        queryClient.invalidateQueries({ queryKey: ["posts-query"] });
-        queryClient.invalidateQueries({ queryKey: ["saved-count"] });
+        //  validate post queries
+        await validatePostQueries({ ...post, comments: [] });
         router.refresh();
       }
     } catch (error: any) {

@@ -1,14 +1,14 @@
 import { db as prisma } from "@/lib/prismadb";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   const url = new URL(request.url);
-  const { userId } = params;
+  const { userId } = await params;
 
   // console.log("url", url);
 
@@ -27,7 +27,7 @@ export async function GET(
 
     const posts = await prisma.post.findMany({
       where: {
-        saveIds: {
+        starIds: {
           has: userId,
         },
       },
@@ -51,7 +51,6 @@ export async function GET(
       },
     });
 
-    // revalidateTag("posts");
     revalidatePath("/");
 
     return NextResponse.json(posts ?? []);

@@ -2,12 +2,13 @@
 
 import { ReactionButtonType } from "./PostItem";
 import { PostPopulated } from "@/types";
-
-import useLike from "@/hooks/use-like-post";
-import useSavePost from "@/hooks/use-save-post";
-
-import { Bookmark, Heart, MessagesSquare } from "lucide-react";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { Heart, MessagesSquare, Star } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton, useAuth } from "@clerk/nextjs";
+import { useEffect, useState, useTransition } from "react";
+import { toggleLike, toggleStar } from "@/actions/post-actions";
+import { toast } from "sonner";
+import { useValidateQuery } from "@/hooks/use-revalidate-query";
+import { useRouter } from "next/navigation";
 
 type Props = {
   selected: ReactionButtonType;
@@ -16,15 +17,71 @@ type Props = {
 };
 
 const ReactionButton = ({ selected, setSelected, post }: Props) => {
-  const { hasLiked, toggleLike } = useLike({ post });
-  const { hasSaved, toggleSave } = useSavePost({ post });
+  const [hasLiked, setHasLiked] = useState<boolean>(false);
+  const [hasStarred, setHasStarred] = useState<boolean>(false);
+  const { userId, isLoaded } = useAuth();
+  const router = useRouter();
+  const { validatePostQueries } = useValidateQuery();
+  const [isPending, startTransition] = useTransition();
+
+  // Like post
+  const handleLike = async () => {
+    if (!userId || isPending) return;
+
+    const res = await toggleLike(post.id);
+
+    if ("error" in res) {
+      toast.error(res.error);
+      return;
+    }
+
+    const updatedLikedIds = res.hasLiked
+      ? Array.from(new Set([...(post.likedIds ?? []), userId]))
+      : (post.likedIds ?? []).filter((id) => id !== userId);
+
+    const updatedPost = { ...post, likedIds: updatedLikedIds };
+
+    setHasLiked(res.hasLiked);
+    await validatePostQueries(updatedPost);
+    router.refresh();
+  };
+
+  // Star post
+  const handleStar = async () => {
+    if (!userId || isPending) return;
+
+    const res = await toggleStar(post.id);
+
+    if ("error" in res) {
+      toast.error(res.error);
+      return;
+    }
+
+    const updatedStarIds = res.hasStarred
+      ? Array.from(new Set([...(post.starIds ?? []), userId]))
+      : (post.starIds ?? []).filter((id) => id !== userId);
+
+    const updatedPost = { ...post, starIds: updatedStarIds };
+
+    setHasStarred(res.hasStarred);
+    await validatePostQueries(updatedPost);
+    router.refresh();
+  };
+
+  useEffect(() => {
+    if (!userId) return;
+    setHasLiked((post.likedIds ?? []).includes(userId));
+    setHasStarred((post.starIds ?? []).includes(userId));
+  }, [post.likedIds, post.starIds, userId]);
+
+  if (!isLoaded) return null;
 
   return (
     <div className="mt-5 gap-3 flex">
       {/* LIKE */}
       <div className="flex items-center cursor-pointer bg-transparent hover:opacity-70">
         <SignedIn>
-          <div onClick={toggleLike}>
+          <div onClick={() => startTransition(handleLike)}>
             {hasLiked ? (
               <div className="flex gap-2 items-center">
                 <Heart size={18} fill="#006EED" />
@@ -90,19 +147,25 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
         </div>
       </div>
 
-      {/* BOOKMARK */}
+      {/* STAR */}
       <div className="flex gap-1 items-center hover:opacity-70 justify-center bg-transparent cursor-pointer">
         <SignedIn>
-          <div onClick={toggleSave}>
-            {hasSaved ? (
-              <div className="text-sm font-semibold flex gap-1">
-                <Bookmark size={18} fill="#006EED" />
-                <p>Saved</p>
+          <div onClick={() => startTransition(handleStar)}>
+            {hasStarred ? (
+              <div className="text-sm font-semibold flex gap-1 items-center">
+                <Star size={18} fill="#006EED" />
+                <p>Starred</p>
+                <div className="hidden md:block">
+                  {post?.starIds?.length === 0 ? "" : `· ${post.starIds.length}`}
+                </div>
               </div>
             ) : (
-              <div className="text-sm font-semibold flex gap-1">
-                <Bookmark size={18} />
-                <p>Save</p>
+              <div className="text-sm font-semibold flex gap-1 items-center">
+                <Star size={18} />
+                <p>Star</p>
+                <div className="hidden md:block">
+                  {post?.starIds?.length === 0 ? "" : `· ${post.starIds.length}`}
+                </div>
               </div>
             )}
           </div>
@@ -110,9 +173,12 @@ const ReactionButton = ({ selected, setSelected, post }: Props) => {
 
         <SignedOut>
           <SignInButton mode="modal">
-            <div className="text-sm font-semibold flex gap-1">
-              <Bookmark size={18} />
-              <p>Save</p>
+            <div className="text-sm font-semibold flex gap-1 items-center">
+              <Star size={18} />
+              <p>Star</p>
+              <div className="hidden md:block">
+                {post?.starIds?.length === 0 ? "" : `· ${post.starIds.length}`}
+              </div>
             </div>
           </SignInButton>
         </SignedOut>

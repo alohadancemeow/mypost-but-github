@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { deletePost } from "@/actions/post-actions";
-import { useQueryClient } from "@tanstack/react-query";
+import { useValidateQuery } from "@/hooks/use-revalidate-query";
 
 type Props = {
   post: Post;
@@ -29,9 +29,9 @@ type Props = {
 const OptionMenu = ({ post, isPost }: Props) => {
   const optionModal = useOptionModal();
   const { userId, isLoaded } = useAuth();
+  const [isPending, startTransition] = useTransition();
+  const { validatePostQueries } = useValidateQuery();
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const [isPending, startTransition] = useTransition()
 
   const onCopy = () => {
     const text = isPost
@@ -60,16 +60,8 @@ const OptionMenu = ({ post, isPost }: Props) => {
     try {
       await promise;
 
-      queryClient.setQueriesData({ queryKey: ["posts-query"] }, (oldData: any) => {
-        if (!oldData?.pages?.length) return oldData;
-        const pages = oldData.pages.map((page: any[]) =>
-          (page ?? []).filter((p) => p?.id !== post.id)
-        );
-        return { ...oldData, pages };
-      });
-
-      queryClient.invalidateQueries({ queryKey: ["posts-query"] });
-      queryClient.invalidateQueries({ queryKey: ["saved-count"] });
+      //  validate post queries
+      await validatePostQueries({ ...post, comments: [] });
       router.refresh();
     } catch (error: any) {
       toast.error(`${error.message} ‼️`, { duration: 1500 });
