@@ -1,6 +1,6 @@
 import getPopularPosts from "@/actions/get-popular-posts";
 import { clerkClient } from '@clerk/nextjs/server';
-import MainContent from "@/components/contents/Main";
+import MainContentWrapper from "@/components/Wrapper";
 import Banner from "@/components/Banner";
 import Feed from "@/components/Feed";
 import getPosts from "@/actions/get-user-stars";
@@ -18,14 +18,14 @@ const page = async (props: Props) => {
   // const posts = await getPosts();
 
   return (
-    <MainContent>
+    <MainContentWrapper>
       <Banner />
       <Tabs firstTab="For You" secondTab="Following" />
       <Suspense fallback={<Skeleton />}>
         <Feed />
       </Suspense>
       <WhoToFollow />
-    </MainContent>
+    </MainContentWrapper>
   );
 };
 

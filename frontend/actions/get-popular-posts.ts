@@ -1,3 +1,5 @@
+'use server'
+
 import { db as prisma } from "@/lib/prismadb";
 
 const getPopularPosts = async () => {

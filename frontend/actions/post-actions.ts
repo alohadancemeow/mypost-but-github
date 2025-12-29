@@ -142,7 +142,7 @@ export const toggleLike = async (postId: string): Promise<ToggleLikeResult> => {
 
 export type ToggleStarResult = { hasStarred: boolean } | { error: string };
 
-// Star post
+// toggle star post
 export const toggleStar = async (postId: string): Promise<ToggleStarResult> => {
   const { userId } = await auth();
 

@@ -19,14 +19,16 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { deletePost } from "@/actions/post-actions";
+import { deleteComment } from "@/actions/comment-actions";
 import { useValidateQuery } from "@/hooks/use-revalidate-query";
 
 type Props = {
   post: Post;
+  commentId?: string;
   isPost?: boolean;
 };
 
-const OptionMenu = ({ post, isPost }: Props) => {
+const OptionMenu = ({ post, commentId, isPost }: Props) => {
   const optionModal = useOptionModal();
   const { userId, isLoaded } = useAuth();
   const [isPending, startTransition] = useTransition();
@@ -44,15 +46,18 @@ const OptionMenu = ({ post, isPost }: Props) => {
     });
   };
 
-  const onDeletePost = async () => {
+  const handleAction = async () => {
     if (isPending) return;
 
-    const promise = deletePost(post.id);
+    const promise = isPost ? deletePost(post.id) : deleteComment(commentId!);
 
-    toast.promise(promise, {
+    toast.promise(promise.then((res: boolean | { error: string }) => {
+      if (typeof res === 'object' && 'error' in res) throw new Error(res.error);
+      return res === true;
+    }), {
       loading: "Deleting...",
       success: () => {
-        return `Post deleted ‼️`;
+        return `${isPost ? "Post" : "Comment"} deleted ‼️`;
       },
       error: "Error",
     });
@@ -79,24 +84,26 @@ const OptionMenu = ({ post, isPost }: Props) => {
           onClick={() => optionModal.onOpen()}
         />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-fit">
-        <DropdownMenuLabel>Post Actions</DropdownMenuLabel>
+      <DropdownMenuContent className="w-fit" align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {userId === post.userId && (
-            <DropdownMenuItem disabled={isPending} onClick={() => startTransition(onDeletePost)}>
+            <DropdownMenuItem disabled={isPending} onClick={() => startTransition(handleAction)}>
               Delete
               <DropdownMenuShortcut>
                 <Trash2 size={15} />
               </DropdownMenuShortcut>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem onClick={onCopy}>
-            Share
-            <DropdownMenuShortcut>
-              <Copy size={15} />
-            </DropdownMenuShortcut>
-          </DropdownMenuItem>
+          {isPost && (
+            <DropdownMenuItem onClick={onCopy}>
+              Share
+              <DropdownMenuShortcut>
+                <Copy size={15} />
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

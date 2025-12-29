@@ -1,6 +1,4 @@
 import getPopularPosts from "@/actions/get-popular-posts";
-import { clerkClient } from "@clerk/nextjs/server";
-import MainContent from "@/components/contents/Main";
 import PostItem from "@/components/posts/PostItem";
 import getPostById from "@/actions/get-post-by-id";
 import { PostPopulated } from "@/types";

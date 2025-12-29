@@ -4,7 +4,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-const MainContent = ({ children }: Props) => {
+const MainContentWrapper = ({ children }: Props) => {
   return (
     <div className="h-full w-full px-5 md:px-0">
       <div className="rounded-sm">{children}</div>
@@ -12,4 +12,4 @@ const MainContent = ({ children }: Props) => {
   );
 };
 
-export default MainContent;
+export default MainContentWrapper;

@@ -1,4 +1,4 @@
-import MainContent from "@/components/contents/Main";
+import MainContentWrapper from "@/components/Wrapper";
 import Feed from "@/components/Feed";
 import Tabs from "@/components/Tabs";
 
@@ -58,7 +58,7 @@ const UserProfile = async ({ params }: Props) => {
 
   return (
     <>
-      <MainContent>
+      <MainContentWrapper>
         <div className="mb-6 overflow-hidden rounded-lg border border-[#30363D] bg-linear-to-b from-[#161B22] to-[#0D1117]">
           <div className="p-4 sm:p-8">
             <div className="flex items-center gap-5 w-full flex-col sm:flex-row">
@@ -138,7 +138,7 @@ const UserProfile = async ({ params }: Props) => {
         <Suspense fallback={<Skeleton />}>
           <Feed isProfile userId={userId} />
         </Suspense>
-      </MainContent >
+      </MainContentWrapper>
     </>
   );
 };

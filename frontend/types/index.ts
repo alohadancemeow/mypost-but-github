@@ -42,7 +42,7 @@ export const PostValidator = z.object({
 });
 
 export const CommentValidator = z.object({
-  // postId: z.string(),
+  postId: z.string(),
   body: z.string(),
 });
 
