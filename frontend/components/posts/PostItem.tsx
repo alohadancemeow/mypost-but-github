@@ -38,7 +38,7 @@ const PostItem = ({
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: Boolean(!isSuggestion && isPost),
   });
-  const [isFollowing, setIsFollowing] = useState(false);
+  // const [isFollowing, setIsFollowing] = useState(false);
 
   const router = useRouter();
   const { data: user, isFetching } = useGetUser({ userId: post.userId });
@@ -78,7 +78,7 @@ const PostItem = ({
               </div>
 
               {/* follow button */}
-              <div className="self-start text-sm text-muted-foreground">
+              {/* <div className="self-start text-sm text-muted-foreground">
                 <button
                   className={cn(
                     "px-2 py-0.5 text-xs cursor-pointer text-[#8B949E] bg-[#161B22] border border-[#30363D] rounded-sm"
@@ -87,7 +87,7 @@ const PostItem = ({
                 >
                   {isFollowing ? "Following" : "Follow"}
                 </button>
-              </div>
+              </div> */}
             </div>
 
             {/* author action */}

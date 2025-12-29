@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useGetUserList } from "@/hooks/use-get-user-list";
 import Link from "next/link";
+// import { useState, useTransition } from "react";
+// import { toggleFollow } from "@/actions/follow-actions";
+// import { useRouter } from "next/navigation";
+// import { toast } from "sonner";
 
 type ClerkUser = {
     id: string;
@@ -11,48 +14,48 @@ type ClerkUser = {
     lastName?: string | null;
     username?: string | null;
     imageUrl?: string | null;
+    isFollowing?: boolean;
 };
 
 const WhoToFollow = () => {
-    const [followedByUserId, setFollowedByUserId] = useState<
-        Record<string, boolean>
-    >({});
-
+    // const router = useRouter();
+    // const [isPending, startTransition] = useTransition();
+    // const [followById, setFollowById] = useState<Record<string, boolean>>({});
+    const { data: users } = useGetUserList();
     const { user, isLoaded } = useUser();
-    const { data: users, isFetching } = useGetUserList();
 
-    const colors = ["#A371F7", "#F78166", "#58A6FF", "#3FB950", "#FFA657", "#D2A8FF"];
-
-    const suggestions = ((users || []) as ClerkUser[])
+    const suggestions = ((users ?? []) as ClerkUser[])
         .filter((u) => (user?.id ? u.id !== user.id : true))
         .slice(0, 3)
-        .map((u, index) => {
-            const name =
-                `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim() ||
-                u.username ||
-                "User";
-            const handle = `@${u.firstName ?? ""}${u.lastName ?? ""}`.trim();
-            const initial =
-                `${u.firstName?.[0] ?? ""}${u.lastName?.[0] ?? ""}`.trim() ||
-                (u.username?.[0] ? u.username[0].toUpperCase() : "U");
-            const imageUrl = u.imageUrl || "";
-
+        .map((u) => {
             return {
                 id: u.id,
-                name,
-                handle,
-                initial,
-                imageUrl,
-                color: colors[index % colors.length],
+                name: `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim() || u.username || "User",
+                handle: `@${user?.firstName ?? ""}${user?.lastName ?? ""}`.trim(),
+                imageUrl: u.imageUrl || "",
+                isFollowing: Boolean(u.isFollowing),
             };
         });
+
+    // const handleFollow = async (userId: string) => {
+    //     startTransition(async () => {
+    //         const { error, followed } = await toggleFollow(userId);
+
+    //         if (!error && followed !== undefined) {
+    //             setFollowById((prev) => ({ ...prev, [userId]: followed }));
+    //             router.refresh();
+    //         } else {
+    //             toast.error(error);
+    //         }
+    //     });
+    // };
 
     if (!isLoaded) return null;
 
     return (
-        <section className="mt-10">
+        <section className="mt-12">
             <div className="flex items-center justify-between">
-                <h2 className="text-md font-semibold text-white">Who to follow</h2>
+                <h2 className="text-md font-semibold">Recommended for you</h2>
                 <button
                     type="button"
                     className="text-sm font-medium text-[#58A6FF] hover:underline"
@@ -62,55 +65,39 @@ const WhoToFollow = () => {
             </div>
 
             <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-                {suggestions.map((user) => {
-                    const isFollowing = Boolean(followedByUserId[user.id]);
+                {suggestions.map((suggestion) => {
+                    // const isFollowing =
+                    //     followById[suggestion.id] ?? suggestion.isFollowing;
 
                     return (
                         <div
-                            key={user.id}
+                            key={suggestion.id}
                             className="flex items-center justify-between gap-4 rounded-md bg-[#30363E] border border-[#444C56] px-4 py-3"
                         >
-                            <Link href={`/user/${user.id}`} className="flex min-w-0 items-center gap-3">
-                                {!user.imageUrl ? (
-                                    <div
-                                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-semibold text-white"
-                                        style={{ backgroundColor: user.color }}
-                                    >
-                                        {user.initial}
-                                    </div>
-                                ) : (
-
-                                    <img
-                                        className="h-10 w-10 shrink-0 rounded-full"
-                                        src={user.imageUrl}
-                                        alt={user.name}
-                                    />
-
-                                )}
-
+                            <Link href={`/user/${suggestion.id}`} className="flex min-w-0 items-center gap-3">
+                                <img
+                                    className="h-10 w-10 shrink-0 rounded-full"
+                                    src={suggestion.imageUrl}
+                                    alt={suggestion.name}
+                                />
                                 <div className="min-w-0">
                                     <div className="truncate text-sm font-semibold text-white">
-                                        {user.name}
+                                        {suggestion.name}
                                     </div>
                                     <div className="truncate text-xs text-[#8B949E]">
-                                        {user.handle}
+                                        {suggestion.handle}
                                     </div>
                                 </div>
                             </Link>
 
-                            <button
+                            {/* <button
                                 type="button"
                                 className="h-8 shrink-0 rounded-md border border-[#8B949E] bg-[#161B22] px-3 text-sm font-semibold text-[#8B949E] hover:bg-[#262D34] cursor-pointer"
-                                disabled={isFetching}
-                                onClick={() =>
-                                    setFollowedByUserId((prev) => ({
-                                        ...prev,
-                                        [user.id]: !Boolean(prev[user.id]),
-                                    }))
-                                }
+                                disabled={isPending}
+                                onClick={() => handleFollow(suggestion.id)}
                             >
                                 {isFollowing ? "Unfollow" : "Follow"}
-                            </button>
+                            </button> */}
                         </div>
                     );
                 })}
@@ -118,5 +105,4 @@ const WhoToFollow = () => {
         </section>
     );
 };
-
 export default WhoToFollow;

@@ -1,8 +1,8 @@
-import getPopularPosts from "@/actions/get-popular-posts";
 import PostItem from "@/components/posts/PostItem";
 import getPostById from "@/actions/get-post-by-id";
 import { PostPopulated } from "@/types";
 import Link from "next/link";
+import { db } from "@/lib/prismadb";
 
 const PostPage = async ({
   params,
@@ -11,7 +11,7 @@ const PostPage = async ({
 }) => {
   const { postId } = await params;
   const post = (await getPostById(postId)) as PostPopulated;
-  const posts = await getPopularPosts();
+  const posts = await db.post.findMany({});
   const relatedPosts = posts.filter((p) => p.id !== postId).slice(0, 3);
 
   return (

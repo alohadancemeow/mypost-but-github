@@ -41,8 +41,8 @@ model Follower {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    followingId String @db.ObjectId
-    followerId String @db.ObjectId
+    followingId String
+    followerId String
 }
 
 // model Notification {

@@ -53,3 +53,14 @@ export const CommentValidator = z.object({
 
 export type FormData = z.infer<typeof PostValidator>;
 export type CommentInput = z.infer<typeof CommentValidator>;
+
+
+export type UserProfileUser = {
+  imageUrl: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  username: string | null;
+  email: string | null;
+  createdAt: number;
+  id: string;
+}

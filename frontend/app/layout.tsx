@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Footer from "@/components/Footer";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,17 +30,17 @@ export default async function RootLayout({ children }: Props) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, "relative")} suppressHydrationWarning>
-        <ClerkProvider
-          appearance={{ baseTheme: dark }}
-        >
-          <Providers>
-            <div className="max-w-4xl mx-auto">
-              <Nav />
-              {children}
-              <Footer getCurrentYear={await getCurrentYear()} />
-            </div>
-          </Providers>
-        </ClerkProvider>
+        <Suspense fallback={null}>
+          <ClerkProvider appearance={{ baseTheme: dark }}>
+            <Providers>
+              <div className="max-w-4xl mx-auto">
+                <Nav />
+                {children}
+                <Footer getCurrentYear={await getCurrentYear()} />
+              </div>
+            </Providers>
+          </ClerkProvider>
+        </Suspense>
       </body>
     </html>
   );
