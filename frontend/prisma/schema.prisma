@@ -23,6 +23,8 @@ model Post {
     tag      String?
     starIds  String[]
     likedIds String[]
+
+    @@index([title, body])
 }
 
 model Comment {

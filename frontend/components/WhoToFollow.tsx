@@ -31,7 +31,7 @@ const WhoToFollow = () => {
             return {
                 id: u.id,
                 name: `${u.firstName ?? ""} ${u.lastName ?? ""}`.trim() || u.username || "User",
-                handle: `@${user?.firstName ?? ""}${user?.lastName ?? ""}`.trim(),
+                handle: `@${u?.firstName ?? ""}${u?.lastName ?? ""}`.trim(),
                 imageUrl: u.imageUrl || "",
                 isFollowing: Boolean(u.isFollowing),
             };
