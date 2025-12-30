@@ -42,12 +42,6 @@ const Nav = (props: Props) => {
 
   const { data: userList } = useGetUserList();
 
-
-  console.log("Searching posts for:", query);
-  console.log("postSearchReqId:", postSearchReqId);
-  console.log("Post Results:", postResults);
-  console.log("isSearchingPosts:", isSearchingPosts);
-
   // Memoize the filtered users to avoid re-calculating on every render
   const filteredUsers = useMemo(() => {
     const q = query.trim().toLowerCase();

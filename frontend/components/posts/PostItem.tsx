@@ -20,9 +20,6 @@ export type ReactionButtonType = {
 
 type Props = {
   post: PostPopulated;
-  isRanked?: boolean;
-  index?: number;
-  isProfile?: boolean;
   isPost?: boolean;
   isSuggestion?: boolean;
   className?: string;
@@ -30,7 +27,6 @@ type Props = {
 
 const PostItem = ({
   post,
-  isProfile,
   isPost,
   isSuggestion,
   className,
@@ -38,8 +34,6 @@ const PostItem = ({
   const [selected, setSelected] = useState<ReactionButtonType>({
     comment: Boolean(!isSuggestion && isPost),
   });
-  // const [isFollowing, setIsFollowing] = useState(false);
-
   const router = useRouter();
   const { data: user, isFetching } = useGetUser({ userId: post.userId });
   const postBody = useParseContent(post.body!);
@@ -47,16 +41,7 @@ const PostItem = ({
   return (
     <div className={cn("flex flex-col h-fit mt-10", className)}>
       <div className="flex items-center justify-start mx-1 mb-4">
-        {isProfile && (
-          <span className="text-[#ADBAC7] text-sm">
-            {new Date(post.createdAt).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </span>
-        )}
-        {!isProfile && !isSuggestion && (
+        {!isSuggestion && (
           <div className="flex justify-between w-full gap-1">
             <div className="flex items-center gap-2">
               <Link href={`/user/${user?.id}`}>
@@ -69,8 +54,9 @@ const PostItem = ({
               </Link>
               <div className="flex flex-col">
                 <div className="text-sm">
-                  <Link href={`/user/${user?.id}`}>{`${user?.firstName} ${user?.lastName}`}</Link>
-                  <span className="text-[#ADBAC7] px-1">posted</span> {post.title}{" "}
+                  <Link className="hover:underline" href={`/user/${user?.id}`}>{`${user?.firstName} ${user?.lastName}`}</Link>
+                  <span className="text-[#ADBAC7] px-1">posted</span>
+                  <Link className="hover:underline" href={`/post/${post.id}`}>{post.title}</Link>
                 </div>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <span>{formatDistanceToNow(new Date(post.createdAt))} ago</span>
@@ -91,7 +77,7 @@ const PostItem = ({
             </div>
 
             {/* author action */}
-            <OptionMenu post={post} isPost={isPost} />
+            <OptionMenu post={post} />
 
           </div>
         )}
@@ -104,11 +90,8 @@ const PostItem = ({
           )}
         >
           <div
-            className={cn(
-              !isPost && "cursor-pointer",
-              isSuggestion && "flex h-full flex-col"
-            )}
-            onClick={() => (!isPost ? router.push(`/post/${post.id}`) : null)}
+            className={"cursor-pointer"}
+            onClick={() => router.push(`/post/${post.id}`)}
           >
             <div className="flex justify-between items-center">
               <div

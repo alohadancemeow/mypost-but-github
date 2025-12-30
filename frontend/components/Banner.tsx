@@ -4,11 +4,8 @@ import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Sticker } from "lucide-react";
 import usePostModal from "@/store/use-post-modal";
 
-type Props = {
-  isProfile?: boolean;
-};
 
-const Banner = ({ isProfile }: Props) => {
+const Banner = () => {
   const postModal = usePostModal();
 
   return (
@@ -20,26 +17,23 @@ const Banner = ({ isProfile }: Props) => {
       <p className="mt-2 max-w-md text-sm text-[#8B949E]">
         Hope with further education, people can expand their horizons.
       </p>
-
-      {!isProfile && (
-        <div className="mt-5">
-          <SignedIn>
-            <button
-              className="h-9 px-4 rounded-md cursor-pointer bg-[#1F6FEB] hover:bg-[#2F81F7] text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117]"
-              onClick={() => postModal.onOpen()}
-            >
+      <div className="mt-5">
+        <SignedIn>
+          <button
+            className="h-9 px-4 rounded-md cursor-pointer bg-[#1F6FEB] hover:bg-[#2F81F7] text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117]"
+            onClick={() => postModal.onOpen()}
+          >
+            Create a Post
+          </button>
+        </SignedIn>
+        <SignedOut>
+          <SignInButton mode="modal">
+            <button className="h-9 px-4 rounded-md cursor-pointer bg-[#1F6FEB] hover:bg-[#2F81F7] text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117]">
               Create a Post
             </button>
-          </SignedIn>
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="h-9 px-4 rounded-md cursor-pointer bg-[#1F6FEB] hover:bg-[#2F81F7] text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117]">
-                Create a Post
-              </button>
-            </SignInButton>
-          </SignedOut>
-        </div>
-      )}
+          </SignInButton>
+        </SignedOut>
+      </div>
     </div>
   );
 };

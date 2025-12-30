@@ -1,4 +1,4 @@
-import { Post, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
 
 // post response
@@ -64,3 +64,6 @@ export type UserProfileUser = {
   createdAt: number;
   id: string;
 }
+
+export type FIRST_TAB = "For You" | "Overview";
+export type SECOND_TAB = "Following" | "Starred";

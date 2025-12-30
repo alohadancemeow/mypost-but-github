@@ -49,12 +49,12 @@ const UserProfileContent = async ({ params }: Props) => {
         />
         <Tabs
           firstTab="Overview"
-          secondTab="Stared"
+          secondTab="Starred"
           isProfile
           owner={userId}
         />
         <Suspense fallback={<Skeleton />}>
-          <Feed isProfile userId={userId} />
+          <Feed userId={userId} />
         </Suspense>
       </MainContentWrapper>
     </>

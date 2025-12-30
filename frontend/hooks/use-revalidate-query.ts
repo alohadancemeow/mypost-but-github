@@ -24,13 +24,10 @@ export const useValidateQuery = () => {
         );
     };
 
-    // invalidate post queries
+    // revalidates all queries created by useGetPosts
     const invalidatePostQueries = async () => {
         await queryClient.invalidateQueries({
-            predicate: (query) =>
-                query.queryKey.every((key) =>
-                    ["posts-query", "starred-posts"].includes(String(key))
-                ),
+            predicate: (query) => String(query.queryKey[0]) === "posts-query",
         });
         await queryClient.invalidateQueries({ queryKey: ["starred-count"] });
     };
