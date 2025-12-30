@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { toggleFollow } from "@/actions/follow-actions";
 import { UserProfileUser } from "@/types";
 import { useRouter } from "next/navigation";
+import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 
 type Props = {
     isOwner: boolean;
@@ -102,17 +103,32 @@ export const ProfileBanner = ({
                         {/* action */}
                         {!isOwner && (
                             <div className="flex gap-3 flex-row sm:flex-col self-start mt-2">
-                                <button
-                                    disabled={isPending}
-                                    onClick={() =>
-                                        startTransition(handleFollow)
-                                    }
-                                    type="button"
-                                    className="h-9 sm:px-6 px-4 rounded-md cursor-pointer bg-green-600 hover:bg-green-500 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] flex items-center gap-2"
-                                >
-                                    <UserPlus size={16} />
-                                    {hasFollowed ? "Unfollow" : "Follow"}
-                                </button>
+                                <SignedIn>
+                                    <button
+                                        disabled={isPending}
+                                        onClick={() =>
+                                            startTransition(handleFollow)
+                                        }
+                                        type="button"
+                                        className="h-9 sm:px-6 px-4 rounded-md cursor-pointer bg-green-600 hover:bg-green-500 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] flex items-center gap-2"
+                                    >
+                                        <UserPlus size={16} />
+                                        {hasFollowed ? "Unfollow" : "Follow"}
+                                    </button>
+                                </SignedIn>
+                                <SignedOut>
+                                    <SignInButton mode="modal">
+                                        <button
+                                            disabled={isPending}
+                                            onClick={() => { }}
+                                            type="button"
+                                            className="h-9 sm:px-6 px-4 rounded-md cursor-pointer bg-green-600 hover:bg-green-500 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] flex items-center gap-2"
+                                        >
+                                            <UserPlus size={16} />
+                                            Follow
+                                        </button>
+                                    </SignInButton>
+                                </SignedOut>
                                 <a
                                     href={user.email ? `mailto:${user.email}` : undefined}
                                     className="h-9 sm:px-6 px-4 rounded-md cursor-pointer border border-[#30363D] bg-[#161B22] text-sm font-semibold text-[#C9D1D9] hover:bg-[#262D34] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#58A6FF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0D1117] flex items-center gap-2"
