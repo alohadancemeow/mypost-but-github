@@ -1,28 +1,82 @@
-# Create T3 App
+# mypost but github
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A mini social media app inspired by GitHub + Pantip.
 
-## What's next? How do I make an app with this?
+Live demo: https://mypost-but-github.vercel.app
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Features
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- Clerk authentication (sign in / sign up)
+- Create posts (rich text editor), optional tags
+- Feed with tabs (For You / Following)
+- Like + Star posts
+- Comments
+- Follow / unfollow users
+- User profiles (overview + starred)
+- Search users and posts (Atlas Search when available; falls back to Prisma contains query)
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Tech stack
 
-## Learn More
+- Next.js (App Router) + React
+- Clerk (auth + user profiles)
+- Prisma + MongoDB
+- TanStack Query (client data fetching/caching)
+- Tailwind CSS + shadcn/ui + Radix UI
+- BlockNote editor
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Getting started
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+### 1) Install
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+```bash
+npm install
+```
 
-## How do I deploy this?
+### 2) Environment variables
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+Copy `.env.example` to `.env` and set the values you actually use.
+
+This project uses Clerk (not NextAuth). If your `.env.example` still contains NextAuth variables, you can ignore them.
+
+Required:
+
+```bash
+DATABASE_URL="mongodb+srv://USER:PASSWORD@HOST/dbname?retryWrites=true&w=majority"
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_..."
+CLERK_SECRET_KEY="sk_..."
+NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
+NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL="/"
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL="/"
+```
+
+### 3) Prisma
+
+This repo runs `prisma generate` on install. To sync the schema to your database:
+
+```bash
+npx prisma db push
+```
+
+### 4) Run locally
+
+```bash
+npm run dev
+```
+
+Open http://localhost:3000
+
+## Scripts
+
+- `npm run dev` - start dev server
+- `npm run build` - production build
+- `npm run start` - start production server
+- `npm run lint` - run Next.js lint
+
+## MongoDB Atlas Search (optional)
+
+Post search uses a MongoDB Atlas `$search` autocomplete pipeline when available (index name: `default` on the `Post` collection). If Atlas Search is not configured, the app automatically falls back to a Prisma `contains` search.
+
+## Screenshots
+
+![Home](public/screenshot.png)

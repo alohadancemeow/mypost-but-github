@@ -5,10 +5,10 @@ import { z } from "zod";
 
 export async function GET(
   request: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   const url = new URL(request.url);
-  const { userId } = params;
+  const { userId } = await params;
 
   // console.log("url", url);
 
@@ -49,7 +49,7 @@ export async function GET(
       },
     });
 
-    revalidateTag("posts");
+    // revalidateTag("posts");
     revalidatePath("/");
 
     return NextResponse.json(posts ?? []);

@@ -1,69 +1,63 @@
 "use client";
 
 import { useEffect } from "react";
+import { BlockNoteSchema, defaultInlineContentSpecs } from "@blocknote/core";
+
+// @ts-ignore
+import { filterSuggestionItems } from "@blocknote/core/extensions";
+
+import "@blocknote/core/fonts/inter.css";
+import { BlockNoteView } from "@blocknote/mantine";
+import "@blocknote/mantine/style.css";
 import {
-  BlockNoteSchema,
-  defaultInlineContentSpecs,
-  filterSuggestionItems,
-} from "@blocknote/core";
-import {
-  BlockNoteView,
-  useCreateBlockNote,
   DefaultReactSuggestionItem,
   SuggestionMenuController,
+  useCreateBlockNote,
 } from "@blocknote/react";
-import "@blocknote/core/fonts/inter.css";
-import "@blocknote/react/style.css";
-
 import { Mention } from "./Mention";
 
 type Props = {
-  onChange: (editor: any) => void;
+  onChange?: (editor: any) => void;
   initialContent?: string;
   editable?: boolean;
-  users: string[];
+  users?: string[];
 };
 
-const Editor = ({ onChange, editable, initialContent, users }: Props) => {
-  // Our schema with inline content specs, which contain the configs and
-  // implementations for inline content  that we want our editor to use.
-  const schema = BlockNoteSchema.create({
-    inlineContentSpecs: {
-      // Adds all default inline content.
-      ...defaultInlineContentSpecs,
-      // Adds the mention tag.
-      mention: Mention,
-    },
-  });
+const schema = BlockNoteSchema.create({
+  inlineContentSpecs: {
+    ...defaultInlineContentSpecs,
+    mention: Mention,
+  },
+});
 
-  // Function which gets all users for the mentions menu.
-  const getMentionMenuItems = (
-    editor: typeof schema.BlockNoteEditor
-  ): DefaultReactSuggestionItem[] => {
-    // const users = ["Steve", "Bob", "Joe", "Mike"];
-
-    return users.map((user) => ({
-      title: user,
-      onItemClick: () => {
-        editor.insertInlineContent([
-          {
-            type: "mention",
-            props: {
-              user,
-            },
+const getMentionMenuItems = (
+  editor: typeof schema.BlockNoteEditor,
+  users: string[]
+): DefaultReactSuggestionItem[] => {
+  return users.map((user) => ({
+    title: user,
+    onItemClick: () => {
+      editor.insertInlineContent([
+        {
+          type: "mention",
+          props: {
+            user,
           },
-          " ", // add a space after the mention
-        ]);
-      },
-    }));
-  };
+        },
+        " ",
+      ]);
+    },
+  }));
+};
 
+const Editor = ({
+  onChange = () => { },
+  editable,
+  initialContent,
+  users = [],
+}: Props) => {
   const editor = useCreateBlockNote({ schema });
 
-  /**
-   * For initialization; on mount, convert the initial Markdown to blocks
-   * and replace the default editor's content
-   */
   useEffect(() => {
     async function loadInitialHTML() {
       if (!initialContent) return null;
@@ -72,7 +66,7 @@ const Editor = ({ onChange, editable, initialContent, users }: Props) => {
       editor.replaceBlocks(editor.document, blocks);
     }
     loadInitialHTML();
-  }, [editor]);
+  }, [editor, initialContent]);
 
   return (
     <div>
@@ -82,12 +76,10 @@ const Editor = ({ onChange, editable, initialContent, users }: Props) => {
         tableHandles
         onChange={() => onChange(editor)}
       >
-        {/* Adds a mentions menu which opens with the "@" key */}
         <SuggestionMenuController
           triggerCharacter={"@"}
           getItems={async (query) =>
-            // Gets the mentions menu items
-            filterSuggestionItems(getMentionMenuItems(editor), query)
+            filterSuggestionItems(getMentionMenuItems(editor, users), query)
           }
         />
       </BlockNoteView>

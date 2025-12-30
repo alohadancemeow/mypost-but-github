@@ -1,43 +1,49 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import useCreateComment from "@/hooks/use-create-commnet";
-
+import { useState, useTransition } from "react";
 import { useUser } from "@clerk/nextjs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
+import { createComment } from "@/actions/comment-actions";
+import { useValidateQuery } from "@/hooks/use-revalidate-query";
+import { useRouter } from "next/navigation";
+import { PostPopulated } from "@/types";
 
-import { Post } from "@prisma/client";
-
-type Props = {
-  post: Post;
-};
-
-const CommentInput = ({ post }: Props) => {
+const CommentInput = ({ post }: { post: PostPopulated }) => {
   const [commentBody, setCommentBody] = useState<string>("");
+  const [isPending, startTransition] = useTransition();
+  const { user, isLoaded } = useUser();
+  const router = useRouter();
 
-  const { createComment, isPending } = useCreateComment(post);
-  const { user } = useUser();
+  const { validatePostQueries } = useValidateQuery();
 
-  // # Handle create comment
-  const onCreateComment = useCallback(
-    async (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        await createComment({ body: commentBody });
+  const onCreateComment = async () => {
+    if (isPending || !user?.id || !post.id || commentBody.trim() === "") return;
+
+    try {
+      const comment = await createComment({ postId: post.id, body: commentBody });
+
+      if (!("error" in comment)) {
         setCommentBody("");
+        await validatePostQueries({ ...post, comments: [...post.comments, comment] });
+        router.refresh();
       }
-    },
-    [createComment, setCommentBody, commentBody]
-  );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const disabledInput = isPending || !user?.id;
+  const disabledInput = isPending || !user?.id || !post.id;
+
+  // Check if user is loaded
+  if (!isLoaded) return null;
 
   return (
     <div className="flex items-center justify-start my-3 mx-6 ">
       <div>
-        <Avatar className="w-[25px] h-[25px]">
+        <Avatar className="w-6.25 h-6.25">
           <AvatarImage
-            src={`${user?.imageUrl}` ?? "https://github.com/shadcn.png"}
+            src={`${user?.imageUrl}` || "https://github.com/shadcn.png"}
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
@@ -45,13 +51,21 @@ const CommentInput = ({ post }: Props) => {
       <Input
         aria-label="text"
         placeholder={
-          user?.id === undefined ? `Sign in to comment` : "Type here..."
+          isPending
+            ? "Comment creating..."
+            : user?.id === undefined
+              ? "Sign in to comment"
+              : "Type here..."
         }
         type="text"
         value={commentBody}
         onChange={(e) => setCommentBody(e.target.value)}
-        onKeyUp={(e) => {
-          onCreateComment(e);
+        onKeyDown={(e) => {
+          if (e.key !== "Enter") return;
+          e.preventDefault();
+          startTransition(() => {
+            onCreateComment();
+          });
         }}
         disabled={disabledInput}
         className="bg-transparent h-9 w-full rounded-sm ml-4 border border-[#444C56] focus:border-0"
