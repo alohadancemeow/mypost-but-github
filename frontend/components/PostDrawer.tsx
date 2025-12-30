@@ -20,11 +20,15 @@ import { useRouter } from "next/navigation";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { createPost } from "@/actions/post-actions";
 import { useValidateQuery } from "@/hooks/use-revalidate-query";
+import { BlockNoteEditor } from "@blocknote/core";
+import { useGetUserList } from "@/hooks/use-get-user-list";
 
 /* ✅ MOVE THIS HERE */
 const Editor = dynamic(() => import("@/components/editor/Editor"), {
   ssr: false,
 });
+
+const content = `<p class="bn-inline-content">Hello, <strong>world!</strong></p><p class="bn-inline-content"></p>`;
 
 type Props = {};
 
@@ -38,6 +42,7 @@ const PostDrawer = (props: Props) => {
   const router = useRouter();
   const { userId, isLoaded } = useAuth();
   const { validatePostQueries } = useValidateQuery();
+  const { usernames } = useGetUserList()
 
   const onCreatePost = async () => {
     if (!userId) return;
@@ -66,6 +71,11 @@ const PostDrawer = (props: Props) => {
     } finally {
       onClose();
     }
+  };
+
+  const onChange = async (editor: BlockNoteEditor) => {
+    const html = await editor.blocksToHTMLLossy(editor.document);
+    setHTML(html);
   };
 
   if (!isLoaded) return null;
@@ -108,7 +118,12 @@ const PostDrawer = (props: Props) => {
                 selectedTag={selectedTag}
                 setSelectedtag={setSelectedtag}
               />
-              <Editor />
+              <Editor
+                onChange={onChange}
+                initialContent={content}
+                editable
+                users={usernames}
+              />
             </div>
           </ScrollArea>
         </div>

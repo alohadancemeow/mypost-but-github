@@ -4,7 +4,6 @@ import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Sticker } from "lucide-react";
 import usePostModal from "@/store/use-post-modal";
 
-
 const Banner = () => {
   const postModal = usePostModal();
 

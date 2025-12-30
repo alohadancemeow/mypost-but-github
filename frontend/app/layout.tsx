@@ -9,12 +9,16 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import Footer from "@/components/Footer";
 import { Suspense } from "react";
+import type { Metadata } from "next";
+import { siteMetadata } from "@/site/siteMetadata";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-  title: "mypost but github",
-  description: "A mini social media inspired by Github + Twitter",
+export const metadata: Metadata = {
+  title: {
+    default: siteMetadata.title,
+    template: `%s | ${siteMetadata.title}`,
+  },
 };
 
 type Props = {
